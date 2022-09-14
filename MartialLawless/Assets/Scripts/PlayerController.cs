@@ -45,6 +45,8 @@ public class PlayerController : MonoBehaviour
     public Sprite leftSprite;
     public Sprite rightSprite;
 
+    public GameObject testAttack;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -122,7 +124,85 @@ public class PlayerController : MonoBehaviour
         transform.position = position;
     }
 
+    private void OnPunch(InputValue value)
+    {
+        Debug.Log("Punch");
+        state = State.isPunching;
 
+        switch(orientation)
+        {
+            case Orientation.up:
+                Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.down:
+                Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.left:
+                Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+
+                break;
+            case Orientation.right:
+                Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+
+                break;
+        }
+        
+    }
+
+    private void OnKick(InputValue value)
+    {
+        Debug.Log("Kick");
+        state = State.isKicking;
+
+        switch (orientation)
+        {
+            case Orientation.up:
+                Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.down:
+                Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.left:
+                Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+
+                break;
+            case Orientation.right:
+                Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+
+                break;
+        }
+
+    }
+
+    private void OnBlock(InputValue value)
+    {
+        Debug.Log("Block");
+        state = State.isBlocking;
+
+        switch (orientation)
+        {
+            case Orientation.up:
+                Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.down:
+                Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.left:
+                Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+
+                break;
+            case Orientation.right:
+                Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+
+                break;
+        }
+    }
 
     //needed to for controls to work 
     private void OnEnable()
