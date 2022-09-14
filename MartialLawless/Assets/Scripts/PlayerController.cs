@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SpriteRender;
 
 public enum Orientation
 {
@@ -37,12 +38,19 @@ public class PlayerController : MonoBehaviour
     public int kickDamage = 20;
     public int throwDamage = 25;
 
+    //different sprites to show for each pose
+    private SpriteRenderer spriteRenderer;
+    public Sprite upSprite;
+    public Sprite downSprite;
+    public Sprite leftSprite;
+    public Sprite rightSprite;
 
     // Start is called before the first frame update
     void Start()
     {
         position = this.transform.position;
         state = State.isMoving;
+        spriteRenderer = this.GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
