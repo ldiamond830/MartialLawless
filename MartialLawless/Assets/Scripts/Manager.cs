@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Manager : MonoBehaviour
 {
-    private waveCount;
+    private int waveCount;
     public PlayerController player;
 
     private float timeBetweenSpawn;
@@ -16,7 +16,7 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timeBetweenSpawn = 0.2;
+        timeBetweenSpawn = 0.2f;
         waveCount = 0;
         isSpawning = true;
     }
