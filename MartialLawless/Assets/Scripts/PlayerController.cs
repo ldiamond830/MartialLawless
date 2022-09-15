@@ -45,8 +45,13 @@ public class PlayerController : MonoBehaviour
     public Sprite leftSprite;
     public Sprite rightSprite;
 
+    //variables for controlling combat
     public GameObject testAttack;
-    
+    public int wait = 0; //will be replaced with delta time later
+    public bool isAttacking = false;
+    public List<GameObject> attacks;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,15 +72,46 @@ public class PlayerController : MonoBehaviour
             break;
 
             case State.isBlocking:
-
+                if (wait >= 60)
+                {
+                    //after 60 cycles the player is able to move again
+                    wait = 0;
+                    state = State.isMoving;
+                    Destroy(attacks[0]);
+                    attacks.RemoveAt(0);
+                    isAttacking = false; 
+                }
+                else
+                    wait++;
                 break;
 
             case State.isKicking:
-
+                if(wait>=60)
+                {
+                    //after 60 cycles the player is able to move again
+                    wait = 0;
+                    state = State.isMoving;
+                    Destroy(attacks[0]);
+                    attacks.RemoveAt(0);
+                    isAttacking = false;
+                }
+                else
+                    wait++;
                 break;
 
             case State.isPunching:
 
+                if (wait >= 60)
+                {
+                    //after 60 cycles the player is able to move again
+                    wait = 0;
+                    state = State.isMoving;
+                    Destroy(attacks[0]);
+                    attacks.RemoveAt(0);
+                    isAttacking = false;
+                }
+                else
+                    wait++;
                 break;
 
             case State.isThrowing:
@@ -126,82 +162,100 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        Debug.Log("Punch");
-        state = State.isPunching;
-
-        switch(orientation)
+        if(!isAttacking)
         {
-            case Orientation.up:
-                Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+            Debug.Log("Punch");
+            state = State.isPunching;
 
-                break;
-            case Orientation.down:
-                Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+            //checks for orientation and spawns a hitbox in front of the player
+            switch (orientation)
+            {
+                case Orientation.up:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
 
-                break;
-            case Orientation.left:
-                Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                    break;
+                case Orientation.down:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
 
-                break;
-            case Orientation.right:
-                Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                    break;
+                case Orientation.left:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
 
-                break;
+                    break;
+                case Orientation.right:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+
+                    break;
+            }
+            isAttacking = true;
         }
+        
         
     }
 
     private void OnKick(InputValue value)
     {
-        Debug.Log("Kick");
-        state = State.isKicking;
-
-        switch (orientation)
+        if(!isAttacking)
         {
-            case Orientation.up:
-                Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+            Debug.Log("Kick");
+            state = State.isKicking;
 
-                break;
-            case Orientation.down:
-                Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+            //checks for orientation and spawns a hitbox in front of the player
+            switch (orientation)
+            {
+                case Orientation.up:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
 
-                break;
-            case Orientation.left:
-                Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                    break;
+                case Orientation.down:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
 
-                break;
-            case Orientation.right:
-                Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                    break;
+                case Orientation.left:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
 
-                break;
+                    break;
+                case Orientation.right:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+
+                    break;
+            }
+            isAttacking = true;
         }
+        
 
     }
 
     private void OnBlock(InputValue value)
     {
-        Debug.Log("Block");
-        state = State.isBlocking;
-
-        switch (orientation)
+        if(!isAttacking)
         {
-            case Orientation.up:
-                Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+            Debug.Log("Block");
+            state = State.isBlocking;
 
-                break;
-            case Orientation.down:
-                Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+            //checks for orientation and spawns a hitbox in front of the player
+            switch (orientation)
+            {
+                case Orientation.up:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
 
-                break;
-            case Orientation.left:
-                Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                    break;
+                case Orientation.down:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
 
-                break;
-            case Orientation.right:
-                Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                    break;
+                case Orientation.left:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
 
-                break;
+                    break;
+                case Orientation.right:
+                    attacks.Add(Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+
+                    break;
+            }
+            isAttacking = true;
         }
+        
     }
 
     //needed to for controls to work 
