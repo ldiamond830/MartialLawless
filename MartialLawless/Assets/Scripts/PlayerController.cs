@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     public GameObject punch;
     public GameObject kick;
     public GameObject block;
-    public int wait = 0; //will be replaced with delta time later
+    public float wait = 0.0f; //will be replaced with delta time later
     public bool isAttacking = false;
     public List<GameObject> attacks;
 
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
             break;
 
             case State.isBlocking:
-                if (wait >= 180)
+                if (wait >= 0.5f)
                 {
                     //after 60 cycles the player is able to move again
                     wait = 0;
@@ -85,14 +85,14 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    wait++;
+                    wait += Time.deltaTime;
                 }
 
                     
                 break;
 
             case State.isKicking:
-                if(wait>=120)
+                if(wait>0.3f)
                 {
                     //after 60 cycles the player is able to move again
                     wait = 0;
@@ -103,14 +103,14 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    wait++;
+                    wait += Time.deltaTime;
                 }
                    
                 break;
 
             case State.isPunching:
 
-                if (wait >= 60)
+                if (wait >= 0.1f)
                 {
                     //after 60 cycles the player is able to move again
                     wait = 0;
@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    wait++;
+                    wait += Time.deltaTime;
                 }
                     
                 break;
@@ -199,6 +199,7 @@ public class PlayerController : MonoBehaviour
 
                     break;
             }
+            //sound effect here
             isAttacking = true;
         }
         
@@ -232,6 +233,7 @@ public class PlayerController : MonoBehaviour
 
                     break;
             }
+            //sound effect here
             isAttacking = true;
         }
         
@@ -265,6 +267,7 @@ public class PlayerController : MonoBehaviour
 
                     break;
             }
+            //sound effect here
             isAttacking = true;
         }
         
