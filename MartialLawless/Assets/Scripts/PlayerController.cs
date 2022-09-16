@@ -258,6 +258,14 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    private void OnMove()
+    {
+        if(state != State.isStunned)
+        {
+            state = State.isMoving;
+        }
+    }
+
     //needed to for controls to work 
     private void OnEnable()
     {
