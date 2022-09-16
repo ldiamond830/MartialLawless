@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3347138296084055735}
   - component: {fileID: -78158136759615050}
   m_Layer: 0
-  m_Name: attackBox
+  m_Name: punchBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

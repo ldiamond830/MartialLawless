@@ -545,6 +545,18 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: kick
+      value: 
+      objectReference: {fileID: 7227263671186787320, guid: a298f02121045124bb04a7eee2defe0b, type: 3}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: block
+      value: 
+      objectReference: {fileID: 7156174444212452661, guid: df60d551a030af24bbe355d2a5133007, type: 3}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: punch
+      value: 
+      objectReference: {fileID: 3347138296084055734, guid: 22ef671b0c55df140b21a92646178716, type: 3}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: testPunch
       value: 
       objectReference: {fileID: 0}

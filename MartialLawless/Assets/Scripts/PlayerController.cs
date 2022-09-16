@@ -46,8 +46,10 @@ public class PlayerController : MonoBehaviour
     public Sprite rightSprite;
 
     //variables for controlling combat
-    public GameObject testAttack;
-    public int wait = 0; //will be replaced with delta time later
+    public GameObject punch;
+    public GameObject kick;
+    public GameObject block;
+    public float wait = 0.0f; //will be replaced with delta time later
     public bool isAttacking = false;
     public List<GameObject> attacks;
 
@@ -72,7 +74,7 @@ public class PlayerController : MonoBehaviour
             break;
 
             case State.isBlocking:
-                if (wait >= 60)
+                if (wait >= 0.5f)
                 {
                     //after 60 cycles the player is able to move again
                     wait = 0;
@@ -83,14 +85,14 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    wait++;
+                    wait += Time.deltaTime;
                 }
 
                     
                 break;
 
             case State.isKicking:
-                if(wait>=60)
+                if(wait>0.3f)
                 {
                     //after 60 cycles the player is able to move again
                     wait = 0;
@@ -101,14 +103,14 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    wait++;
+                    wait += Time.deltaTime;
                 }
                    
                 break;
 
             case State.isPunching:
 
-                if (wait >= 60)
+                if (wait >= 0.1f)
                 {
                     //after 60 cycles the player is able to move again
                     wait = 0;
@@ -119,7 +121,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    wait++;
+                    wait += Time.deltaTime;
                 }
                     
                 break;
@@ -181,22 +183,23 @@ public class PlayerController : MonoBehaviour
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
 
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
 
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
 
                     break;
             }
+            //sound effect here
             isAttacking = true;
         }
         
@@ -214,22 +217,23 @@ public class PlayerController : MonoBehaviour
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(kick, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
 
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(kick, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
 
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(kick, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(kick, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
 
                     break;
             }
+            //sound effect here
             isAttacking = true;
         }
         
@@ -247,22 +251,23 @@ public class PlayerController : MonoBehaviour
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
 
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
 
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(block, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(testAttack, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(block, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
 
                     break;
             }
+            //sound effect here
             isAttacking = true;
         }
         
