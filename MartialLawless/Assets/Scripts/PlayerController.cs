@@ -82,7 +82,11 @@ public class PlayerController : MonoBehaviour
                     isAttacking = false; 
                 }
                 else
+                {
                     wait++;
+                }
+
+                    
                 break;
 
             case State.isKicking:
@@ -96,7 +100,10 @@ public class PlayerController : MonoBehaviour
                     isAttacking = false;
                 }
                 else
+                {
                     wait++;
+                }
+                   
                 break;
 
             case State.isPunching:
@@ -111,7 +118,10 @@ public class PlayerController : MonoBehaviour
                     isAttacking = false;
                 }
                 else
+                {
                     wait++;
+                }
+                    
                 break;
 
             case State.isThrowing:
@@ -258,6 +268,8 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    //might be necessary later
+    /*
     private void OnMove()
     {
         if(state != State.isStunned)
@@ -265,6 +277,7 @@ public class PlayerController : MonoBehaviour
             state = State.isMoving;
         }
     }
+    */
 
     //needed to for controls to work 
     private void OnEnable()
