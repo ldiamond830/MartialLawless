@@ -11,11 +11,15 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private Transform playerTransform;
 
-    private float moveSpeed = 2.0f;
+    private float moveSpeed = 2.0f; // units per second
+    private float stopDistance = 1.4f; // units away the enemy stops to attack the player
 
-    private Vector3 position;
+    private Vector2 position;
 
-    public Vector3 Position{
+    public bool isStopped;
+
+    public Vector3 Position
+    {
         get{return position;}
         set{position = value;}
     }
@@ -24,7 +28,6 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         orientation = Orientation.up;
-        
     }
 
     // Update is called once per frame
@@ -32,12 +35,13 @@ public class EnemyAI : MonoBehaviour
     {
         // Get the player's position this frame
         Vector2 playerPosition = (Vector2)playerTransform.position;
+        position = transform.position;
         // Get the vector from this enemy to the player
         Vector2 moveVector = playerPosition - (Vector2)transform.position;
 
         moveVector = moveVector.normalized;
 
-         if (moveVector.y > 0)
+        if (moveVector.y > 0)
         {
             orientation = Orientation.up;
         }
@@ -56,10 +60,26 @@ public class EnemyAI : MonoBehaviour
             orientation = Orientation.left;
         }
 
-
-
-        // Apply the movement to the enemy's transform
-        position += (Vector3)(moveVector.normalized * moveSpeed * Time.deltaTime);
+        // If the new position would be outside the stopDistance radius
+        if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2))
+        {
+            // Apply the movement to the enemy's transform
+            position += moveVector * moveSpeed * Time.deltaTime;
+            isStopped = false;
+        }
+        // If it's already inside the radius
+        else if ((playerPosition - position).sqrMagnitude <= Mathf.Pow(stopDistance, 2))
+        {
+            // Don't move
+            isStopped = true;
+        }
+        // Otherwise it would be intruding into the radius
+        else
+        {
+            // Apply the movement but only to the edge of that circle
+            position += moveVector * ((playerPosition - position).magnitude - stopDistance);
+            isStopped = true;
+        }
 
         transform.position = position;
 
