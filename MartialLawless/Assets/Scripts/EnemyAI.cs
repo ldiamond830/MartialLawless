@@ -24,6 +24,9 @@ public class EnemyAI : MonoBehaviour
         set{position = value;}
     }
 
+    public GameObject punchBox;
+    public GameObject kickBox;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -80,8 +83,21 @@ public class EnemyAI : MonoBehaviour
             position += moveVector * ((playerPosition - position).magnitude - stopDistance);
             isStopped = true;
         }
-
+        
         transform.position = position;
+
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<SpriteRenderer>().color == punchBox.GetComponent<SpriteRenderer>().color)
+        {
+            Debug.Log("PUNCH DETECTED");
+        }
+        else if (collision.GetComponent<SpriteRenderer>().color == kickBox.GetComponent<SpriteRenderer>().color)
+        {
+            Debug.Log("KICK DETECTED");
+        }
 
     }
 }

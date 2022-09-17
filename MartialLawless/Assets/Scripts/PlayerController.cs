@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     public GameObject punch;
     public GameObject kick;
     public GameObject block;
-    public float wait = 0.0f; //will be replaced with delta time later
+    public float wait = 0.0f;
     public bool isAttacking = false;
     public List<GameObject> attacks;
 
