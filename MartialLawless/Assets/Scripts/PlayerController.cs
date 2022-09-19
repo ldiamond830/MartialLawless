@@ -13,6 +13,7 @@ public enum Orientation
 }
 public enum State
 {
+    isIdle,
     isMoving,
     isPunching,
     isKicking,
