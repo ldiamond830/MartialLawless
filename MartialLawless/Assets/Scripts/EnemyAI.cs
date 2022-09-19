@@ -26,23 +26,33 @@ public class EnemyAI : MonoBehaviour
     private State state;
 
     //stats are public so they can be edited in the inspector
-    public int health = 100;
-    public int punchDamage = 10;
-    public int kickDamage = 20;
-    public int throwDamage = 25;
+    [SerializeField]
+    private int punchDamage = 10;
+    [SerializeField]
+    private int kickDamage = 20;
+    [SerializeField]
+    private int throwDamage = 25;
 
     //different sprites to show for each pose
     private SpriteRenderer spriteRenderer;
-    public Sprite upSprite;
-    public Sprite downSprite;
-    public Sprite leftSprite;
-    public Sprite rightSprite;
+    [SerializeField]
+    private Sprite upSprite;
+    [SerializeField]
+    private Sprite downSprite;
+    [SerializeField]
+    private Sprite leftSprite;
+    [SerializeField]
+    private Sprite rightSprite;
 
     //variables for controlling combat
-    public GameObject punch;
-    public GameObject kick;
-    public GameObject block;
-    public List<GameObject> attacks;
+    [SerializeField]
+    private AttackCollision punch;
+    [SerializeField]
+    private AttackCollision kick;
+
+    private List<AttackCollision> attacks;
+
+    public Manager gameManager;
 
     public Vector3 Position
     {
@@ -70,6 +80,7 @@ public class EnemyAI : MonoBehaviour
         orientation = Orientation.up;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
+        attacks = new List<AttackCollision>();
     }
 
     // Update is called once per frame
@@ -151,17 +162,6 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case State.isBlocking:
-                attackTimer += Time.deltaTime;
-
-                if (attackTimer >= blockDuration)
-                {
-                    //after 60 cycles the player is able to move again
-                    onCooldown = true;
-                    attackTimer -= blockDuration;
-                    Destroy(attacks[0]);
-                    attacks.RemoveAt(0);
-                    state = State.isMoving;
-                }
 
                 break;
 
@@ -209,6 +209,7 @@ public class EnemyAI : MonoBehaviour
         if (state == State.isIdle && !onCooldown)
         {
             Punch();
+            // Kick();
         }
     }
 
@@ -217,26 +218,69 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Enemy punch");
         state = State.isPunching;
 
+        AttackCollision newPunch;
+
         //checks for orientation and spawns a hitbox in front of the player
         switch (orientation)
         {
             case Orientation.up:
-                attacks.Add(Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                newPunch = Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
 
                 break;
             case Orientation.down:
-                attacks.Add(Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                newPunch = Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
 
                 break;
             case Orientation.left:
-                attacks.Add(Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                newPunch = Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
 
                 break;
             case Orientation.right:
-                attacks.Add(Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+            default:
+                newPunch = Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
 
                 break;
         }
         //sound effect here
+
+        newPunch.manager = gameManager;
+        newPunch.Damage = punchDamage;
+        newPunch.IsPlayer = false;
+        attacks.Add(newPunch);
+    }
+
+    private void Kick()
+    {
+        Debug.Log("Enemy kick");
+        state = State.isKicking;
+
+        AttackCollision newKick = null;
+
+        //checks for orientation and spawns a hitbox in front of the player
+        switch (orientation)
+        {
+            case Orientation.up:
+                newKick = Instantiate(kick, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.down:
+                newKick = Instantiate(kick, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+
+                break;
+            case Orientation.left:
+                newKick = Instantiate(kick, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+
+                break;
+            case Orientation.right:
+                newKick = Instantiate(kick, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+
+                break;
+        }
+        //sound effect here
+
+        newKick.manager = gameManager;
+        newKick.Damage = kickDamage;
+        newKick.IsPlayer = false;
+        attacks.Add(newKick);
     }
 }

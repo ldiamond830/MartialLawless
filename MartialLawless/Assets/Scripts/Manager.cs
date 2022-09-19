@@ -24,6 +24,10 @@ public class Manager : MonoBehaviour
     private float cameraWidth;
     public Camera cameraObject;
 
+    public PlayerController Player
+    {
+        get { return player; }
+    }
     public List<EnemyAI> EnemyList
     {
         get { return enemyList; }
@@ -57,6 +61,7 @@ public class Manager : MonoBehaviour
                 if(timeBetweenSpawn <= 0)
                 {
                     EnemyAI newEnemy = Instantiate(enemyPrefab);
+                    newEnemy.gameManager = this;
 
                     enemyList.Add(newEnemy);
 

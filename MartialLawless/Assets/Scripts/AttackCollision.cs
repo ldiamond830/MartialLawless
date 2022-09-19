@@ -7,13 +7,19 @@ public class AttackCollision : MonoBehaviour
 
     private BoxCollider2D collider;
     public Manager manager;
+    private BoxCollider2D player;
     private List<BoxCollider2D> enemyList;
     private int damage;
+    private bool isPlayer = true;
 
     public int Damage
     {
         get { return damage; }
         set {  damage = value; }
+    }
+    public bool IsPlayer
+    {
+        set { isPlayer = value; }
     }
 
     // Start is called before the first frame update
@@ -24,6 +30,8 @@ public class AttackCollision : MonoBehaviour
         //stores colliders for each enemy
         enemyList = new List<BoxCollider2D>();
 
+        player = manager.Player.gameObject.GetComponent<BoxCollider2D>();
+
         for(int i = 0; i < manager.EnemyList.Count; i++)
         {
             enemyList.Add(manager.EnemyList[i].GetComponent<BoxCollider2D>());
@@ -33,13 +41,24 @@ public class AttackCollision : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //checks collisions
-        for(int i = 0; i < enemyList.Count; i++)
+        if (isPlayer)
         {
-            if (collider.IsTouching(enemyList[i]))
+            //checks collisions
+            for (int i = 0; i < enemyList.Count; i++)
+            {
+                if (collider.IsTouching(enemyList[i]))
+                {
+                    //deals damage
+                    manager.EnemyList[i].Health -= damage;
+                }
+            }
+        }
+        else
+        {
+            if (collider.IsTouching(player))
             {
                 //deals damage
-                manager.EnemyList[i].Health -= damage;
+                manager.Player.health -= damage;
             }
         }
 

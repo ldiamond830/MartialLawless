@@ -100,8 +100,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 1577032684308923562, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
-  isStopped: 0
-  player: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+  attackTimer: 0
+  punchDamage: 10
+  kickDamage: 20
+  throwDamage: 25
+  upSprite: {fileID: 0}
+  downSprite: {fileID: 0}
+  leftSprite: {fileID: 0}
+  rightSprite: {fileID: 0}
+  punch: {fileID: 8145318134535760830, guid: 22ef671b0c55df140b21a92646178716, type: 3}
+  kick: {fileID: 2030520436743693818, guid: a298f02121045124bb04a7eee2defe0b, type: 3}
+  gameManager: {fileID: 0}
+  health: 10
 --- !u!61 &4205042883466076210
 BoxCollider2D:
   m_ObjectHideFlags: 0
