@@ -24,6 +24,11 @@ public class EnemyAI : MonoBehaviour
         set{position = value;}
     }
 
+    public Transform PlayerTransform
+    {
+        set { playerTransform = value; }
+    }
+
     public GameObject punchBox;
     public GameObject kickBox;
 
@@ -38,7 +43,7 @@ public class EnemyAI : MonoBehaviour
     {
         // Get the player's position this frame
         Vector2 playerPosition = (Vector2)playerTransform.position;
-        position = transform.position;
+        //position = transform.position;
         // Get the vector from this enemy to the player
         Vector2 moveVector = playerPosition - (Vector2)transform.position;
 

@@ -14,49 +14,86 @@ public class Manager : MonoBehaviour
     private List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
 
+    /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
     public GameObject bottomSpawn;
     public GameObject leftSpawn;
     public GameObject rightSpawn;
+    */
+    private float cameraHeight;
+    private float cameraWidth;
+    public Camera cameraObject;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
         timeBetweenSpawn = 0.2f;
-        waveCount = 0;
+        waveCount = 1;
         isSpawning = true;
         enemyList = new List<EnemyAI>();
+
+        cameraHeight = cameraObject.orthographicSize * 2f;
+        cameraWidth = cameraHeight * cameraObject.aspect;
+
     }
 
     // Update is called once per frame
     void Update()
     {
         if(isSpawning){
-            
-            for(int i = 0; i < waveCount; i++){
-                EnemyAI newEnemy = Instantiate(enemyPrefab);
+            int i = 0;
 
-                 enemyList.Add(newEnemy);
-                 
-                 int doorSelect = Random.Range(0,4);
+            //uses while rather than for so that the iterator is only increased under certain conditions in the loop
+            while(i < waveCount)
+            {
+                //creates a short interval between spawns so the player isn't rushed all at once
+                if(timeBetweenSpawn <= 0)
+                {
+                    EnemyAI newEnemy = Instantiate(enemyPrefab);
 
-                 if(doorSelect == 0){
-                    newEnemy.Position = topSpawn.transform.position;
-                 }
-                 else if(doorSelect == 1){
-                    newEnemy.Position = rightSpawn.transform.position;
-                 }
-                 else if(doorSelect == 2){
-                    newEnemy.Position = leftSpawn.transform.position;
-                 }
-                 else{
-                    newEnemy.Position = rightSpawn.transform.position;
-                 }
+                    enemyList.Add(newEnemy);
+
+                    //chooses a random spawn point for the new enemy
+                    int doorSelect = Random.Range(0, 4);
+
+                    if (doorSelect == 0)
+                    {
+                        newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                    }
+                    else if (doorSelect == 1)
+                    {
+                        newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                    }
+                    else if (doorSelect == 2)
+                    {
+                        newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                    }
+                    else
+                    {
+                        newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                    }
+
+                    newEnemy.PlayerTransform = player.transform;
+                    timeBetweenSpawn = 0.2f;
+                    i++;
+                }
+                else
+                {
+                    timeBetweenSpawn -= Time.deltaTime;
+                }
+
             }
+
+
+            isSpawning = false;
         }
         else{
-
+            if (enemyList.Count == 0)
+            {
+                isSpawning = true;
+            }
         }
     }
 }
