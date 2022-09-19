@@ -46,12 +46,18 @@ public class PlayerController : MonoBehaviour
     public Sprite rightSprite;
 
     //variables for controlling combat
-    public GameObject punch;
-    public GameObject kick;
-    public GameObject block;
+    public AttackCollision punch;
+    public AttackCollision kick;
+
+    //needs to be changed to another script type when created
+    public AttackCollision block;
+
     public float wait = 0.0f;
     public bool isAttacking = false;
-    public List<GameObject> attacks;
+    public List<AttackCollision> attacks;
+
+
+    public Manager gameManager;
 
 
     // Start is called before the first frame update
@@ -179,28 +185,39 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Punch");
             state = State.isPunching;
 
+            AttackCollision newPunch = null;
+            
+
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
+
                 case Orientation.up:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
 
                     break;
+
                 case Orientation.down:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+                    
 
                     break;
+
                 case Orientation.left:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
 
                     break;
             }
             //sound effect here
             isAttacking = true;
+
+            newPunch.manager = gameManager;
+            newPunch.Damage = punchDamage;
+            attacks.Add(newPunch);
         }
         
         

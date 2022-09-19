@@ -32,6 +32,14 @@ public class EnemyAI : MonoBehaviour
     public GameObject punchBox;
     public GameObject kickBox;
 
+    [SerializeField]
+    private int health = 10;
+     public int Health
+    {
+        set { health = value; }
+        get { return health; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
