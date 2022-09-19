@@ -55,8 +55,14 @@ public class EnemyAI : MonoBehaviour
         set { playerTransform = value; }
     }
 
-    public GameObject punchBox;
-    public GameObject kickBox;
+
+    [SerializeField]
+    private int health = 10;
+     public int Health
+    {
+        set { health = value; }
+        get { return health; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -232,18 +238,5 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
         //sound effect here
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<SpriteRenderer>().color == punchBox.GetComponent<SpriteRenderer>().color)
-        {
-            Debug.Log("PLAYER PUNCHED");
-        }
-        else if (collision.GetComponent<SpriteRenderer>().color == kickBox.GetComponent<SpriteRenderer>().color)
-        {
-            Debug.Log("PLAYER KICKED");
-        }
-
     }
 }

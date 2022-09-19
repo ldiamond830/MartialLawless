@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     public int punchDamage = 10;
     public int kickDamage = 20;
     public int throwDamage = 25;
+    public int currentAttackDamage = 0;
 
     //different sprites to show for each pose
     private SpriteRenderer spriteRenderer;
@@ -47,12 +48,18 @@ public class PlayerController : MonoBehaviour
     public Sprite rightSprite;
 
     //variables for controlling combat
-    public GameObject punch;
-    public GameObject kick;
-    public GameObject block;
+    public AttackCollision punch;
+    public AttackCollision kick;
+
+    //needs to be changed to another script type when created
+    public AttackCollision block;
+
     public float wait = 0.0f;
     public bool isAttacking = false;
-    public List<GameObject> attacks;
+    public List<AttackCollision> attacks;
+
+
+    public Manager gameManager;
 
 
     // Start is called before the first frame update
@@ -77,7 +84,7 @@ public class PlayerController : MonoBehaviour
             case State.isBlocking:
                 if (wait >= 0.5f)
                 {
-                    //after 60 cycles the player is able to move again
+                    //after half a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
                     Destroy(attacks[0]);
@@ -95,7 +102,7 @@ public class PlayerController : MonoBehaviour
             case State.isKicking:
                 if(wait>0.3f)
                 {
-                    //after 60 cycles the player is able to move again
+                    //after a third of a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
                     Destroy(attacks[0]);
@@ -113,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
                 if (wait >= 0.1f)
                 {
-                    //after 60 cycles the player is able to move again
+                    //after a tenth of a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
                     Destroy(attacks[0]);
@@ -180,28 +187,39 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Punch");
             state = State.isPunching;
 
+            AttackCollision newPunch = null;
+            
+
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
+
                 case Orientation.up:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
 
                     break;
+
                 case Orientation.down:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+                    
 
                     break;
+
                 case Orientation.left:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    newPunch = Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
 
                     break;
             }
             //sound effect here
             isAttacking = true;
+
+            newPunch.manager = gameManager;
+            newPunch.Damage = punchDamage;
+            attacks.Add(newPunch);
         }
         
         
@@ -213,7 +231,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Kick");
             state = State.isKicking;
-
+            currentAttackDamage = kickDamage;
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
@@ -252,11 +270,11 @@ public class PlayerController : MonoBehaviour
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y + 0.5f), Quaternion.Euler(0.0f, 0.0f, 90.0f)));
 
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y - 0.5f), Quaternion.Euler(0.0f, 0.0f, -90.0f)));
 
                     break;
                 case Orientation.left:

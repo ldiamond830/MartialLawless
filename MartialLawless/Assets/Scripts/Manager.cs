@@ -24,6 +24,11 @@ public class Manager : MonoBehaviour
     private float cameraWidth;
     public Camera cameraObject;
 
+    public List<EnemyAI> EnemyList
+    {
+        get { return enemyList; }
+    }
+
 
 
     // Start is called before the first frame update
@@ -44,7 +49,7 @@ public class Manager : MonoBehaviour
     {
         if(isSpawning){
             int i = 0;
-
+            
             //uses while rather than for so that the iterator is only increased under certain conditions in the loop
             while(i < waveCount)
             {
@@ -60,6 +65,7 @@ public class Manager : MonoBehaviour
 
                     if (doorSelect == 0)
                     {
+                        //constant value makes it so enemy doesnt pop in on screen
                         newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
                     }
                     else if (doorSelect == 1)

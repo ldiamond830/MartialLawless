@@ -99,24 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0be50f5e0f9e10409e79def334c905a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 0}
+  playerTransform: {fileID: 1577032684308923562, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
   isStopped: 0
-  health: 100
-  punchDamage: 10
-  kickDamage: 20
-  throwDamage: 25
-  upSprite: {fileID: 0}
-  downSprite: {fileID: 0}
-  leftSprite: {fileID: 0}
-  rightSprite: {fileID: 0}
-  punch: {fileID: 3347138296084055734, guid: 22ef671b0c55df140b21a92646178716, type: 3}
-  kick: {fileID: 7227263671186787320, guid: a298f02121045124bb04a7eee2defe0b, type: 3}
-  block: {fileID: 7156174444212452661, guid: df60d551a030af24bbe355d2a5133007, type: 3}
-  wait: 0
-  isAttacking: 0
-  attacks: []
-  punchBox: {fileID: 3347138296084055734, guid: 22ef671b0c55df140b21a92646178716, type: 3}
-  kickBox: {fileID: 7227263671186787320, guid: a298f02121045124bb04a7eee2defe0b, type: 3}
+  player: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
 --- !u!61 &4205042883466076210
 BoxCollider2D:
   m_ObjectHideFlags: 0
