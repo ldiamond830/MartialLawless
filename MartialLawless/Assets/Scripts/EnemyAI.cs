@@ -29,8 +29,6 @@ public class EnemyAI : MonoBehaviour
         set { playerTransform = value; }
     }
 
-    public GameObject punchBox;
-    public GameObject kickBox;
 
     [SerializeField]
     private int health = 10;
@@ -98,19 +96,6 @@ public class EnemyAI : MonoBehaviour
         }
         
         transform.position = position;
-
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.GetComponent<SpriteRenderer>().color == punchBox.GetComponent<SpriteRenderer>().color)
-        {
-            Debug.Log("PUNCH DETECTED");
-        }
-        else if (collision.GetComponent<SpriteRenderer>().color == kickBox.GetComponent<SpriteRenderer>().color)
-        {
-            Debug.Log("KICK DETECTED");
-        }
 
     }
 }
