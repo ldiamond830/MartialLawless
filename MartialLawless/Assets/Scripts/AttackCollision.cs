@@ -12,6 +12,9 @@ public class AttackCollision : MonoBehaviour
     private int damage;
     private bool isPlayer = true;
 
+    private float remainOnScreen;
+    private bool isActive;
+
     public int Damage
     {
         get { return damage; }
@@ -22,9 +25,18 @@ public class AttackCollision : MonoBehaviour
         set { isPlayer = value; }
     }
 
+    public bool IsActive
+    {
+        get { return isActive; }
+        set { isActive = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        remainOnScreen = 0.2f;
+        isActive = true;
+
         collider = GetComponent<BoxCollider2D>();
 
         //stores colliders for each enemy
@@ -63,6 +75,12 @@ public class AttackCollision : MonoBehaviour
         }
 
         //add code to delete object
+        if(isActive == false)
+        {
+            gameObject.SetActive(false);
+        }
+
+
         
     }
 }

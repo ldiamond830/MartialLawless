@@ -173,7 +173,7 @@ public class EnemyAI : MonoBehaviour
                     //after 60 cycles the player is able to move again
                     onCooldown = true;
                     attackTimer -= kickDuration;
-                    Destroy(attacks[0]);
+                    attacks[0].IsActive = false;
                     attacks.RemoveAt(0);
                     state = State.isMoving;
                 }
@@ -188,7 +188,7 @@ public class EnemyAI : MonoBehaviour
                     //after 60 cycles the player is able to move again
                     onCooldown = true;
                     attackTimer -= punchDuration;
-                    Destroy(attacks[0]);
+                    attacks[0].IsActive = false;
                     attacks.RemoveAt(0);
                     state = State.isMoving;
                 }
