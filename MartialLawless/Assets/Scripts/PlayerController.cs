@@ -143,16 +143,7 @@ public class PlayerController : MonoBehaviour
                 break;
 
         }
-        /*
-        foreach(AttackCollision attackBox in attacks)
-        {
-            if (!attackBox.IsActive)
-            {
-                Destroy(attackBox);
-                attacks.Remove(attackBox);
-            }
-        }
-        */
+        
     }
 
 
