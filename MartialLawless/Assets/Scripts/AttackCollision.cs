@@ -12,7 +12,7 @@ public class AttackCollision : MonoBehaviour
     private int damage;
     private bool isPlayer = true;
 
-    private float remainOnScreen;
+    
     private bool isActive;
 
     public int Damage
@@ -34,7 +34,7 @@ public class AttackCollision : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        remainOnScreen = 0.2f;
+        
         isActive = true;
 
         collider = GetComponent<BoxCollider2D>();
@@ -74,7 +74,7 @@ public class AttackCollision : MonoBehaviour
             }
         }
 
-        //add code to delete object
+        //hides the object once the attack is over, setting isActive to false is handled by the player or enemy script that spawned the attack box
         if(isActive == false)
         {
             gameObject.SetActive(false);
