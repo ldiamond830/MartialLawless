@@ -110,7 +110,9 @@ public class Manager : MonoBehaviour
             {
                 if (enemy.Health <= 0)
                 {
-                    Debug.Log("dead");
+                    enemyList.Remove(enemy);
+                    Destroy(enemy.gameObject);
+
                 }
             }
         }
