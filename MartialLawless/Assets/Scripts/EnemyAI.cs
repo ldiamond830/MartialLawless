@@ -126,7 +126,6 @@ public class EnemyAI : MonoBehaviour
                 attackTimer = 0.0f;
             }
         }
-
         switch (state)
         {
             case State.isIdle:
