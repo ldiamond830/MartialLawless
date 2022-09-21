@@ -652,6 +652,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: gruntSound
+      value: 
+      objectReference: {fileID: 45627979}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: testAttack
       value: 
       objectReference: {fileID: 3347138296084055734, guid: 22ef671b0c55df140b21a92646178716, type: 3}

@@ -105,6 +105,14 @@ public class Manager : MonoBehaviour
             {
                 isSpawning = true;
             }
+
+            foreach(EnemyAI enemy in enemyList)
+            {
+                if (enemy.Health <= 0)
+                {
+                    Debug.Log("dead");
+                }
+            }
         }
     }
 }
