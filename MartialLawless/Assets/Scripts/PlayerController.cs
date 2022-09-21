@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
 
     public Manager gameManager;
 
+    //sounds
     public AudioSource gruntSound;
 
 
@@ -219,7 +220,11 @@ public class PlayerController : MonoBehaviour
             }
             //sound effect here
             gruntSound.enabled = true;
-            if (gruntSound != null) gruntSound.Play();
+            if (gruntSound != null)
+            {
+                Debug.Log("Sound Played");
+                gruntSound.Play();
+            }
          
             isAttacking = true;
 
