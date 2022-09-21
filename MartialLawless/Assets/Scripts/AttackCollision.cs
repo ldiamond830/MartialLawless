@@ -83,4 +83,12 @@ public class AttackCollision : MonoBehaviour
 
         
     }
+
+    private void OnTriggerEnter2D(Collision2D collision)
+    {
+        if(collision is EnemyAI)
+        {
+            Debug.Log("Enemy Hit");
+        }
+    }
 }

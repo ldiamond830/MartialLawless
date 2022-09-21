@@ -230,6 +230,7 @@ public class PlayerController : MonoBehaviour
 
             newPunch.manager = gameManager;
             newPunch.Damage = punchDamage;
+            newPunch.IsPlayer = true;
             attacks.Add(newPunch);
         }
         

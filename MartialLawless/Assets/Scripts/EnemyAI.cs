@@ -11,6 +11,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private Transform playerTransform;
 
+    
     private float moveSpeed = 2.0f; // units per second
     private float stopDistance = 1.4f; // units away the enemy stops to attack the player
     public float attackTimer = 0.0f; // seconds
@@ -25,13 +26,14 @@ public class EnemyAI : MonoBehaviour
     // Copied from PlayerController.cs
     private State state;
 
-    //stats are public so they can be edited in the inspector
+    //stats are serialized so they can be edited in the inspector
     [SerializeField]
     private int punchDamage = 10;
     [SerializeField]
     private int kickDamage = 20;
     [SerializeField]
     private int throwDamage = 25;
+    
 
     //different sprites to show for each pose
     private SpriteRenderer spriteRenderer;
@@ -67,7 +69,7 @@ public class EnemyAI : MonoBehaviour
 
 
     [SerializeField]
-    private int health = 10;
+    private int health = 1;
      public int Health
     {
         set { health = value; }
