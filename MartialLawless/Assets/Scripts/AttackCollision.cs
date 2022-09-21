@@ -77,7 +77,7 @@ public class AttackCollision : MonoBehaviour
         //hides the object once the attack is over, setting isActive to false is handled by the player or enemy script that spawned the attack box
         if(isActive == false)
         {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
 
 
