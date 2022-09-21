@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
 
     public Manager gameManager;
 
+    public AudioSource gruntSound;
+
 
     // Start is called before the first frame update
     void Start()
@@ -131,7 +133,7 @@ public class PlayerController : MonoBehaviour
                 {
                     wait += Time.deltaTime;
                 }
-                    
+               
                 break;
 
             case State.isThrowing:
@@ -216,6 +218,9 @@ public class PlayerController : MonoBehaviour
                     break;
             }
             //sound effect here
+            gruntSound.enabled = true;
+            if (gruntSound != null) gruntSound.Play();
+         
             isAttacking = true;
 
             newPunch.manager = gameManager;
