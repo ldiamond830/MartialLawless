@@ -56,6 +56,11 @@ public class EnemyAI : MonoBehaviour
 
     public Manager gameManager;
 
+    public AttackCollision PunchObj
+    {
+        get { return punch; }
+    }
+
     public Vector3 Position
     {
         get{return position;}

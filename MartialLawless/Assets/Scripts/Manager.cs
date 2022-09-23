@@ -110,6 +110,7 @@ public class Manager : MonoBehaviour
             {
                 if (enemy.Health <= 0)
                 {
+                    Destroy(enemy.PunchObj);
                     enemyList.Remove(enemy);
                     Destroy(enemy.gameObject);
 

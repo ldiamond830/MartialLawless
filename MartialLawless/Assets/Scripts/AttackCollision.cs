@@ -83,7 +83,7 @@ public class AttackCollision : MonoBehaviour
 
         
     }
-
+    /*
     private void OnTriggerEnter2D(Collision2D collision)
     {
         if(collision is EnemyAI)
@@ -91,4 +91,5 @@ public class AttackCollision : MonoBehaviour
             Debug.Log("Enemy Hit");
         }
     }
+    */
 }
