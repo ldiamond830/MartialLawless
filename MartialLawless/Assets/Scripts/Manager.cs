@@ -33,7 +33,7 @@ public class Manager : MonoBehaviour
         get { return enemyList; }
     }
 
-
+    List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +45,17 @@ public class Manager : MonoBehaviour
 
         cameraHeight = cameraObject.orthographicSize * 2f;
         cameraWidth = cameraHeight * cameraObject.aspect;
+
+        //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
+        for(int i = 0; i < 10; i++)
+        {
+            EnemyAI newEnemy = Instantiate(enemyPrefab);
+            newEnemy.PlayerTransform = player.transform;
+            newEnemy.gameObject.SetActive(false);
+            newEnemy.gameManager = this;
+            basicEnemySpawnPool.Add(newEnemy);
+
+        }
 
     }
 
@@ -58,12 +69,13 @@ public class Manager : MonoBehaviour
             while(i < waveCount)
             {
                 //creates a short interval between spawns so the player isn't rushed all at once
-                if(timeBetweenSpawn <= 0)
+                if (timeBetweenSpawn <= 0 && basicEnemySpawnPool.Count > 0)
                 {
-                    EnemyAI newEnemy = Instantiate(enemyPrefab);
-                    newEnemy.gameManager = this;
+                    EnemyAI newEnemy = basicEnemySpawnPool[i];
+                    
 
                     enemyList.Add(newEnemy);
+                    basicEnemySpawnPool.Remove(newEnemy);
 
                     //chooses a random spawn point for the new enemy
                     int doorSelect = Random.Range(0, 4);
@@ -86,7 +98,9 @@ public class Manager : MonoBehaviour
                         newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
                     }
 
-                    newEnemy.PlayerTransform = player.transform;
+                    
+
+                    newEnemy.gameObject.SetActive(true);
                     timeBetweenSpawn = 0.2f;
                     i++;
                 }
@@ -104,6 +118,7 @@ public class Manager : MonoBehaviour
             if (enemyList.Count == 0)
             {
                 isSpawning = true;
+                waveCount++;
             }
 
             foreach(EnemyAI enemy in enemyList)
@@ -112,7 +127,8 @@ public class Manager : MonoBehaviour
                 {
                     Destroy(enemy.PunchObj);
                     enemyList.Remove(enemy);
-                    Destroy(enemy.gameObject);
+                    enemy.gameObject.SetActive(false);
+                    basicEnemySpawnPool.Add(enemy);
 
                 }
             }

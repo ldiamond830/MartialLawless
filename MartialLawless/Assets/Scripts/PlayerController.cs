@@ -191,15 +191,16 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Punch");
             state = State.isPunching;
 
+
             AttackCollision newPunch = null;
-            
 
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
 
                 case Orientation.up:
-                    newPunch = Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+                    punch.gameObject.SetActive(true);
+                    punch.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                     break;
 

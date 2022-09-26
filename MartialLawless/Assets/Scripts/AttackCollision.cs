@@ -58,11 +58,15 @@ public class AttackCollision : MonoBehaviour
             //checks collisions
             for (int i = 0; i < enemyList.Count; i++)
             {
-                if (collider.IsTouching(enemyList[i]))
+                if (enemyList[i] != null)
                 {
-                    //deals damage
-                    manager.EnemyList[i].Health -= damage;
+                    if (collider.IsTouching(enemyList[i]))
+                    {
+                        //deals damage
+                        manager.EnemyList[i].Health -= damage;
+                    }
                 }
+                
             }
         }
         else
@@ -77,7 +81,7 @@ public class AttackCollision : MonoBehaviour
         //hides the object once the attack is over, setting isActive to false is handled by the player or enemy script that spawned the attack box
         if(isActive == false)
         {
-            Destroy(gameObject);
+           gameObject.SetActive(false);
         }
 
 
