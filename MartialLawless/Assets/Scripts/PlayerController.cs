@@ -64,6 +64,10 @@ public class PlayerController : MonoBehaviour
     //sounds
     public AudioSource gruntSound;
 
+    public bool IsAttacking
+    {
+        get { return isAttacking; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +75,17 @@ public class PlayerController : MonoBehaviour
         position = this.transform.position;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
+
+        //intializes the punch hit box
+        punch.manager = gameManager;
+        punch.Damage = punchDamage;
+        punch.IsPlayer = true;
+
+        //initializes the kick hit box
+        kick.manager = gameManager;
+        kick.Damage = kickDamage;
+        kick.IsPlayer = true;
+
     }
 
     // Update is called once per frame
@@ -108,8 +123,9 @@ public class PlayerController : MonoBehaviour
                     //after a third of a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    //returns punch hitbox to intial position
+                    kick.gameObject.transform.position = position;
+                    kick.IsActive = false;
                     isAttacking = false;
                 }
                 else
@@ -126,8 +142,9 @@ public class PlayerController : MonoBehaviour
                     //after a tenth of a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    //returns punch hitbox to intial position
+                    punch.gameObject.transform.position = position;
+                    punch.IsActive = false;
                     isAttacking = false;
                 }
                 else
@@ -191,34 +208,36 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Punch");
             state = State.isPunching;
 
-
-            AttackCollision newPunch = null;
+            //empties the list to remove any previously killed enemies
+            punch.EnemyList.Clear();
+           
 
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
 
                 case Orientation.up:
-                    punch.gameObject.SetActive(true);
+                    //punch.gameObject.SetActive(true);
                     punch.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                     break;
 
                 case Orientation.down:
-                    newPunch = Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
-                    
+                    punch.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+
 
                     break;
 
                 case Orientation.left:
-                    newPunch = Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                 punch.gameObject.transform.position =  new Vector2(position.x - 0.5f, position.y);
 
                     break;
                 case Orientation.right:
-                    newPunch = Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                    punch.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                     break;
             }
+
             //sound effect here
             gruntSound.enabled = true;
             if (gruntSound != null)
@@ -228,11 +247,14 @@ public class PlayerController : MonoBehaviour
             }
          
             isAttacking = true;
+            punch.IsActive = true;
 
-            newPunch.manager = gameManager;
-            newPunch.Damage = punchDamage;
-            newPunch.IsPlayer = true;
-            attacks.Add(newPunch);
+            //adds each enemy to list so that the attack collision can check for collisions
+            for (int i = 0; i < gameManager.EnemyList.Count; i++)
+            {
+                punch.EnemyList.Add(gameManager.EnemyList[i].GetComponent<BoxCollider2D>());
+            }
+
         }
         
         
@@ -244,29 +266,39 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Kick");
             state = State.isKicking;
-            currentAttackDamage = kickDamage;
+
+            kick.EnemyList.Clear();
+
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
 
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x -0.5f, position.y);
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                     break;
             }
             //sound effect here
             isAttacking = true;
+
+            kick.IsActive = true;
+
+            //adds each enemy to list so that the attack collision can check for collisions
+            for (int i = 0; i < gameManager.EnemyList.Count; i++)
+            {
+                kick.EnemyList.Add(gameManager.EnemyList[i].GetComponent<BoxCollider2D>());
+            }
         }
         
 

@@ -31,6 +31,12 @@ public class AttackCollision : MonoBehaviour
         set { isActive = value; }
     }
 
+    public List<BoxCollider2D> EnemyList
+    {
+        get { return enemyList; }
+        set { enemyList = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,36 +59,41 @@ public class AttackCollision : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isPlayer)
+        //prevents collision hitboxes from killing enemies while they are not being used to attack
+        if (isActive)
         {
-            //checks collisions
-            for (int i = 0; i < enemyList.Count; i++)
+            if (isPlayer)
             {
-                if (enemyList[i] != null)
-                {
-                    if (collider.IsTouching(enemyList[i]))
-                    {
-                        //deals damage
-                        manager.EnemyList[i].Health -= damage;
-                    }
-                }
                 
-            }
-        }
-        else
-        {
-            if (collider.IsTouching(player))
-            {
-                //deals damage
-                manager.Player.health -= damage;
-            }
-        }
+               
+                    //checks collisions
+                    for (int i = 0; i < enemyList.Count; i++)
+                    {
+                        if (enemyList[i] != null)
+                        {
+                            if (collider.IsTouching(enemyList[i]))
+                            {
+                                //deals damage
+                                manager.EnemyList[i].Health -= damage;
+                            }
+                        }
 
-        //hides the object once the attack is over, setting isActive to false is handled by the player or enemy script that spawned the attack box
-        if(isActive == false)
-        {
-           gameObject.SetActive(false);
+                    }
+                
+
+            }
+            else
+            {
+                if (collider.IsTouching(player))
+                {
+                    //deals damage
+                    manager.Player.health -= damage;
+                }
+            }
         }
+        
+
+       
 
 
         
