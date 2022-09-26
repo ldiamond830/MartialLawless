@@ -533,6 +533,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &717930245 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8032284955464926081, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+  m_PrefabInstance: {fileID: 1577032682837723494}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a18d145c296ca4a49896301ec040800e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1667094719
 GameObject:
   m_ObjectHideFlags: 0
@@ -671,6 +682,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1141480870082466560, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1577032684308923562, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -762,7 +777,7 @@ PrefabInstance:
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: punch
       value: 
-      objectReference: {fileID: 8145318134535760830, guid: 22ef671b0c55df140b21a92646178716, type: 3}
+      objectReference: {fileID: 717930245}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: testPunch
       value: 
@@ -791,5 +806,37 @@ PrefabInstance:
       propertyPath: playerControls.m_SingletonActionBindings.Array.data[5].m_Action
       value: Player Controls
       objectReference: {fileID: 0}
+    - target: {fileID: 1767571588446125599, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: m_Color.a
+      value: 0.19215687
+      objectReference: {fileID: 0}
+    - target: {fileID: 3459608560098143880, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: m_Color.a
+      value: 0.29803923
+      objectReference: {fileID: 0}
+    - target: {fileID: 3459608560098143880, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3459608560098143880, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3459608560098143880, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3459608560098143881, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8032284955464926081, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: manager
+      value: 
+      objectReference: {fileID: 1977513164}
+    - target: {fileID: 8626336526738963714, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: manager
+      value: 
+      objectReference: {fileID: 1977513164}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
