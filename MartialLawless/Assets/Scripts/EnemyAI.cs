@@ -190,8 +190,9 @@ public class EnemyAI : MonoBehaviour
                     //after 60 cycles the player is able to move again
                     onCooldown = true;
                     attackTimer -= kickDuration;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    //returns punch hitbox to intial position
+                    kick.gameObject.transform.position = position;
+                    kick.IsActive = false;
                     state = State.isMoving;
                 }
 
@@ -275,33 +276,31 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Enemy kick");
         state = State.isKicking;
 
-        AttackCollision newKick = null;
+        //AttackCollision newKick = null;
 
+        //checks for orientation and spawns a hitbox in front of the player
         //checks for orientation and spawns a hitbox in front of the player
         switch (orientation)
         {
             case Orientation.up:
-                newKick = Instantiate(kick, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                 break;
             case Orientation.down:
-                newKick = Instantiate(kick, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
 
                 break;
             case Orientation.left:
-                newKick = Instantiate(kick, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
 
                 break;
             case Orientation.right:
-                newKick = Instantiate(kick, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                 break;
         }
         //sound effect here
 
-        newKick.manager = gameManager;
-        newKick.Damage = kickDamage;
-        newKick.IsPlayer = false;
-        attacks.Add(newKick);
+        kick.IsActive = true;
     }
 }
