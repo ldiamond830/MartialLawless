@@ -88,6 +88,17 @@ public class EnemyAI : MonoBehaviour
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
         attacks = new List<AttackCollision>();
+
+
+        //intializes the punch hit box
+        punch.manager = gameManager;
+        punch.Damage = punchDamage;
+        punch.IsPlayer = false;
+
+        //initializes the kick hit box
+        kick.manager = gameManager;
+        kick.Damage = kickDamage;
+        kick.IsPlayer = false;
     }
 
     // Update is called once per frame
@@ -194,8 +205,8 @@ public class EnemyAI : MonoBehaviour
                     //after 60 cycles the player is able to move again
                     onCooldown = true;
                     attackTimer -= punchDuration;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    punch.gameObject.transform.position = position;
+                    punch.IsActive = false;
                     state = State.isMoving;
                 }
 
@@ -224,35 +235,39 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Enemy punch");
         state = State.isPunching;
 
-        AttackCollision newPunch;
+        //AttackCollision newPunch;
 
+        //checks for orientation and spawns a hitbox in front of the player
         //checks for orientation and spawns a hitbox in front of the player
         switch (orientation)
         {
+
             case Orientation.up:
-                newPunch = Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+                //punch.gameObject.SetActive(true);
+                punch.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                 break;
+
             case Orientation.down:
-                newPunch = Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+                punch.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+
 
                 break;
+
             case Orientation.left:
-                newPunch = Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                punch.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
 
                 break;
             case Orientation.right:
-            default:
-                newPunch = Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                punch.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                 break;
         }
-        //sound effect here
 
-        newPunch.manager = gameManager;
-        newPunch.Damage = punchDamage;
-        newPunch.IsPlayer = false;
-        attacks.Add(newPunch);
+        
+
+        
+        punch.IsActive = true;
     }
 
     private void Kick()
