@@ -649,6 +649,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1977513163}
   - component: {fileID: 1977513164}
+  - component: {fileID: 1977513165}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -686,6 +687,18 @@ MonoBehaviour:
   player: {fileID: 689959275}
   enemyPrefab: {fileID: 8491509145549980111, guid: 7d4797e96683ef641a35551e99b97bfd, type: 3}
   cameraObject: {fileID: 519420031}
+--- !u!114 &1977513165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977513162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5643ce7a2b40cb48a66af98a70d16cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1577032682837723494
 PrefabInstance:
   m_ObjectHideFlags: 0
