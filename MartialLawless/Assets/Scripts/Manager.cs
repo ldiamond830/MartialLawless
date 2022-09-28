@@ -130,7 +130,7 @@ public class Manager : MonoBehaviour
                 if (enemy.Health <= 0)
                 {
                     //keeps track of al the enemies killed
-                    scoreTracker.enemiesKilled++;
+                   //scoreTracker.enemies
 
                     enemy.PunchObj.IsActive = false;
 
