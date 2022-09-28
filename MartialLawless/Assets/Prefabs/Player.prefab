@@ -191,7 +191,7 @@ MonoBehaviour:
   rightSprite: {fileID: 0}
   punch: {fileID: 8032284955464926081}
   kick: {fileID: 8626336526738963714}
-  block: {fileID: 0}
+  thrown: {fileID: -3881892503566815440, guid: df60d551a030af24bbe355d2a5133007, type: 3}
   wait: 0
   isAttacking: 0
   attacks: []
@@ -324,6 +324,10 @@ PrefabInstance:
     - target: {fileID: 115845021657707753, guid: a298f02121045124bb04a7eee2defe0b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2030520436743693818, guid: a298f02121045124bb04a7eee2defe0b, type: 3}
+      propertyPath: manager
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7227263671186787320, guid: a298f02121045124bb04a7eee2defe0b, type: 3}
       propertyPath: m_Name

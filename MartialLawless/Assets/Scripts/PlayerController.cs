@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
     public AttackCollision kick;
 
     //needs to be changed to another script type when created
-    public AttackCollision block;
+    public AttackCollision thrown;
 
     public float wait = 0.0f;
     public bool isAttacking = false;
@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
 
             break;
 
-            case State.isBlocking:
+            case State.isThrowing:
                 if (wait >= 0.5f)
                 {
                     //after half a second the player can move and the hitbox is destroyed
@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
                
                 break;
 
-            case State.isThrowing:
+            case State.isBlocking:
 
                 break;
 
@@ -304,30 +304,30 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void OnBlock(InputValue value)
+    private void Onthrow(InputValue value)
     {
         if(!isAttacking)
         {
-            Debug.Log("Block");
-            state = State.isBlocking;
+            Debug.Log("throw");
+            state = State.isThrowing;
 
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y + 0.5f), Quaternion.Euler(0.0f, 0.0f, 90.0f)));
+                    attacks.Add(Instantiate(thrown, new Vector2(position.x, position.y + 0.5f), Quaternion.Euler(0.0f, 0.0f, 90.0f)));
 
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y - 0.5f), Quaternion.Euler(0.0f, 0.0f, -90.0f)));
+                    attacks.Add(Instantiate(thrown, new Vector2(position.x, position.y - 0.5f), Quaternion.Euler(0.0f, 0.0f, -90.0f)));
 
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(block, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(thrown, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(block, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    attacks.Add(Instantiate(thrown, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
 
                     break;
             }

@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 3259170360367799787}
   - component: {fileID: -3881892503566815440}
   - component: {fileID: -8965270856384137577}
+  - component: {fileID: 4928057678173158785}
   m_Layer: 0
-  m_Name: blockBox
+  m_Name: throwBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -125,3 +126,16 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &4928057678173158785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7156174444212452661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dbb0a119d534c44c97db65e450e8e8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  manager: {fileID: 0}
