@@ -33,6 +33,8 @@ public class Manager : MonoBehaviour
         get { return enemyList; }
     }
 
+    private int enemiesKilled;
+
     List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
 
     // Start is called before the first frame update
@@ -125,9 +127,16 @@ public class Manager : MonoBehaviour
             {
                 if (enemy.Health <= 0)
                 {
-                    Destroy(enemy.PunchObj);
+                    //keeps track of al the enemies killed
+                    enemiesKilled++;
+
+                    enemy.PunchObj.IsActive = false;
+
                     enemyList.Remove(enemy);
+
                     enemy.gameObject.SetActive(false);
+
+                    //returns the enemy to the spawning pool for reuse
                     basicEnemySpawnPool.Add(enemy);
 
                 }
