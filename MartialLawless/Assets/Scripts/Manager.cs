@@ -33,13 +33,15 @@ public class Manager : MonoBehaviour
         get { return enemyList; }
     }
 
-    private int enemiesKilled;
+    private ScoreTracker scoreTracker;
 
     List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
 
     // Start is called before the first frame update
     void Start()
     {
+        scoreTracker = gameObject.GetComponent<ScoreTracker>();
+
         timeBetweenSpawn = 0.2f;
         waveCount = 1;
         isSpawning = true;
@@ -128,7 +130,7 @@ public class Manager : MonoBehaviour
                 if (enemy.Health <= 0)
                 {
                     //keeps track of al the enemies killed
-                    enemiesKilled++;
+                    scoreTracker.enemiesKilled++;
 
                     enemy.PunchObj.IsActive = false;
 
