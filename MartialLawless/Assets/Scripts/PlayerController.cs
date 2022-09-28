@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
                     //after half a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
-                    Destroy(attacks[0]);
+                    attacks[0].IsActive = false;
                     attacks.RemoveAt(0);
                     isAttacking = false; 
                 }
