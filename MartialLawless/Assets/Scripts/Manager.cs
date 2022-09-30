@@ -155,7 +155,7 @@ public class Manager : MonoBehaviour
 
                     //returns the enemy to the spawning pool for reuse
                     basicEnemySpawnPool.Add(enemy);
-
+                    ScoreTracker.enemiesKilled++;
                 }
             }
         }

@@ -24,5 +24,6 @@ public class GameOverManager : MonoBehaviour
     public void ReturnToMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        ScoreTracker.enemiesKilled = 0;
     }
 }
