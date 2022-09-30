@@ -75,6 +75,7 @@ public class AttackCollision : MonoBehaviour
                             {
                                 //deals damage
                                 manager.EnemyList[i].Health -= damage;
+                                isActive = false;
                             }
                         }
 
@@ -88,6 +89,8 @@ public class AttackCollision : MonoBehaviour
                 {
                     //deals damage
                     manager.Player.health -= damage;
+                    manager.UpdatePlayerHealth();
+                    isActive = false;
                 }
             }
         }
