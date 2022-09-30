@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
+    [SerializeField]
+    private Text playerHealthText;
+
+
     private int waveCount;
     public PlayerController player;
 
@@ -61,11 +67,20 @@ public class Manager : MonoBehaviour
 
         }
 
+        //sets the initial value for player health
+        UpdatePlayerHealth();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(player.health <= 0)
+        {
+            //build index for the loss scene
+            SceneManager.LoadScene(1);
+        }
+
         if(isSpawning){
             int i = 0;
             
@@ -144,5 +159,11 @@ public class Manager : MonoBehaviour
                 }
             }
         }
+    }
+
+
+    public void UpdatePlayerHealth()
+    {
+        playerHealthText.text = "Player Health: " + player.health;
     }
 }

@@ -12,7 +12,7 @@ public class GameOverManager : MonoBehaviour
     Scene mainMenu;
     void Start()
     {
-        //Debug.Log(ScoreTracker.enemiesKilled);
+        scoreText.text = "Enemies Killed: " + ScoreTracker.enemiesKilled;
     }
 
     // Update is called once per frame
