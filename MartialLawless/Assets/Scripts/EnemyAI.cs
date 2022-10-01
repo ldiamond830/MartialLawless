@@ -23,6 +23,8 @@ public class EnemyAI : MonoBehaviour
 
     private Vector2 position;
 
+    private List<EnemyAI> enemies;
+
     // Copied from PlayerController.cs
     private State state;
 
@@ -109,6 +111,22 @@ public class EnemyAI : MonoBehaviour
         //position = transform.position;
         // Get the vector from this enemy to the player
         Vector2 moveVector = playerPosition - (Vector2)transform.position;
+
+        // Get an updated list of other active enemies
+        enemies = gameManager.EnemyList;
+
+        Vector2 personalSpaceVector = Vector2.zero;
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            // If this enemy is in this enemy's personal space
+            if ((enemies[i].Position - transform.position).sqrMagnitude < Mathf.Pow(stopDistance, 2))
+            {
+                // Move away from them
+                personalSpaceVector += (Vector2)(enemies[i].Position - transform.position);
+            }
+        }
+        
+        moveVector += personalSpaceVector;
 
         moveVector = moveVector.normalized;
 

@@ -61,6 +61,9 @@ public class PlayerController : MonoBehaviour
 
     public Manager gameManager;
 
+    
+
+
     //sounds
     public AudioSource gruntSound;
 
