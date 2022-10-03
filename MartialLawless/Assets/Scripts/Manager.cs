@@ -9,6 +9,7 @@ public class Manager : MonoBehaviour
     [SerializeField]
     private Text playerHealthText;
 
+    public static System.Random random = new System.Random();
 
     private int waveCount;
     public PlayerController player;
@@ -95,6 +96,8 @@ public class Manager : MonoBehaviour
 
                     enemyList.Add(newEnemy);
                     basicEnemySpawnPool.Remove(newEnemy);
+                    
+                    float angle = (float)random.NextDouble();
 
                     //chooses a random spawn point for the new enemy
                     int doorSelect = Random.Range(0, 4);
@@ -102,19 +105,20 @@ public class Manager : MonoBehaviour
                     if (doorSelect == 0)
                     {
                         //constant value makes it so enemy doesnt pop in on screen
-                        newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                        newEnemy.Position = new Vector3(Mathf.Cos(angle), cameraHeight / 2 + 5 + Mathf.Sin(angle), 0);
+                        
                     }
                     else if (doorSelect == 1)
                     {
-                        newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                        newEnemy.Position = new Vector3(Mathf.Cos(angle), cameraHeight / -2 - 5 - Mathf.Sin(angle), 0);
                     }
                     else if (doorSelect == 2)
                     {
-                        newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                        newEnemy.Position = new Vector3(cameraWidth / -2 - 5 - Mathf.Cos(angle), Mathf.Sin(angle), 0);
                     }
                     else
                     {
-                        newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                        newEnemy.Position = new Vector3(cameraWidth / 2 + 5 + Mathf.Cos(angle), Mathf.Sin(angle), 0);
                     }
 
                     
