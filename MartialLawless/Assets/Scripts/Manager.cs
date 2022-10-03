@@ -11,6 +11,7 @@ public class Manager : MonoBehaviour
     [SerializeField]
     private Text waveCountText;
 
+    public static System.Random random = new System.Random();
 
     private int waveCount;
     public PlayerController player;
