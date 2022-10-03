@@ -64,23 +64,28 @@ public class AttackCollision : MonoBehaviour
         {
             if (isPlayer)
             {
-                
-               
-                    //checks collisions
-                    for (int i = 0; i < enemyList.Count; i++)
-                    {
-                        if (enemyList[i] != null)
-                        {
-                            if (collider.IsTouching(enemyList[i]))
-                            {
-                                //deals damage
-                                manager.EnemyList[i].Health -= damage;
-                                isActive = false;
-                            }
-                        }
 
+             
+            
+                //checks collisions
+                for (int i = 0; i < enemyList.Count; i++)
+                {
+                    if (enemyList[i] != null)
+                    {
+                        if (collider.IsTouching(enemyList[i]))
+                        {
+                            if(collider.GetComponent<AttackCollision>() == manager.Player.thrown)
+                            {
+                                Debug.Log("hi");
+                            }
+                            //deals damage
+                            manager.EnemyList[i].Health -= damage;
+                            isActive = false;
+                        }
                     }
-                
+
+                }
+             
 
             }
             else
