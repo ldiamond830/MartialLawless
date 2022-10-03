@@ -122,11 +122,12 @@ public class EnemyAI : MonoBehaviour
             if ((enemies[i].Position - transform.position).sqrMagnitude < Mathf.Pow(stopDistance, 2))
             {
                 // Move away from them
-                personalSpaceVector += (Vector2)(enemies[i].Position - transform.position);
+                personalSpaceVector += (Vector2)(transform.position - enemies[i].Position).normalized;
             }
         }
-        
-        moveVector += personalSpaceVector;
+
+        moveVector = moveVector.normalized;
+        moveVector += personalSpaceVector.normalized;
 
         moveVector = moveVector.normalized;
 
