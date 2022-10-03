@@ -326,19 +326,22 @@ public class PlayerController : MonoBehaviour
             {
                 case Orientation.up:
                     thrown.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
-                    Debug.Log("throw up");
+                    thrown.gameObject.transform.rotation = new Quaternion(90.0f, 90.0f, 0.0f, 0.0f);
                     break;
                 case Orientation.down:
                     thrown.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
-                    Debug.Log("throw down");
+                    thrown.gameObject.transform.rotation = new Quaternion(90.0f, 90.0f, 0.0f, 0.0f);
+
                     break;
                 case Orientation.left:
                     thrown.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
-                    Debug.Log("throw left");
+                    thrown.gameObject.transform.rotation = Quaternion.identity;
+
                     break;
                 case Orientation.right:
                     thrown.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
-                    Debug.Log("throw right");
+                    thrown.gameObject.transform.rotation = Quaternion.identity;
+
                     break;
             }
             //sound effect here
