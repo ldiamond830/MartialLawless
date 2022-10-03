@@ -56,7 +56,6 @@ public class PlayerController : MonoBehaviour
 
     public float wait = 0.0f;
     public bool isAttacking = false;
-    public List<AttackCollision> attacks;
 
 
     public Manager gameManager;
@@ -89,6 +88,11 @@ public class PlayerController : MonoBehaviour
         kick.Damage = kickDamage;
         kick.IsPlayer = true;
 
+        //intializes the punch hit box
+        thrown.manager = gameManager;
+        thrown.Damage = punchDamage;
+        thrown.IsPlayer = true;
+
     }
 
     // Update is called once per frame
@@ -108,9 +112,10 @@ public class PlayerController : MonoBehaviour
                     //after half a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
-                    isAttacking = false; 
+                    //returns punch hitbox to intial position
+                    thrown.gameObject.transform.position = position;
+                    thrown.IsActive = false;
+                    isAttacking = false;
                 }
                 else
                 {
@@ -307,35 +312,45 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    private void Onthrow(InputValue value)
+    private void OnThrow(InputValue value)
     {
         if(!isAttacking)
         {
             Debug.Log("throw");
             state = State.isThrowing;
 
+            thrown.EnemyList.Clear();
+
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(thrown, new Vector2(position.x, position.y + 0.5f), Quaternion.Euler(0.0f, 0.0f, 90.0f)));
-
+                    thrown.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
+                    Debug.Log("throw up");
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(thrown, new Vector2(position.x, position.y - 0.5f), Quaternion.Euler(0.0f, 0.0f, -90.0f)));
-
+                    thrown.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+                    Debug.Log("throw down");
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(thrown, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
-
+                    thrown.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
+                    Debug.Log("throw left");
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(thrown, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
-
+                    thrown.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
+                    Debug.Log("throw right");
                     break;
             }
             //sound effect here
             isAttacking = true;
+
+            thrown.IsActive = true;
+
+            //adds each enemy to list so that the attack collision can check for collisions
+            for (int i = 0; i < gameManager.EnemyList.Count; i++)
+            {
+                thrown.EnemyList.Add(gameManager.EnemyList[i].GetComponent<BoxCollider2D>());
+            }
         }
         
     }
