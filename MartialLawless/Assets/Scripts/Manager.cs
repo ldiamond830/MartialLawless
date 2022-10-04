@@ -8,7 +8,10 @@ public class Manager : MonoBehaviour
 {
     [SerializeField]
     private Text playerHealthText;
+    [SerializeField]
+    private Text waveCountText;
 
+    public static System.Random random = new System.Random();
 
     private int waveCount;
     public PlayerController player;
@@ -17,7 +20,7 @@ public class Manager : MonoBehaviour
 
     //when set to true spawns new wave of enemies, when set to false wave is in progress
     private bool isSpawning;
-    private List<EnemyAI> enemyList;
+    public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
 
     /* failed idea may be useful later so I'm not deleting
@@ -41,7 +44,7 @@ public class Manager : MonoBehaviour
 
     private ScoreTracker scoreTracker;
 
-    List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
+    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +53,8 @@ public class Manager : MonoBehaviour
 
         timeBetweenSpawn = 0.2f;
         waveCount = 1;
+        UpdateWaveCountText();
+
         isSpawning = true;
         enemyList = new List<EnemyAI>();
 
@@ -82,66 +87,73 @@ public class Manager : MonoBehaviour
         }
 
         if(isSpawning){
-            int i = 0;
             
-            //uses while rather than for so that the iterator is only increased under certain conditions in the loop
-            while(i < waveCount)
-            {
                 //creates a short interval between spawns so the player isn't rushed all at once
-                if (timeBetweenSpawn <= 0 && basicEnemySpawnPool.Count > 0)
+                if (basicEnemySpawnPool.Count > 0)
                 {
-                    EnemyAI newEnemy = basicEnemySpawnPool[i];
+                    for(int i = 0; i < waveCount ; i++)
+                    {
+                        if (waveCount == 4)
+                        {
+                            Debug.Log("test");
+                        }
+
+                        EnemyAI newEnemy = basicEnemySpawnPool[i];
+
+
+                        enemyList.Add(newEnemy);
+                        basicEnemySpawnPool.Remove(newEnemy);
+
+                        //chooses a random spawn point for the new enemy
+                        int doorSelect = Random.Range(0, 4);
+
+                        if (doorSelect == 0)
+                        {
+                            //constant value makes it so enemy doesnt pop in on screen
+                            newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                        }
+                        else if (doorSelect == 1)
+                        {
+                            newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                        }
+                        else if (doorSelect == 2)
+                        {
+                            newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                        }
+                        else
+                        {
+                            newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                        }
+
+
+                        newEnemy.gameObject.SetActive(true);
+                        
+                    }
                     
-
-                    enemyList.Add(newEnemy);
-                    basicEnemySpawnPool.Remove(newEnemy);
-
-                    //chooses a random spawn point for the new enemy
-                    int doorSelect = Random.Range(0, 4);
-
-                    if (doorSelect == 0)
-                    {
-                        //constant value makes it so enemy doesnt pop in on screen
-                        newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
-                    }
-                    else if (doorSelect == 1)
-                    {
-                        newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
-                    }
-                    else if (doorSelect == 2)
-                    {
-                        newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
-                    }
-                    else
-                    {
-                        newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
-                    }
-
-                    
-
-                    newEnemy.gameObject.SetActive(true);
-                    timeBetweenSpawn = 0.2f;
-                    i++;
                 }
-                else
-                {
-                    timeBetweenSpawn -= Time.deltaTime;
-                }
+                
 
-            }
+            
 
 
             isSpawning = false;
         }
         else{
+
             if (enemyList.Count == 0)
             {
                 isSpawning = true;
+                
                 waveCount++;
+                UpdateWaveCountText();
             }
 
-            foreach(EnemyAI enemy in enemyList)
+          foreach(EnemyAI enemy in enemyList)
             {
+                if(waveCount >= 4)
+                {
+                    Debug.Log("error");
+                }
                 if (enemy.Health <= 0)
                 {
                     //keeps track of al the enemies killed
@@ -154,7 +166,7 @@ public class Manager : MonoBehaviour
                     enemy.gameObject.SetActive(false);
 
                     //returns the enemy to the spawning pool for reuse
-                    basicEnemySpawnPool.Add(enemy);
+                   basicEnemySpawnPool.Add(enemy);
                     ScoreTracker.enemiesKilled++;
                 }
             }
@@ -165,5 +177,10 @@ public class Manager : MonoBehaviour
     public void UpdatePlayerHealth()
     {
         playerHealthText.text = "Player Health: " + player.health;
+    }
+
+    public void UpdateWaveCountText()
+    {
+        waveCountText.text = "Wave Count: " + waveCount;
     }
 }
