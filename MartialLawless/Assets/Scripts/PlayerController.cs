@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     public int health = 100;
     public int punchDamage = 10;
     public int kickDamage = 20;
-    public int throwDamage = 0;
+    public int throwDamage = 25;
     public int currentAttackDamage = 0;
 
     //different sprites to show for each pose
