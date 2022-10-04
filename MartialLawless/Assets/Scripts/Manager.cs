@@ -160,10 +160,13 @@ public class Manager : MonoBehaviour
                    //scoreTracker.enemies
 
                     enemy.PunchObj.IsActive = false;
+                    enemy.PunchObj.transform.position = enemy.transform.position;
 
                     enemyList.Remove(enemy);
 
                     enemy.gameObject.SetActive(false);
+
+                    enemy.Health = enemyPrefab.Health;
 
                     //returns the enemy to the spawning pool for reuse
                    basicEnemySpawnPool.Add(enemy);
