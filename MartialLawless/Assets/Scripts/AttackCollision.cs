@@ -11,7 +11,7 @@ public class AttackCollision : MonoBehaviour
     private List<BoxCollider2D> enemyList;
     private int damage;
     private bool isPlayer = true;
-
+    public Throw throwStuff;
     
     private bool isActive;
 
@@ -76,7 +76,7 @@ public class AttackCollision : MonoBehaviour
                         {
                             if(collider.GetComponent<AttackCollision>() == manager.Player.thrown)
                             {
-                                Debug.Log("hi");
+                                throwStuff.ThrowEnemy(enemyList[i], new Vector2(10, 10));
                             }
                             //deals damage
                             manager.EnemyList[i].Health -= damage;
