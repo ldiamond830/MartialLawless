@@ -250,8 +250,9 @@ public class PlayerController : MonoBehaviour
             gruntSound.enabled = true;
             if (gruntSound != null)
             {
-                Debug.Log("Sound Played");
+                
                 gruntSound.Play();
+                Debug.Log("Sound Played");
             }
          
             isAttacking = true;
