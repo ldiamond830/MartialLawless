@@ -64,7 +64,10 @@ public class PlayerController : MonoBehaviour
 
 
     //sounds
-    public AudioSource gruntSound;
+  
+    public AudioSource kickSound;
+    public AudioSource punchSound;
+
 
     public bool IsAttacking
     {
@@ -252,12 +255,12 @@ public class PlayerController : MonoBehaviour
             }
 
             //sound effect here
-            gruntSound.enabled = true;
-            if (gruntSound != null)
+            punchSound.enabled = true;
+            if (punchSound != null)
             {
                 
-                gruntSound.Play();
-                Debug.Log("Sound Played");
+                punchSound.Play();
+                Debug.Log("Punch Sound Played");
             }
          
             isAttacking = true;
@@ -304,6 +307,14 @@ public class PlayerController : MonoBehaviour
                     break;
             }
             //sound effect here
+            kickSound.enabled = true;
+            if (kickSound != null)
+            {
+
+                kickSound.Play();
+                Debug.Log("Kick Sound Played");
+            }
+
             isAttacking = true;
 
             kick.IsActive = true;
