@@ -77,6 +77,7 @@ public class EnemyAI : MonoBehaviour
 
     [SerializeField]
     private int health = 1;
+
      public int Health
     {
         set { health = value; }

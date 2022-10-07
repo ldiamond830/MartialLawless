@@ -19,7 +19,8 @@ public enum State
     isKicking,
     isThrowing,
     isStunned,
-    isBlocking
+    isBlocking,
+    isDodging
 }
 
 public class PlayerController : MonoBehaviour
@@ -60,7 +61,7 @@ public class PlayerController : MonoBehaviour
 
     public Manager gameManager;
 
-    
+    private bool damageAble;
 
 
     //sounds
@@ -68,6 +69,10 @@ public class PlayerController : MonoBehaviour
     public AudioSource kickSound;
     public AudioSource punchSound;
 
+    public bool DamageAble
+    {
+        get { return damageAble; }
+    }
 
     public bool IsAttacking
     {
@@ -169,13 +174,27 @@ public class PlayerController : MonoBehaviour
                 }
                
                 break;
-
+                //not being included currently
             case State.isBlocking:
 
                 break;
 
             case State.isStunned:
 
+                break;
+
+            case State.isDodging:
+                if(wait >= 0.2f)
+                {
+                    state = State.isMoving;
+                    damageAble = true;
+                }
+                else
+                {
+                    wait += Time.deltaTime;
+
+
+                }
                 break;
 
         }
@@ -373,6 +392,17 @@ public class PlayerController : MonoBehaviour
             }
         }
         
+    }
+
+    private void OnDodge(InputValue value)
+    {
+        if(state != State.isDodging)
+        {
+            state = State.isDodging;
+            damageAble = false;
+        }
+       
+       
     }
 
     //might be necessary later

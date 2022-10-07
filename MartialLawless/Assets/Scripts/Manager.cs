@@ -82,8 +82,10 @@ public class Manager : MonoBehaviour
     {
         if(player.health <= 0)
         {
+            
             //build index for the loss scene
             SceneManager.LoadScene(1);
+            
         }
 
         if(isSpawning){
