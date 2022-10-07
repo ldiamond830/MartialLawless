@@ -188,12 +188,17 @@ public class PlayerController : MonoBehaviour
                 {
                     state = State.isMoving;
                     damageAble = true;
+                    wait = 0;
                 }
                 else
                 {
                     wait += Time.deltaTime;
 
-
+                    direction = playerControls.ReadValue<Vector2>();
+                    velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
+                    velocity *= 2.5f;
+                    position += velocity * Time.deltaTime;
+                    transform.position = position;
                 }
                 break;
 
@@ -205,7 +210,7 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
-        //reads in the direction from the controls
+        //reads in the direction from the controlsas
         direction = playerControls.ReadValue<Vector2>();
 
         //sets the orientation based on the player's direction

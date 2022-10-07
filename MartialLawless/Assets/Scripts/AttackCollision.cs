@@ -94,7 +94,7 @@ public class AttackCollision : MonoBehaviour
             }
             else
             {
-                if (collider.IsTouching(player))
+                if (collider.IsTouching(player) && manager.Player.DamageAble)
                 {
                     //deals damage
                     manager.Player.health -= damage;
