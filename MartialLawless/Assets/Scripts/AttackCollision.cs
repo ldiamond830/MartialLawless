@@ -78,12 +78,11 @@ public class AttackCollision : MonoBehaviour
                             {
                                 throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation, player);
                             }
-                            else
-                            {
-                                //deals damage
-                                manager.EnemyList[i].Health -= damage;
-                                isActive = false;
-                            }
+
+                            //deals damage
+                            manager.EnemyList[i].Health -= damage;
+                            isActive = false;
+                            
                             
                         }
                     }
