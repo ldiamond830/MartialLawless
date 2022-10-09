@@ -76,7 +76,7 @@ public class AttackCollision : MonoBehaviour
                         {
                             if(collider.GetComponent<AttackCollision>() == manager.Player.thrown)
                             {
-                                throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation);
+                                throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation, player);
                             }
                             else
                             {
