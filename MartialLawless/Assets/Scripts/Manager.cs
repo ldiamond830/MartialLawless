@@ -9,7 +9,7 @@ public class Manager : MonoBehaviour
     [SerializeField]
     public Text playerHealthText;
     public Image fillImage;
-    private Slider healthSlider;
+    public Slider healthSlider;
     [SerializeField]
     private Text waveCountText;
 
@@ -56,6 +56,7 @@ public class Manager : MonoBehaviour
     void Start()
     {
         healthSlider.GetComponent<Slider>();
+
         scoreTracker = gameObject.GetComponent<ScoreTracker>();
 
         timeBetweenSpawn = 0.2f;
@@ -88,9 +89,7 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Player health and Stamina
-        float healthFill = player.health / 100;
-        healthSlider.value = healthFill;
+       
 
         if (player.health <= 0)
         {
@@ -201,7 +200,9 @@ public class Manager : MonoBehaviour
 
     public void UpdatePlayerHealth()
     {
-
+        //Player health and Stamina
+        float healthFill = player.health / 100;
+        healthSlider.value = healthFill;
         playerHealthText.text = "Player Health: " + player.health;
     }
 
