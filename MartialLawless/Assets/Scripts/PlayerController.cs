@@ -129,6 +129,10 @@ public class PlayerController : MonoBehaviour
                     //increase or decrease constant to change stamina recharge rate
                     stamina += 3 * Time.deltaTime;
                     
+                    if(stamina > maxStamina)
+                    {
+                        stamina = maxStamina;
+                    }
                 }
                 //uses else if so if stamina is maxed recharge timer doesn't change
                 else if(staminaRechargeTimer > 0)
@@ -325,8 +329,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 15)
         {
+            stamina -= 15;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("Kick");
             state = State.isKicking;
 
@@ -377,8 +384,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 20)
         {
+            stamina -= 20;
+            staminaRechargeTimer = staminaRechargeInterval;
             Debug.Log("throw");
             state = State.isThrowing;
 
@@ -423,8 +432,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnDodge(InputValue value)
     {
-        if(state != State.isDodging)
+        if(state != State.isDodging && stamina >= 10)
         {
+            stamina -= 10;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             state = State.isDodging;
             damageAble = false;
         }
