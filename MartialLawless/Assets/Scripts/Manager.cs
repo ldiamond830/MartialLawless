@@ -79,6 +79,7 @@ public class Manager : MonoBehaviour
 
         //sets the initial value for player health
         UpdatePlayerHealth();
+        player.DamageAble = true;
 
     }
 

@@ -41,7 +41,7 @@ public class AttackCollision : MonoBehaviour
     void Start()
     {
         
-        isActive = true;
+        isActive = false;
 
         collider = GetComponent<BoxCollider2D>();
 
