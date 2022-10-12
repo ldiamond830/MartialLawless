@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour
     public bool DamageAble
     {
         get { return damageAble; }
+        set { damageAble = value; }
     }
 
     public bool IsAttacking
@@ -110,6 +111,8 @@ public class PlayerController : MonoBehaviour
         thrown.manager = gameManager;
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
+
+        
 
     }
 
