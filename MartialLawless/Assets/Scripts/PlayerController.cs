@@ -391,6 +391,7 @@ public class PlayerController : MonoBehaviour
         {
             stamina -= 20;
             staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("throw");
             state = State.isThrowing;
 
