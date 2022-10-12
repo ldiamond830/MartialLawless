@@ -35,7 +35,8 @@ public class Manager : MonoBehaviour
     private float cameraWidth;
     public Camera cameraObject;
 
-
+    //health
+    float healthFill;
 
     public PlayerController Player
     {
@@ -193,7 +194,7 @@ public class Manager : MonoBehaviour
     public void UpdatePlayerHealth()
     {
         //Player health and Stamina
-        float healthFill = player.health / 100;
+         healthFill = player.health / 100;
         healthSlider.value = healthFill;
         playerHealthText.text = "Player Health: " + player.health;
     }
