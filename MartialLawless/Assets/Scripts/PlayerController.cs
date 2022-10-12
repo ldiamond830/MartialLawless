@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
     public int health = 100;
+    public int maxStamina = 50;
+   
     public int punchDamage = 10;
     public int kickDamage = 20;
     public int throwDamage = 25;
@@ -58,6 +60,9 @@ public class PlayerController : MonoBehaviour
     public float wait = 0.0f;
     public bool isAttacking = false;
 
+    private float staminaRechargeInterval = 2.0f;
+    private float staminaRechargeTimer = 2.0f;
+    private float stamina = 50;
 
     public Manager gameManager;
 
@@ -111,11 +116,25 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("stamina: " + stamina);
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
             case State.isMoving:
                 Movement();
+
+                //when recharge timer is zero and stamina is below max recharges stamina
+                if(staminaRechargeTimer <= 0 && stamina < maxStamina)
+                {
+                    //increase or decrease constant to change stamina recharge rate
+                    stamina += 3 * Time.deltaTime;
+                    
+                }
+                //uses else if so if stamina is maxed recharge timer doesn't change
+                else if(staminaRechargeTimer > 0)
+                {
+                    staminaRechargeTimer -= Time.deltaTime;
+                }
 
             break;
 
@@ -243,8 +262,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 10)
         {
+            stamina -= 10;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("Punch");
             state = State.isPunching;
 
