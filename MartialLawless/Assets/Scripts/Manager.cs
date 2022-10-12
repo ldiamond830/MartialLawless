@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public class Manager : MonoBehaviour
 {
     [SerializeField]
-    private Text playerHealthText;
+    public Text playerHealthText;
+    public Image fillImage;
+    private Slider healthSlider;
     [SerializeField]
     private Text waveCountText;
 
@@ -33,6 +35,8 @@ public class Manager : MonoBehaviour
     private float cameraWidth;
     public Camera cameraObject;
 
+
+
     public PlayerController Player
     {
         get { return player; }
@@ -49,6 +53,7 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        healthSlider.GetComponent<Slider>();
         scoreTracker = gameObject.GetComponent<ScoreTracker>();
 
         timeBetweenSpawn = 0.2f;
@@ -62,7 +67,7 @@ public class Manager : MonoBehaviour
         cameraWidth = cameraHeight * cameraObject.aspect;
 
         //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
             newEnemy.PlayerTransform = player.transform;
@@ -80,86 +85,92 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player.health <= 0)
+        //Player health and Stamina
+        float healthFill = player.health / 100;
+        healthSlider.value = healthFill;
+
+        if (player.health <= 0)
         {
-            
+
             //build index for the loss scene
             SceneManager.LoadScene(1);
-            
+
         }
 
-        if(isSpawning){
-            
-                //creates a short interval between spawns so the player isn't rushed all at once
-                if (basicEnemySpawnPool.Count > 0)
+        if (isSpawning)
+        {
+
+            //creates a short interval between spawns so the player isn't rushed all at once
+            if (basicEnemySpawnPool.Count > 0)
+            {
+                for (int i = 0; i < waveCount; i++)
                 {
-                    for(int i = 0; i < waveCount ; i++)
+                    if (waveCount == 4)
                     {
-                        if (waveCount == 4)
-                        {
-                            Debug.Log("test");
-                        }
-
-                        EnemyAI newEnemy = basicEnemySpawnPool[i];
-
-
-                        enemyList.Add(newEnemy);
-                        basicEnemySpawnPool.Remove(newEnemy);
-
-                        //chooses a random spawn point for the new enemy
-                        int doorSelect = Random.Range(0, 4);
-
-                        if (doorSelect == 0)
-                        {
-                            //constant value makes it so enemy doesnt pop in on screen
-                            newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
-                        }
-                        else if (doorSelect == 1)
-                        {
-                            newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
-                        }
-                        else if (doorSelect == 2)
-                        {
-                            newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
-                        }
-                        else
-                        {
-                            newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
-                        }
-
-
-                        newEnemy.gameObject.SetActive(true);
-                        
+                        Debug.Log("test");
                     }
-                    
-                }
-                
 
-            
+                    EnemyAI newEnemy = basicEnemySpawnPool[i];
+
+
+                    enemyList.Add(newEnemy);
+                    basicEnemySpawnPool.Remove(newEnemy);
+
+                    //chooses a random spawn point for the new enemy
+                    int doorSelect = Random.Range(0, 4);
+
+                    if (doorSelect == 0)
+                    {
+                        //constant value makes it so enemy doesnt pop in on screen
+                        newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                    }
+                    else if (doorSelect == 1)
+                    {
+                        newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                    }
+                    else if (doorSelect == 2)
+                    {
+                        newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                    }
+                    else
+                    {
+                        newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                    }
+
+
+                    newEnemy.gameObject.SetActive(true);
+
+                }
+
+            }
+
+
+
 
 
             isSpawning = false;
         }
-        else{
+        else
+        {
 
             if (enemyList.Count == 0)
             {
                 isSpawning = true;
-                
+
                 waveCount++;
                 UpdateWaveCountText();
             }
 
-          foreach(EnemyAI enemy in enemyList)
+            foreach (EnemyAI enemy in enemyList)
             {
-                if(waveCount >= 4)
+                if (waveCount >= 4)
                 {
                     Debug.Log("error");
                 }
                 if (enemy.Health <= 0)
                 {
                     //keeps track of al the enemies killed
-                   //scoreTracker.enemies
+                    //scoreTracker.enemies
 
                     enemy.PunchObj.IsActive = false;
                     enemy.PunchObj.transform.position = enemy.transform.position;
@@ -171,7 +182,7 @@ public class Manager : MonoBehaviour
                     enemy.Health = enemyPrefab.Health;
 
                     //returns the enemy to the spawning pool for reuse
-                   basicEnemySpawnPool.Add(enemy);
+                    basicEnemySpawnPool.Add(enemy);
                     ScoreTracker.enemiesKilled++;
                 }
             }
@@ -181,6 +192,7 @@ public class Manager : MonoBehaviour
 
     public void UpdatePlayerHealth()
     {
+
         playerHealthText.text = "Player Health: " + player.health;
     }
 
