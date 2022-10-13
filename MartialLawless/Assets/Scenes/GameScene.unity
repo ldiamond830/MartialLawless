@@ -1592,7 +1592,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerHealthText: {fileID: 266740381}
   fillImage: {fileID: 0}
-  healthSlider: {fileID: 0}
+  healthSlider: {fileID: 1065487183}
   waveCountText: {fileID: 945760854}
   player: {fileID: 689959275}
   enemyList: []
