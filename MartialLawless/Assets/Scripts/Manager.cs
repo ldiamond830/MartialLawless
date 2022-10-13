@@ -78,6 +78,7 @@ public class Manager : MonoBehaviour
             newEnemy.gameObject.SetActive(false);
             newEnemy.gameManager = this;
             basicEnemySpawnPool.Add(newEnemy);
+           
 
         }
 
@@ -166,10 +167,7 @@ public class Manager : MonoBehaviour
 
             foreach (EnemyAI enemy in enemyList)
             {
-                if (waveCount >= 4)
-                {
-                    Debug.Log("error");
-                }
+               
                 if (enemy.Health <= 0)
                 {
                     //keeps track of al the enemies killed

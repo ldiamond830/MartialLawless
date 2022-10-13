@@ -124,11 +124,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("stamina: " + stamina);
+        //Debug.Log("stamina: " + stamina);
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
             case State.isMoving:
+
+               
+
                 Movement();
 
                 //when recharge timer is zero and stamina is below max recharges stamina
