@@ -90,6 +90,11 @@ public class PlayerController : MonoBehaviour
         get { return orientation; }
     }
 
+    public Vector3 Position
+    {
+        get { return position; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
