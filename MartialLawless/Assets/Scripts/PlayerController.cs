@@ -19,7 +19,8 @@ public enum State
     isKicking,
     isThrowing,
     isStunned,
-    isBlocking
+    isBlocking,
+    isDodging
 }
 
 public class PlayerController : MonoBehaviour
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
     public int health = 100;
+    public int maxStamina = 50;
+   
     public int punchDamage = 10;
     public int kickDamage = 20;
     public int throwDamage = 25;
@@ -52,18 +55,45 @@ public class PlayerController : MonoBehaviour
     public AttackCollision kick;
 
     //needs to be changed to another script type when created
-    public AttackCollision block;
+    public AttackCollision thrown;
 
     public float wait = 0.0f;
     public bool isAttacking = false;
-    public List<AttackCollision> attacks;
 
+    private float staminaRechargeInterval = 2.0f;
+    private float staminaRechargeTimer = 2.0f;
+    private float stamina = 50;
 
     public Manager gameManager;
 
-    //sounds
-    public AudioSource gruntSound;
+    private bool damageAble;
 
+
+    //sounds
+  
+    public AudioSource kickSound;
+    public AudioSource punchSound;
+
+    public bool DamageAble
+    {
+        get { return damageAble; }
+        set { damageAble = value; }
+    }
+
+    public bool IsAttacking
+    {
+        get { return isAttacking; }
+    }
+
+    public Orientation ReturnOrientation
+    {
+        get { return orientation; }
+    }
+
+    public Vector3 Position
+    {
+        get { return position; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -71,28 +101,68 @@ public class PlayerController : MonoBehaviour
         position = this.transform.position;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
+
+        //intializes the punch hit box
+        punch.manager = gameManager;
+        punch.Damage = punchDamage;
+        punch.IsPlayer = true;
+
+        //initializes the kick hit box
+        kick.manager = gameManager;
+        kick.Damage = kickDamage;
+        kick.IsPlayer = true;
+
+        //intializes the punch hit box
+        thrown.manager = gameManager;
+        thrown.Damage = punchDamage;
+        thrown.IsPlayer = true;
+
+        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("stamina: " + stamina);
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
             case State.isMoving:
+
+               
+
                 Movement();
+
+                //when recharge timer is zero and stamina is below max recharges stamina
+                if(staminaRechargeTimer <= 0 && stamina < maxStamina)
+                {
+                    //increase or decrease constant to change stamina recharge rate
+                    stamina += 3 * Time.deltaTime;
+                    
+                    if(stamina > maxStamina)
+                    {
+                        stamina = maxStamina;
+                    }
+                }
+                //uses else if so if stamina is maxed recharge timer doesn't change
+                else if(staminaRechargeTimer > 0)
+                {
+                    staminaRechargeTimer -= Time.deltaTime;
+                }
 
             break;
 
-            case State.isBlocking:
+            case State.isThrowing:
                 if (wait >= 0.5f)
                 {
                     //after half a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
-                    Destroy(attacks[0]);
-                    attacks.RemoveAt(0);
-                    isAttacking = false; 
+                    //returns punch hitbox to intial position
+                    thrown.gameObject.transform.position = position;
+                    thrown.IsActive = false;
+                    isAttacking = false;
                 }
                 else
                 {
@@ -108,8 +178,9 @@ public class PlayerController : MonoBehaviour
                     //after a third of a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    //returns punch hitbox to intial position
+                    kick.gameObject.transform.position = position;
+                    kick.IsActive = false;
                     isAttacking = false;
                 }
                 else
@@ -126,8 +197,9 @@ public class PlayerController : MonoBehaviour
                     //after a tenth of a second the player can move and the hitbox is destroyed
                     wait = 0;
                     state = State.isMoving;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    //returns punch hitbox to intial position
+                    punch.gameObject.transform.position = position;
+                    punch.IsActive = false;
                     isAttacking = false;
                 }
                 else
@@ -136,13 +208,32 @@ public class PlayerController : MonoBehaviour
                 }
                
                 break;
-
-            case State.isThrowing:
+                //not being included currently
+            case State.isBlocking:
 
                 break;
 
             case State.isStunned:
 
+                break;
+
+            case State.isDodging:
+                if(wait >= 0.2f)
+                {
+                    state = State.isMoving;
+                    damageAble = true;
+                    wait = 0;
+                }
+                else
+                {
+                    wait += Time.deltaTime;
+
+                    direction = playerControls.ReadValue<Vector2>();
+                    velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
+                    velocity *= 2.5f;
+                    position += velocity * Time.deltaTime;
+                    transform.position = position;
+                }
                 break;
 
         }
@@ -153,7 +244,7 @@ public class PlayerController : MonoBehaviour
 
     private void Movement()
     {
-        //reads in the direction from the controls
+        //reads in the direction from the controlsas
         direction = playerControls.ReadValue<Vector2>();
 
         //sets the orientation based on the player's direction
@@ -186,52 +277,62 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 10)
         {
+            stamina -= 10;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("Punch");
             state = State.isPunching;
 
-            AttackCollision newPunch = null;
-            
+            //empties the list to remove any previously killed enemies
+            punch.EnemyList.Clear();
+           
 
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
 
                 case Orientation.up:
-                    newPunch = Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+                    //punch.gameObject.SetActive(true);
+                    punch.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                     break;
 
                 case Orientation.down:
-                    newPunch = Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
-                    
+                    punch.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+
 
                     break;
 
                 case Orientation.left:
-                    newPunch = Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                 punch.gameObject.transform.position =  new Vector2(position.x - 0.5f, position.y);
 
                     break;
                 case Orientation.right:
-                    newPunch = Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                    punch.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                     break;
             }
+
             //sound effect here
-            gruntSound.enabled = true;
-            if (gruntSound != null)
+            punchSound.enabled = true;
+            if (punchSound != null)
             {
-                Debug.Log("Sound Played");
-                gruntSound.Play();
+                
+                punchSound.Play();
+                Debug.Log("Punch Sound Played");
             }
          
             isAttacking = true;
+            punch.IsActive = true;
 
-            newPunch.manager = gameManager;
-            newPunch.Damage = punchDamage;
-            newPunch.IsPlayer = true;
-            attacks.Add(newPunch);
+            //adds each enemy to list so that the attack collision can check for collisions
+            for (int i = 0; i < gameManager.EnemyList.Count; i++)
+            {
+                punch.EnemyList.Add(gameManager.EnemyList[i].GetComponent<BoxCollider2D>());
+            }
+
         }
         
         
@@ -239,69 +340,120 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 15)
         {
+            stamina -= 15;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("Kick");
             state = State.isKicking;
-            currentAttackDamage = kickDamage;
+
+            kick.EnemyList.Clear();
+
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x, position.y + 0.5f), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x, position.y - 0.5f), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
 
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x -0.5f, position.y);
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(kick, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    kick.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                     break;
             }
             //sound effect here
+            kickSound.enabled = true;
+            if (kickSound != null)
+            {
+
+                kickSound.Play();
+                Debug.Log("Kick Sound Played");
+            }
+
             isAttacking = true;
+
+            kick.IsActive = true;
+
+            //adds each enemy to list so that the attack collision can check for collisions
+            for (int i = 0; i < gameManager.EnemyList.Count; i++)
+            {
+                kick.EnemyList.Add(gameManager.EnemyList[i].GetComponent<BoxCollider2D>());
+            }
         }
         
 
     }
 
-    private void OnBlock(InputValue value)
+    private void OnThrow(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 20)
         {
-            Debug.Log("Block");
-            state = State.isBlocking;
+            stamina -= 20;
+            staminaRechargeTimer = staminaRechargeInterval;
+
+            Debug.Log("throw");
+            state = State.isThrowing;
+
+            thrown.EnemyList.Clear();
 
             //checks for orientation and spawns a hitbox in front of the player
             switch (orientation)
             {
                 case Orientation.up:
-                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y + 0.5f), Quaternion.Euler(0.0f, 0.0f, 90.0f)));
-
+                    thrown.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
+                    thrown.gameObject.transform.rotation = new Quaternion(90.0f, 90.0f, 0.0f, 0.0f);
                     break;
                 case Orientation.down:
-                    attacks.Add(Instantiate(block, new Vector2(position.x, position.y - 0.5f), Quaternion.Euler(0.0f, 0.0f, -90.0f)));
+                    thrown.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+                    thrown.gameObject.transform.rotation = new Quaternion(90.0f, 90.0f, 0.0f, 0.0f);
 
                     break;
                 case Orientation.left:
-                    attacks.Add(Instantiate(block, new Vector2(position.x - 0.5f, position.y), Quaternion.identity));
+                    thrown.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
+                    thrown.gameObject.transform.rotation = Quaternion.identity;
 
                     break;
                 case Orientation.right:
-                    attacks.Add(Instantiate(block, new Vector2(position.x + 0.5f, position.y), Quaternion.identity));
+                    thrown.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
+                    thrown.gameObject.transform.rotation = Quaternion.identity;
 
                     break;
             }
             //sound effect here
             isAttacking = true;
+
+            thrown.IsActive = true;
+
+            //adds each enemy to list so that the attack collision can check for collisions
+            for (int i = 0; i < gameManager.EnemyList.Count; i++)
+            {
+                thrown.EnemyList.Add(gameManager.EnemyList[i].GetComponent<BoxCollider2D>());
+            }
         }
         
+    }
+
+    private void OnDodge(InputValue value)
+    {
+        if(state != State.isDodging && stamina >= 10)
+        {
+            stamina -= 10;
+            staminaRechargeTimer = staminaRechargeInterval;
+
+            state = State.isDodging;
+            damageAble = false;
+        }
+       
+       
     }
 
     //might be necessary later

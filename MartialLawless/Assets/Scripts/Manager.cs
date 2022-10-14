@@ -1,9 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Manager : MonoBehaviour
 {
+    [SerializeField]
+    public Text playerHealthText;
+    public Image fillImage;
+    public Slider healthSlider;
+    [SerializeField]
+    private Text waveCountText;
+
+    public static System.Random random = new System.Random();
+
     private int waveCount;
     public PlayerController player;
 
@@ -11,8 +22,10 @@ public class Manager : MonoBehaviour
 
     //when set to true spawns new wave of enemies, when set to false wave is in progress
     private bool isSpawning;
-    private List<EnemyAI> enemyList;
+    public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
+
+    public GameObject healthDropPrefab;
 
     /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
@@ -24,6 +37,9 @@ public class Manager : MonoBehaviour
     private float cameraWidth;
     public Camera cameraObject;
 
+    //health
+    float healthFill;
+
     public PlayerController Player
     {
         get { return player; }
@@ -33,37 +49,76 @@ public class Manager : MonoBehaviour
         get { return enemyList; }
     }
 
+    private ScoreTracker scoreTracker;
 
+    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
 
     // Start is called before the first frame update
     void Start()
     {
+        healthSlider.GetComponent<Slider>();
+
+        scoreTracker = gameObject.GetComponent<ScoreTracker>();
+
         timeBetweenSpawn = 0.2f;
         waveCount = 1;
+        UpdateWaveCountText();
+
         isSpawning = true;
         enemyList = new List<EnemyAI>();
 
         cameraHeight = cameraObject.orthographicSize * 2f;
         cameraWidth = cameraHeight * cameraObject.aspect;
 
+        //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
+        for (int i = 0; i < 10; i++)
+        {
+            EnemyAI newEnemy = Instantiate(enemyPrefab);
+            newEnemy.PlayerTransform = player.transform;
+            newEnemy.gameObject.SetActive(false);
+            newEnemy.gameManager = this;
+            basicEnemySpawnPool.Add(newEnemy);
+           
+
+        }
+
+        //sets the initial value for player health
+        UpdatePlayerHealth();
+        player.DamageAble = true;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(isSpawning){
-            int i = 0;
-            
-            //uses while rather than for so that the iterator is only increased under certain conditions in the loop
-            while(i < waveCount)
+       
+
+        if (player.health <= 0)
+        {
+
+            //build index for the loss scene
+            SceneManager.LoadScene(1);
+
+        }
+
+        if (isSpawning)
+        {
+
+            //creates a short interval between spawns so the player isn't rushed all at once
+            if (basicEnemySpawnPool.Count > 0)
             {
-                //creates a short interval between spawns so the player isn't rushed all at once
-                if(timeBetweenSpawn <= 0)
+                for (int i = 0; i < waveCount; i++)
                 {
-                    EnemyAI newEnemy = Instantiate(enemyPrefab);
-                    newEnemy.gameManager = this;
+                    if (waveCount == 4)
+                    {
+                        Debug.Log("test");
+                    }
+
+                    EnemyAI newEnemy = basicEnemySpawnPool[i];
+
 
                     enemyList.Add(newEnemy);
+                    basicEnemySpawnPool.Remove(newEnemy);
 
                     //chooses a random spawn point for the new enemy
                     int doorSelect = Random.Range(0, 4);
@@ -86,36 +141,72 @@ public class Manager : MonoBehaviour
                         newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
                     }
 
-                    newEnemy.PlayerTransform = player.transform;
-                    timeBetweenSpawn = 0.2f;
-                    i++;
-                }
-                else
-                {
-                    timeBetweenSpawn -= Time.deltaTime;
+
+                    newEnemy.gameObject.SetActive(true);
+
                 }
 
             }
+
+
+
 
 
             isSpawning = false;
         }
-        else{
+        else
+        {
+
             if (enemyList.Count == 0)
             {
                 isSpawning = true;
+
+                waveCount++;
+                UpdateWaveCountText();
             }
 
-            foreach(EnemyAI enemy in enemyList)
+            foreach (EnemyAI enemy in enemyList)
             {
+               
                 if (enemy.Health <= 0)
                 {
-                    Destroy(enemy.PunchObj);
-                    enemyList.Remove(enemy);
-                    Destroy(enemy.gameObject);
+                    //keeps track of al the enemies killed
+                    //scoreTracker.enemies
 
+                    if (random.Next(0, 100) < 50)
+                    {
+                        GameObject drop = Instantiate(healthDropPrefab);
+                        drop.transform.position = enemy.Position;
+                    }
+
+                    enemy.PunchObj.IsActive = false;
+                    enemy.PunchObj.transform.position = enemy.transform.position;
+
+                    enemyList.Remove(enemy);
+
+                    enemy.gameObject.SetActive(false);
+
+                    enemy.Health = enemyPrefab.Health;
+
+                    //returns the enemy to the spawning pool for reuse
+                    basicEnemySpawnPool.Add(enemy);
+                    ScoreTracker.enemiesKilled++;
                 }
             }
         }
+    }
+
+
+    public void UpdatePlayerHealth()
+    {
+        //Player health and Stamina
+         healthFill = player.health / 100;
+        healthSlider.value = healthFill;
+        playerHealthText.text = "Player Health: " + player.health;
+    }
+
+    public void UpdateWaveCountText()
+    {
+        waveCountText.text = "Wave Count: " + waveCount;
     }
 }

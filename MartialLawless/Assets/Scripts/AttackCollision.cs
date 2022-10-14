@@ -11,7 +11,7 @@ public class AttackCollision : MonoBehaviour
     private List<BoxCollider2D> enemyList;
     private int damage;
     private bool isPlayer = true;
-
+    public Throw throwObject;
     
     private bool isActive;
 
@@ -31,11 +31,17 @@ public class AttackCollision : MonoBehaviour
         set { isActive = value; }
     }
 
+    public List<BoxCollider2D> EnemyList
+    {
+        get { return enemyList; }
+        set { enemyList = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         
-        isActive = true;
+        isActive = false;
 
         collider = GetComponent<BoxCollider2D>();
 
@@ -53,32 +59,52 @@ public class AttackCollision : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isPlayer)
+        //prevents collision hitboxes from killing enemies while they are not being used to attack
+        if (isActive)
         {
-            //checks collisions
-            for (int i = 0; i < enemyList.Count; i++)
+            if (isPlayer)
             {
-                if (collider.IsTouching(enemyList[i]))
+
+             
+            
+                //checks collisions
+                for (int i = 0; i < enemyList.Count; i++)
+                {
+                    if (enemyList[i] != null)
+                    {
+                        if (collider.IsTouching(enemyList[i]))
+                        {
+                            if(collider.GetComponent<AttackCollision>() == manager.Player.thrown)
+                            {
+                                throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation, player);
+                            }
+
+                            //deals damage
+                            manager.EnemyList[i].Health -= damage;
+                            isActive = false;
+                            
+                            
+                        }
+                    }
+
+                }
+             
+
+            }
+            else
+            {
+                if (collider.IsTouching(player) && manager.Player.DamageAble)
                 {
                     //deals damage
-                    manager.EnemyList[i].Health -= damage;
+                    manager.Player.health -= damage;
+                    manager.UpdatePlayerHealth();
+                    isActive = false;
                 }
             }
         }
-        else
-        {
-            if (collider.IsTouching(player))
-            {
-                //deals damage
-                manager.Player.health -= damage;
-            }
-        }
+        
 
-        //hides the object once the attack is over, setting isActive to false is handled by the player or enemy script that spawned the attack box
-        if(isActive == false)
-        {
-            Destroy(gameObject);
-        }
+       
 
 
         
