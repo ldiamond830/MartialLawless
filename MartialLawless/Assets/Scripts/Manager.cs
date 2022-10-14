@@ -200,7 +200,7 @@ public class Manager : MonoBehaviour
     public void UpdatePlayerHealth()
     {
         //Player health and Stamina
-         healthFill = player.health / 100;
+         healthFill = player.health / 100f;
         healthSlider.value = healthFill;
         playerHealthText.text = "Player Health: " + player.health;
     }
