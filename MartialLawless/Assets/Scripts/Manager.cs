@@ -25,7 +25,8 @@ public class Manager : MonoBehaviour
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
 
-    public GameObject healthDropPrefab;
+    private List<HealthPickup> healthDrops;
+    public HealthPickup healthDropPrefab;
 
     /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
@@ -175,8 +176,8 @@ public class Manager : MonoBehaviour
 
                     if (random.Next(0, 100) < 50)
                     {
-                        GameObject drop = Instantiate(healthDropPrefab);
-                        drop.transform.position = enemy.Position;
+                        // HealthPickup drop = Instantiate(healthDropPrefab);
+                        // drop.gameObject.transform.position = enemy.Position;
                     }
 
                     enemy.PunchObj.IsActive = false;
