@@ -70,6 +70,10 @@ public class PlayerController : MonoBehaviour
 
     private bool damageAble;
 
+    //borders
+    private Bounds playerBounds;
+    public GameObject leftBorder;
+    private Bounds leftBorderBounds;
     [SerializeField]
     public Text playerStaminaText;
     public Image fillImageSta;
@@ -125,6 +129,9 @@ public class PlayerController : MonoBehaviour
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
 
+        playerBounds = this.GetComponent<SpriteRenderer>().bounds;
+        leftBorderBounds = leftBorder.GetComponent<SpriteRenderer>().bounds;
+
         staminaSlider.GetComponent<Slider>();
         
 
@@ -134,6 +141,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //Debug.Log("stamina: " + stamina);
+
+        if (position.x - playerBounds.extents.x <= (leftBorderBounds.max.x))
+        {
+            position.x = leftBorderBounds.max.x + playerBounds.extents.x;
+        }
+
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
@@ -501,5 +514,13 @@ public class PlayerController : MonoBehaviour
     {
         playerControls.Disable();
     }
-    
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+       // Gizmos.DrawWireCube(leftBorderBounds.offset, leftBorderBounds.size);
+        
+    }
+
 }
