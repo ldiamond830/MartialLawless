@@ -44,6 +44,16 @@ public class Manager : MonoBehaviour
     //health
     float healthFill;
 
+    //variable for tracking/controlling the special attack bar
+    private int specialAmountFull;
+
+    //and getter setter for special attack bar
+    public int SpecialAmountFull
+    {
+        get { return specialAmountFull; }
+        set { specialAmountFull = value; }
+    }
+
     public PlayerController Player
     {
         get { return player; }
@@ -172,6 +182,10 @@ public class Manager : MonoBehaviour
                 {
                     //keeps track of al the enemies killed
                     //scoreTracker.enemies
+
+                    //increases special bar for each enemy killed
+                    specialAmountFull++;
+                    Debug.Log("enemy killed");
 
                     if (random.Next(0, 100) < 50)
                     {

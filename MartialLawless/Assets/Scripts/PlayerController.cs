@@ -485,7 +485,14 @@ public class PlayerController : MonoBehaviour
     }
     private void OnSpecial(InputValue value)
     {
-        special.ActivateSpecial(10);
+        //if the special attack bar is 10 or higher
+        Debug.Log("Special bar fill: " + gameManager.SpecialAmountFull);
+        if (gameManager.SpecialAmountFull >= 10)
+        {
+            //activate the special attack and reset the special attack bar
+            gameManager.SpecialAmountFull = 0;
+            special.ActivateSpecial();
+        }
     }
 
     private void OnDodge(InputValue value)

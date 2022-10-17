@@ -41,12 +41,9 @@ public class SpecialMove : MonoBehaviour
         
     }
 
-    public void ActivateSpecial(int enemiesKilled)
+    public void ActivateSpecial()
     {
-        if (isActive == false && enemiesKilled >= 10)
-        {
-            amountLeft = 10;
-            isActive = true;
-        }
+        amountLeft = 10;
+        isActive = true;
     }
 }
