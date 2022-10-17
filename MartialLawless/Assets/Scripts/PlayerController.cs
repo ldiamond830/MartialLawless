@@ -71,7 +71,6 @@ public class PlayerController : MonoBehaviour
 
     private bool damageAble;
 
-<<<<<<< Updated upstream
     //borders
     private Bounds playerBounds;
     public GameObject leftBorder;
@@ -82,11 +81,6 @@ public class PlayerController : MonoBehaviour
     public Slider staminaSlider;
 
     float staminFill;
-=======
-    //special move
-    public SpecialMove specialScript;
-
->>>>>>> Stashed changes
 
     //sounds
 
@@ -503,11 +497,6 @@ public class PlayerController : MonoBehaviour
         }
        
        
-    }
-
-    private void OnSpecial(InputValue value)
-    {
-        specialScript.ActivateSpecial();
     }
 
     //might be necessary later
