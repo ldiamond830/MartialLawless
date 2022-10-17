@@ -77,6 +77,7 @@ public class EnemyAI : MonoBehaviour
 
     [SerializeField]
     private int health = 1;
+
      public int Health
     {
         set { health = value; }
@@ -96,11 +97,15 @@ public class EnemyAI : MonoBehaviour
         punch.manager = gameManager;
         punch.Damage = punchDamage;
         punch.IsPlayer = false;
+       
 
         //initializes the kick hit box
         kick.manager = gameManager;
         kick.Damage = kickDamage;
         kick.IsPlayer = false;
+        
+
+
     }
 
     // Update is called once per frame

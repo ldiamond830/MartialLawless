@@ -41,7 +41,7 @@ public class AttackCollision : MonoBehaviour
     void Start()
     {
         
-        isActive = true;
+        isActive = false;
 
         collider = GetComponent<BoxCollider2D>();
 
@@ -76,14 +76,13 @@ public class AttackCollision : MonoBehaviour
                         {
                             if(collider.GetComponent<AttackCollision>() == manager.Player.thrown)
                             {
-                                throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation);
+                                throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation, player);
                             }
-                            else
-                            {
-                                //deals damage
-                                manager.EnemyList[i].Health -= damage;
-                                isActive = false;
-                            }
+
+                            //deals damage
+                            manager.EnemyList[i].Health -= damage;
+                            isActive = false;
+                            
                             
                         }
                     }
@@ -94,7 +93,7 @@ public class AttackCollision : MonoBehaviour
             }
             else
             {
-                if (collider.IsTouching(player))
+                if (collider.IsTouching(player) && manager.Player.DamageAble)
                 {
                     //deals damage
                     manager.Player.health -= damage;

@@ -19,7 +19,8 @@ public enum State
     isKicking,
     isThrowing,
     isStunned,
-    isBlocking
+    isBlocking,
+    isDodging
 }
 
 public class PlayerController : MonoBehaviour
@@ -35,9 +36,11 @@ public class PlayerController : MonoBehaviour
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
     public int health = 100;
+    public int maxStamina = 50;
+   
     public int punchDamage = 10;
     public int kickDamage = 20;
-    public int throwDamage = 0;
+    public int throwDamage = 25;
     public int currentAttackDamage = 0;
 
     //different sprites to show for each pose
@@ -57,10 +60,13 @@ public class PlayerController : MonoBehaviour
     public float wait = 0.0f;
     public bool isAttacking = false;
 
+    private float staminaRechargeInterval = 2.0f;
+    private float staminaRechargeTimer = 2.0f;
+    private float stamina = 50;
 
     public Manager gameManager;
 
-    
+    private bool damageAble;
 
 
     //sounds
@@ -68,6 +74,11 @@ public class PlayerController : MonoBehaviour
     public AudioSource kickSound;
     public AudioSource punchSound;
 
+    public bool DamageAble
+    {
+        get { return damageAble; }
+        set { damageAble = value; }
+    }
 
     public bool IsAttacking
     {
@@ -77,6 +88,11 @@ public class PlayerController : MonoBehaviour
     public Orientation ReturnOrientation
     {
         get { return orientation; }
+    }
+
+    public Vector3 Position
+    {
+        get { return position; }
     }
 
     // Start is called before the first frame update
@@ -101,16 +117,39 @@ public class PlayerController : MonoBehaviour
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
 
+        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("stamina: " + stamina);
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
             case State.isMoving:
+
+               
+
                 Movement();
+
+                //when recharge timer is zero and stamina is below max recharges stamina
+                if(staminaRechargeTimer <= 0 && stamina < maxStamina)
+                {
+                    //increase or decrease constant to change stamina recharge rate
+                    stamina += 3 * Time.deltaTime;
+                    
+                    if(stamina > maxStamina)
+                    {
+                        stamina = maxStamina;
+                    }
+                }
+                //uses else if so if stamina is maxed recharge timer doesn't change
+                else if(staminaRechargeTimer > 0)
+                {
+                    staminaRechargeTimer -= Time.deltaTime;
+                }
 
             break;
 
@@ -169,7 +208,7 @@ public class PlayerController : MonoBehaviour
                 }
                
                 break;
-
+                //not being included currently
             case State.isBlocking:
 
                 break;
@@ -178,15 +217,33 @@ public class PlayerController : MonoBehaviour
 
                 break;
 
+            case State.isDodging:
+                if(wait >= 0.2f)
+                {
+                    state = State.isMoving;
+                    damageAble = true;
+                    wait = 0;
+                }
+                else
+                {
+                    wait += Time.deltaTime;
+
+                    direction = playerControls.ReadValue<Vector2>();
+                    velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
+                    velocity *= 2.5f;
+                    position += velocity * Time.deltaTime;
+                    transform.position = position;
+                }
+                break;
+
         }
-        
     }
 
 
 
     private void Movement()
     {
-        //reads in the direction from the controls
+        //reads in the direction from the controlsas
         direction = playerControls.ReadValue<Vector2>();
 
         //sets the orientation based on the player's direction
@@ -219,8 +276,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 10)
         {
+            stamina -= 10;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("Punch");
             state = State.isPunching;
 
@@ -278,8 +338,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 15)
         {
+            stamina -= 15;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("Kick");
             state = State.isKicking;
 
@@ -330,8 +393,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking)
+        if(!isAttacking && stamina >= 20)
         {
+            stamina -= 20;
+            staminaRechargeTimer = staminaRechargeInterval;
+
             Debug.Log("throw");
             state = State.isThrowing;
 
@@ -372,6 +438,20 @@ public class PlayerController : MonoBehaviour
             }
         }
         
+    }
+
+    private void OnDodge(InputValue value)
+    {
+        if(state != State.isDodging && stamina >= 10)
+        {
+            stamina -= 10;
+            staminaRechargeTimer = staminaRechargeInterval;
+
+            state = State.isDodging;
+            damageAble = false;
+        }
+       
+       
     }
 
     //might be necessary later

@@ -7,7 +7,9 @@ using UnityEngine.UI;
 public class Manager : MonoBehaviour
 {
     [SerializeField]
-    private Text playerHealthText;
+    public Text playerHealthText;
+    public Image fillImage;
+    public Slider healthSlider;
     [SerializeField]
     private Text waveCountText;
 
@@ -23,6 +25,9 @@ public class Manager : MonoBehaviour
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
 
+    private List<HealthPickup> healthDrops;
+    public HealthPickup healthDropPrefab;
+
     /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
     public GameObject bottomSpawn;
@@ -32,6 +37,9 @@ public class Manager : MonoBehaviour
     private float cameraHeight;
     private float cameraWidth;
     public Camera cameraObject;
+
+    //health
+    float healthFill;
 
     public PlayerController Player
     {
@@ -49,6 +57,8 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        healthSlider.GetComponent<Slider>();
+
         scoreTracker = gameObject.GetComponent<ScoreTracker>();
 
         timeBetweenSpawn = 0.2f;
@@ -62,102 +72,113 @@ public class Manager : MonoBehaviour
         cameraWidth = cameraHeight * cameraObject.aspect;
 
         //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
             newEnemy.PlayerTransform = player.transform;
             newEnemy.gameObject.SetActive(false);
             newEnemy.gameManager = this;
             basicEnemySpawnPool.Add(newEnemy);
+           
 
         }
 
         //sets the initial value for player health
         UpdatePlayerHealth();
+        player.DamageAble = true;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(player.health <= 0)
+       
+
+        if (player.health <= 0)
         {
+
             //build index for the loss scene
             SceneManager.LoadScene(1);
+
         }
 
-        if(isSpawning){
-            
-                //creates a short interval between spawns so the player isn't rushed all at once
-                if (basicEnemySpawnPool.Count > 0)
+        if (isSpawning)
+        {
+
+            //creates a short interval between spawns so the player isn't rushed all at once
+            if (basicEnemySpawnPool.Count > 0)
+            {
+                for (int i = 0; i < waveCount; i++)
                 {
-                    for(int i = 0; i < waveCount ; i++)
+                    if (waveCount == 4)
                     {
-                        if (waveCount == 4)
-                        {
-                            Debug.Log("test");
-                        }
-
-                        EnemyAI newEnemy = basicEnemySpawnPool[i];
-
-
-                        enemyList.Add(newEnemy);
-                        basicEnemySpawnPool.Remove(newEnemy);
-
-                        //chooses a random spawn point for the new enemy
-                        int doorSelect = Random.Range(0, 4);
-
-                        if (doorSelect == 0)
-                        {
-                            //constant value makes it so enemy doesnt pop in on screen
-                            newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
-                        }
-                        else if (doorSelect == 1)
-                        {
-                            newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
-                        }
-                        else if (doorSelect == 2)
-                        {
-                            newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
-                        }
-                        else
-                        {
-                            newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
-                        }
-
-
-                        newEnemy.gameObject.SetActive(true);
-                        
+                        Debug.Log("test");
                     }
-                    
-                }
-                
 
-            
+                    EnemyAI newEnemy = basicEnemySpawnPool[i];
+
+
+                    enemyList.Add(newEnemy);
+                    basicEnemySpawnPool.Remove(newEnemy);
+
+                    //chooses a random spawn point for the new enemy
+                    int doorSelect = Random.Range(0, 4);
+
+                    if (doorSelect == 0)
+                    {
+                        //constant value makes it so enemy doesnt pop in on screen
+                        newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                    }
+                    else if (doorSelect == 1)
+                    {
+                        newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                    }
+                    else if (doorSelect == 2)
+                    {
+                        newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                    }
+                    else
+                    {
+                        newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                    }
+
+
+                    newEnemy.gameObject.SetActive(true);
+
+                }
+
+            }
+
+
+
 
 
             isSpawning = false;
         }
-        else{
+        else
+        {
 
             if (enemyList.Count == 0)
             {
                 isSpawning = true;
-                
+
                 waveCount++;
                 UpdateWaveCountText();
             }
 
-          foreach(EnemyAI enemy in enemyList)
+            foreach (EnemyAI enemy in enemyList)
             {
-                if(waveCount >= 4)
-                {
-                    Debug.Log("error");
-                }
+               
                 if (enemy.Health <= 0)
                 {
                     //keeps track of al the enemies killed
-                   //scoreTracker.enemies
+                    //scoreTracker.enemies
+
+                    if (random.Next(0, 100) < 50)
+                    {
+                        // HealthPickup drop = Instantiate(healthDropPrefab);
+                        // drop.gameObject.transform.position = enemy.Position;
+                    }
 
                     enemy.PunchObj.IsActive = false;
                     enemy.PunchObj.transform.position = enemy.transform.position;
@@ -169,7 +190,7 @@ public class Manager : MonoBehaviour
                     enemy.Health = enemyPrefab.Health;
 
                     //returns the enemy to the spawning pool for reuse
-                   basicEnemySpawnPool.Add(enemy);
+                    basicEnemySpawnPool.Add(enemy);
                     ScoreTracker.enemiesKilled++;
                 }
             }
@@ -179,6 +200,9 @@ public class Manager : MonoBehaviour
 
     public void UpdatePlayerHealth()
     {
+        //Player health and Stamina
+         healthFill = player.health / 100f;
+        healthSlider.value = healthFill;
         playerHealthText.text = "Player Health: " + player.health;
     }
 
