@@ -82,6 +82,8 @@ public class PlayerController : MonoBehaviour
 
     float staminFill;
 
+    public SpecialMove special;
+
     //sounds
 
     public AudioSource kickSound;
@@ -480,6 +482,10 @@ public class PlayerController : MonoBehaviour
             }
         }
         
+    }
+    private void OnSpecial(InputValue value)
+    {
+        special.ActivateSpecial(10);
     }
 
     private void OnDodge(InputValue value)

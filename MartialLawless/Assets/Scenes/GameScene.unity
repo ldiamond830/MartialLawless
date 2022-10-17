@@ -912,6 +912,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &689959282 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -8790715896473125795, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+  m_PrefabInstance: {fileID: 1577032682837723494}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689959274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c041a9c29e7f974cafdda1f1f0e8168, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &717930245 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8032284955464926081, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
@@ -2069,7 +2080,6 @@ MonoBehaviour:
   player: {fileID: 689959275}
   enemyList: []
   enemyPrefab: {fileID: 8491509145549980111, guid: 7d4797e96683ef641a35551e99b97bfd, type: 3}
-  healthDropPrefab: {fileID: 0}
   cameraObject: {fileID: 519420031}
   basicEnemySpawnPool: []
 --- !u!114 &1977513165
@@ -2203,6 +2213,10 @@ PrefabInstance:
       propertyPath: thrown
       value: 
       objectReference: {fileID: 398176975}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: special
+      value: 
+      objectReference: {fileID: 689959282}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: kickSound
       value: 
