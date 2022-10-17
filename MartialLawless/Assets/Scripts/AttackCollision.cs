@@ -96,7 +96,7 @@ public class AttackCollision : MonoBehaviour
                 if (collider.IsTouching(player) && manager.Player.DamageAble)
                 {
                     //deals damage
-                    manager.Player.health -= damage;
+                    manager.Player.Damage(damage);
                     manager.UpdatePlayerHealth();
                     isActive = false;
                 }

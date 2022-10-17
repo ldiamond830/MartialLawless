@@ -37,7 +37,8 @@ public class PlayerController : MonoBehaviour
 
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
-    public int health = 100;
+    private int health = 100;
+    public int maxHealth = 100;
     public int maxStamina = 50;
    
     public int punchDamage = 10;
@@ -101,6 +102,11 @@ public class PlayerController : MonoBehaviour
     public Vector3 Position
     {
         get { return position; }
+    }
+
+    public int Health
+    {
+        get { return health; }
     }
 
     // Start is called before the first frame update
@@ -501,4 +507,22 @@ public class PlayerController : MonoBehaviour
         playerControls.Disable();
     }
     
+
+    public void Heal(int amount)
+    {
+        health += amount;
+        if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
+    }
+
+    public void Damage(int amount)
+    {
+        health -= amount;
+        if (health < 0)
+        {
+            health = 0;
+        }
+    }
 }

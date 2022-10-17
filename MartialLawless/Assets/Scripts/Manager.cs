@@ -28,8 +28,8 @@ public class Manager : MonoBehaviour
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
 
-    private List<HealthPickup> healthDrops;
-    public HealthPickup healthDropPrefab;
+    private List<GameObject> healthDrops;
+    private GameObject healthDropPrefab;
 
     /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
@@ -71,6 +71,8 @@ public class Manager : MonoBehaviour
         isSpawning = true;
         enemyList = new List<EnemyAI>();
 
+        healthDrops = new List<GameObject>();
+
         cameraHeight = cameraObject.orthographicSize * 2f;
         cameraWidth = cameraHeight * cameraObject.aspect;
 
@@ -82,8 +84,6 @@ public class Manager : MonoBehaviour
             newEnemy.gameObject.SetActive(false);
             newEnemy.gameManager = this;
             basicEnemySpawnPool.Add(newEnemy);
-           
-
         }
 
         //sets the initial value for player health
@@ -95,14 +95,10 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
-
-        if (player.health <= 0)
+        if (player.Health <= 0)
         {
-
             //build index for the loss scene
             SceneManager.LoadScene(1);
-
         }
 
         if (isSpawning)
@@ -179,8 +175,9 @@ public class Manager : MonoBehaviour
 
                     if (random.Next(0, 100) < 50)
                     {
-                        // HealthPickup drop = Instantiate(healthDropPrefab);
-                        // drop.gameObject.transform.position = enemy.Position;
+                        GameObject drop = Instantiate(healthDropPrefab);
+                        drop.gameObject.transform.position = enemy.Position;
+                        healthDrops.Add(drop);
                     }
 
                     enemy.PunchObj.IsActive = false;
@@ -197,6 +194,20 @@ public class Manager : MonoBehaviour
                     ScoreTracker.enemiesKilled++;
                 }
             }
+
+            BoxCollider2D playerHitBox = player.GetComponent<BoxCollider2D>();
+            foreach (GameObject healthDrop in healthDrops)
+            {
+                // Check if any of the health drops are colliding with the player
+                if (healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox))
+                {
+                    // If they are, heal the player and delete them
+                    player.Heal(20);
+                    healthDrops.Remove(healthDrop);
+                    Destroy(healthDrop);
+                    
+                }
+            }
         }
     }
 
@@ -204,9 +215,9 @@ public class Manager : MonoBehaviour
     public void UpdatePlayerHealth()
     {
         //Player health and Stamina
-         healthFill = player.health / 100f;
+        healthFill = player.Health / 100f;
         healthSlider.value = healthFill;
-        playerHealthText.text = "Player Health: " + player.health;
+        playerHealthText.text = "Player Health: " + player.Health;
     }
 
     public void UpdateWaveCountText()
