@@ -2080,6 +2080,7 @@ MonoBehaviour:
   player: {fileID: 689959275}
   enemyList: []
   enemyPrefab: {fileID: 8491509145549980111, guid: 7d4797e96683ef641a35551e99b97bfd, type: 3}
+  healthDropPrefab: {fileID: 2626286806664553748, guid: 9c6635a9b6687224bab5e803b8656162, type: 3}
   cameraObject: {fileID: 519420031}
   basicEnemySpawnPool: []
 --- !u!114 &1977513165

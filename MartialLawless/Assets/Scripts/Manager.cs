@@ -29,7 +29,7 @@ public class Manager : MonoBehaviour
     public EnemyAI enemyPrefab;
 
     private List<GameObject> healthDrops;
-    private GameObject healthDropPrefab;
+    public GameObject healthDropPrefab;
 
     /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
@@ -210,6 +210,7 @@ public class Manager : MonoBehaviour
             }
 
             BoxCollider2D playerHitBox = player.GetComponent<BoxCollider2D>();
+            List<GameObject> collectedDrops = new List<GameObject>();
             foreach (GameObject healthDrop in healthDrops)
             {
                 // Check if any of the health drops are colliding with the player
@@ -217,10 +218,15 @@ public class Manager : MonoBehaviour
                 {
                     // If they are, heal the player and delete them
                     player.Heal(20);
-                    healthDrops.Remove(healthDrop);
-                    Destroy(healthDrop);
+                    collectedDrops.Add(healthDrop);
                     
                 }
+            }
+
+            foreach (GameObject healthDrop in collectedDrops)
+            {
+                healthDrops.Remove(healthDrop);
+                Destroy(healthDrop);
             }
         }
     }
