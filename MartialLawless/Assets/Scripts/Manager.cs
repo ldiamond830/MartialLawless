@@ -10,6 +10,9 @@ public class Manager : MonoBehaviour
     public Text playerHealthText;
     public Image fillImage;
     public Slider healthSlider;
+
+    
+
     [SerializeField]
     private Text waveCountText;
 

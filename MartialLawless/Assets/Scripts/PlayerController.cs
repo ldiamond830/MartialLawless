@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum Orientation
 {
@@ -72,9 +74,15 @@ public class PlayerController : MonoBehaviour
     private Bounds playerBounds;
     public GameObject leftBorder;
     private Bounds leftBorderBounds;
+    [SerializeField]
+    public Text playerStaminaText;
+    public Image fillImageSta;
+    public Slider staminaSlider;
+
+
 
     //sounds
-  
+
     public AudioSource kickSound;
     public AudioSource punchSound;
 
@@ -154,6 +162,10 @@ public class PlayerController : MonoBehaviour
                     if(stamina > maxStamina)
                     {
                         stamina = maxStamina;
+                        fillImageSta = stamina / 100f;
+                        staminaSlider.Value = fillImageSta;
+                        playerStaminaText.Text = "Stamina: " + stamina;
+
                     }
                 }
                 //uses else if so if stamina is maxed recharge timer doesn't change
@@ -290,6 +302,10 @@ public class PlayerController : MonoBehaviour
         if(!isAttacking && stamina >= 10)
         {
             stamina -= 10;
+            fillImageSta = stamina / 100f;
+            staminaSlider.Value = fillImageSta;
+            playerStaminaText.Text = "Stamina: " + stamina;
+
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("Punch");
@@ -329,7 +345,6 @@ public class PlayerController : MonoBehaviour
             punchSound.enabled = true;
             if (punchSound != null)
             {
-                
                 punchSound.Play();
                 Debug.Log("Punch Sound Played");
             }
@@ -353,6 +368,9 @@ public class PlayerController : MonoBehaviour
         if(!isAttacking && stamina >= 15)
         {
             stamina -= 15;
+            fillImageSta = stamina / 100f;
+            staminaSlider.Value = fillImageSta;
+            playerStaminaText.Text = "Stamina: " + stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("Kick");
@@ -408,6 +426,9 @@ public class PlayerController : MonoBehaviour
         if(!isAttacking && stamina >= 20)
         {
             stamina -= 20;
+            fillImageSta = stamina / 100f;
+            staminaSlider.Value = fillImageSta;
+            playerStaminaText.Text = "Stamina: " + stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("throw");
@@ -457,6 +478,9 @@ public class PlayerController : MonoBehaviour
         if(state != State.isDodging && stamina >= 10)
         {
             stamina -= 10;
+            fillImageSta = stamina / 100f;
+            staminaSlider.Value = fillImageSta;
+            playerStaminaText.Text = "Stamina: " + stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             state = State.isDodging;
