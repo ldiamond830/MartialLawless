@@ -258,7 +258,6 @@ public class PlayerController : MonoBehaviour
             punchSound.enabled = true;
             if (punchSound != null)
             {
-                
                 punchSound.Play();
                 Debug.Log("Punch Sound Played");
             }
