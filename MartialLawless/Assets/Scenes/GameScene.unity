@@ -1952,7 +1952,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHealthText: {fileID: 266740381}
-  fillImage: {fileID: 0}
+  fillImage: {fileID: 1645556513}
   healthSlider: {fileID: 1065487183}
   waveCountText: {fileID: 945760854}
   player: {fileID: 689959275}
@@ -2108,6 +2108,18 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1977513164}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: fillImageSta
+      value: 
+      objectReference: {fileID: 1385233534}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: staminaSlider
+      value: 
+      objectReference: {fileID: 959130608}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: playerStaminaText
+      value: 
+      objectReference: {fileID: 93421961}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: playerControls.m_SingletonActionBindings.Array.size
       value: 10

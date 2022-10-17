@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
     public Image fillImageSta;
     public Slider staminaSlider;
 
-
+    float staminFill;
 
     //sounds
 
@@ -125,6 +125,7 @@ public class PlayerController : MonoBehaviour
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
 
+        staminaSlider.GetComponent<Slider>();
         
 
     }
@@ -151,9 +152,9 @@ public class PlayerController : MonoBehaviour
                     if(stamina > maxStamina)
                     {
                         stamina = maxStamina;
-                        fillImageSta = stamina / 100f;
-                        staminaSlider.Value = fillImageSta;
-                        playerStaminaText.Text = "Stamina: " + stamina;
+                        staminFill = stamina / 100f;
+                        staminaSlider.value = staminFill;
+                        playerStaminaText.text = "Stamina: " + stamina;
 
                     }
                 }
@@ -291,9 +292,9 @@ public class PlayerController : MonoBehaviour
         if(!isAttacking && stamina >= 10)
         {
             stamina -= 10;
-            fillImageSta = stamina / 100f;
-            staminaSlider.Value = fillImageSta;
-            playerStaminaText.Text = "Stamina: " + stamina;
+            staminFill = stamina / 100f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + stamina;
 
             staminaRechargeTimer = staminaRechargeInterval;
 
@@ -357,9 +358,9 @@ public class PlayerController : MonoBehaviour
         if(!isAttacking && stamina >= 15)
         {
             stamina -= 15;
-            fillImageSta = stamina / 100f;
-            staminaSlider.Value = fillImageSta;
-            playerStaminaText.Text = "Stamina: " + stamina;
+            staminFill = stamina / 100f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("Kick");
@@ -415,9 +416,9 @@ public class PlayerController : MonoBehaviour
         if(!isAttacking && stamina >= 20)
         {
             stamina -= 20;
-            fillImageSta = stamina / 100f;
-            staminaSlider.Value = fillImageSta;
-            playerStaminaText.Text = "Stamina: " + stamina;
+            staminFill = stamina / 100f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("throw");
@@ -467,9 +468,9 @@ public class PlayerController : MonoBehaviour
         if(state != State.isDodging && stamina >= 10)
         {
             stamina -= 10;
-            fillImageSta = stamina / 100f;
-            staminaSlider.Value = fillImageSta;
-            playerStaminaText.Text = "Stamina: " + stamina;
+            staminFill = stamina / 100f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             state = State.isDodging;
