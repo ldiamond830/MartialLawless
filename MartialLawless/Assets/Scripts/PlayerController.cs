@@ -298,6 +298,11 @@ public class PlayerController : MonoBehaviour
                 break;
 
         }
+        /*
+        staminFill = stamina / 100f;
+        staminaSlider.value = staminFill;
+        playerStaminaText.text = "Stamina: " + stamina;
+        */
     }
 
 
