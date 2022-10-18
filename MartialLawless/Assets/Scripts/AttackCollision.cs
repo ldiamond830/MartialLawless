@@ -97,7 +97,7 @@ public class AttackCollision : MonoBehaviour
                 {
                     //deals damage
                     manager.Player.Damage(damage);
-                    manager.UpdatePlayerHealth();
+                    //manager.UpdatePlayerHealth();
                     isActive = false;
                 }
             }

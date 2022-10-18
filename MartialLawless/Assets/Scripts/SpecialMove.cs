@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class SpecialMove : MonoBehaviour
 {
-    private bool isActive = false;
-    private int amountLeft = 0;
-    private float timer = 0;
-
+    private bool isActive;
+    private int amountLeft;
+    private float timer;
+    private PlayerController player;
+    
     // Start is called before the first frame update
     void Start()
     {
+        isActive = false;
+        amountLeft = 0;
+        timer = 0;
+        player = this.GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
@@ -28,6 +33,7 @@ public class SpecialMove : MonoBehaviour
                 {
                     amountLeft--;
                     timer = 0;
+                    player.Heal(5);
                 }
             }
             timer += Time.deltaTime;

@@ -229,6 +229,7 @@ public class Manager : MonoBehaviour
                 Destroy(healthDrop);
             }
         }
+        UpdatePlayerHealth();
     }
 
 
