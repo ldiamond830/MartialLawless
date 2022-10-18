@@ -75,6 +75,15 @@ public class PlayerController : MonoBehaviour
     private Bounds playerBounds;
     public GameObject leftBorder;
     private Bounds leftBorderBounds;
+    public GameObject topBorder;
+    private Bounds topBorderBounds;
+    public GameObject bottomBorder;
+    private Bounds bottomBorderBounds;
+    public GameObject rightBorder;
+    private Bounds rightBorderBounds;
+
+
+
     [SerializeField]
     public Text playerStaminaText;
     public Image fillImageSta;
@@ -137,8 +146,12 @@ public class PlayerController : MonoBehaviour
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
 
+        //gets bounds of each border object
         playerBounds = this.GetComponent<SpriteRenderer>().bounds;
         leftBorderBounds = leftBorder.GetComponent<SpriteRenderer>().bounds;
+        topBorderBounds = topBorder.GetComponent<SpriteRenderer>().bounds;
+        bottomBorderBounds = bottomBorder.GetComponent<SpriteRenderer>().bounds;
+        rightBorderBounds = rightBorder.GetComponent<SpriteRenderer>().bounds;
 
         staminaSlider.GetComponent<Slider>();
         
@@ -150,11 +163,23 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("stamina: " + stamina);
 
-        if (position.x - playerBounds.extents.x <= (leftBorderBounds.max.x))
+        if (position.x - playerBounds.extents.x <= leftBorderBounds.max.x)
         {
             position.x = leftBorderBounds.max.x + playerBounds.extents.x;
         }
+        else if(position.x + playerBounds.extents.x >= rightBorderBounds.min.x)
+        {
+            position.x = rightBorderBounds.min.x - playerBounds.extents.x;
+        }
 
+        if(position.y + playerBounds.extents.y >= topBorderBounds.min.y)
+        {
+            position.y = topBorderBounds.min.y - playerBounds.extents.y;
+        }
+        else if (position.y - playerBounds.extents.y <= bottomBorderBounds.max.y)
+        {
+            position.y = bottomBorderBounds.max.y + playerBounds.extents.y;
+        }
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
@@ -169,8 +194,10 @@ public class PlayerController : MonoBehaviour
                 {
                     //increase or decrease constant to change stamina recharge rate
                     stamina += 3 * Time.deltaTime;
-                    
-                    if(stamina > maxStamina)
+                    staminFill = stamina / 50.0f;
+                    staminaSlider.value = staminFill;
+
+                    if (stamina > maxStamina)
                     {
                         stamina = maxStamina;
                         staminFill = stamina / 100f;
@@ -310,9 +337,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking && stamina >= 10)
+        if(!isAttacking && stamina >= 10.0f)
         {
-            stamina -= 10;
+            stamina -= 10.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + stamina;
@@ -376,9 +403,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking && stamina >= 15)
+        if(!isAttacking && stamina >= 15.0f)
         {
-            stamina -= 15;
+            stamina -= 15.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + stamina;
@@ -434,9 +461,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking && stamina >= 20)
+        if(!isAttacking && stamina >= 20.0f)
         {
-            stamina -= 20;
+            stamina -= 20.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + stamina;
@@ -497,10 +524,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnDodge(InputValue value)
     {
-        if(state != State.isDodging && stamina >= 10)
+        if(state != State.isDodging && stamina >= 10.0f)
         {
-            stamina -= 10;
-            staminFill = stamina / 100f;
+            stamina -= 10.0f;
+            staminFill = stamina / 50.0f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + stamina;
             staminaRechargeTimer = staminaRechargeInterval;
