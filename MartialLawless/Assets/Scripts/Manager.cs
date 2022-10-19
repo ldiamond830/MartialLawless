@@ -28,8 +28,8 @@ public class Manager : MonoBehaviour
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
 
-    public List<GameObject> healthDropPool;
-    public List<GameObject> activeHealthDrops;
+    private List<GameObject> healthDropPool;
+    private List<GameObject> activeHealthDrops;
     public GameObject healthDropPrefab;
 
     /* failed idea may be useful later so I'm not deleting
@@ -95,7 +95,7 @@ public class Manager : MonoBehaviour
         healthDropPool = new List<GameObject>();
         activeHealthDrops = new List<GameObject>();
 
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 20; i++)
         {
             GameObject drop = Instantiate(healthDropPrefab);
             drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
