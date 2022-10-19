@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
     public bool isAttacking = false;
 
     private float staminaRechargeInterval = 2.0f;
-    private float staminaRechargeTimer = 2.0f;
+    private float staminaRechargeTimer = 1.0f;
     private float stamina = 50;
 
     public Manager gameManager;
@@ -199,7 +199,7 @@ public class PlayerController : MonoBehaviour
                 if(staminaRechargeTimer <= 0 && stamina < maxStamina)
                 {
                     //increase or decrease constant to change stamina recharge rate
-                    stamina += 3 * Time.deltaTime;
+                    stamina += 5 * Time.deltaTime;
                     staminFill = stamina / 50.0f;
                     staminaSlider.value = staminFill;
 
@@ -348,9 +348,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking && stamina >= 10.0f)
+        if(!isAttacking && stamina >= 5.0f)
         {
-            stamina -= 10.0f;
+            stamina -= 5.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -414,9 +414,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking && stamina >= 15.0f)
+        if(!isAttacking && stamina >= 10.0f)
         {
-            stamina -= 15.0f;
+            stamina -= 10.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -472,9 +472,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking && stamina >= 20.0f)
+        if(!isAttacking && stamina >= 15.0f)
         {
-            stamina -= 20.0f;
+            stamina -= 15.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -542,9 +542,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnDodge(InputValue value)
     {
-        if(state != State.isDodging && stamina >= 10.0f)
+        if(state != State.isDodging && stamina >= 5.0f)
         {
-            stamina -= 10.0f;
+            stamina -= 5.0f;
             staminFill = stamina / 50.0f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
