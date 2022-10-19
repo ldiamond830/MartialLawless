@@ -28,7 +28,8 @@ public class Manager : MonoBehaviour
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
 
-    private List<GameObject> healthDrops;
+    public List<GameObject> healthDropPool;
+    public List<GameObject> activeHealthDrops;
     public GameObject healthDropPrefab;
 
     /* failed idea may be useful later so I'm not deleting
@@ -91,7 +92,15 @@ public class Manager : MonoBehaviour
         isSpawning = true;
         enemyList = new List<EnemyAI>();
 
-        healthDrops = new List<GameObject>();
+        healthDropPool = new List<GameObject>();
+        activeHealthDrops = new List<GameObject>();
+
+        for (int i = 0; i < 50; i++)
+        {
+            GameObject drop = Instantiate(healthDropPrefab);
+            drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+            healthDropPool.Add(drop);
+        }
 
         cameraHeight = cameraObject.orthographicSize * 2f;
         cameraWidth = cameraHeight * cameraObject.aspect;
@@ -197,11 +206,21 @@ public class Manager : MonoBehaviour
                     specialAmountFull++;
                     Debug.Log("enemy killed");
 
-                    if (random.Next(0, 100) < 50)
+                    if (random.Next(0, 100) < 100)
                     {
-                        GameObject drop = Instantiate(healthDropPrefab);
-                        drop.gameObject.transform.position = enemy.Position;
-                        healthDrops.Add(drop);
+                        GameObject drop;
+                        if (healthDropPool.Count > 0)
+                        {
+                            drop = healthDropPool[0];
+                            activeHealthDrops.Add(drop);
+                            healthDropPool.RemoveAt(0);
+                        }
+                        else
+                        {
+                            drop = Instantiate(healthDropPrefab);
+                            activeHealthDrops.Add(drop);
+                        }
+                        drop.transform.position = enemy.transform.position;
                     }
 
                     enemy.PunchObj.IsActive = false;
@@ -220,23 +239,21 @@ public class Manager : MonoBehaviour
             }
 
             BoxCollider2D playerHitBox = player.GetComponent<BoxCollider2D>();
-            List<GameObject> collectedDrops = new List<GameObject>();
-            foreach (GameObject healthDrop in healthDrops)
+            foreach (GameObject healthDrop in activeHealthDrops)
             {
+                Debug.Log(healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox));
+                // Debug.Log(playerHitBox);
                 // Check if any of the health drops are colliding with the player
                 if (healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox))
                 {
                     // If they are, heal the player and delete them
+                    Debug.Log("Drop touched");
                     player.Heal(20);
-                    collectedDrops.Add(healthDrop);
-                    
-                }
-            }
+                    healthDropPool.Add(healthDrop);
+                    activeHealthDrops.Remove(healthDrop);
+                    healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
 
-            foreach (GameObject healthDrop in collectedDrops)
-            {
-                healthDrops.Remove(healthDrop);
-                Destroy(healthDrop);
+                }
             }
         }
         UpdatePlayerHealth();
