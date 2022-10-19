@@ -255,6 +255,7 @@ public class Manager : MonoBehaviour
 
                 }
             }
+            
         }
         UpdatePlayerHealth();
     }
