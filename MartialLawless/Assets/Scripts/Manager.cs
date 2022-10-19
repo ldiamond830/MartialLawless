@@ -47,6 +47,9 @@ public class Manager : MonoBehaviour
     //variable for tracking/controlling the special attack bar
     private int specialAmountFull;
 
+    //sounds
+    public AudioSource beginningWavesSound;
+
     //and getter setter for special attack bar
     public int SpecialAmountFull
     {
@@ -70,6 +73,13 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        beginningWavesSound.enabled = true;
+        if (beginningWavesSound != null)
+        {
+            beginningWavesSound.Play();
+            Debug.Log("beginningWavesSound Played");
+        }
+
         healthSlider.GetComponent<Slider>();
 
         scoreTracker = gameObject.GetComponent<ScoreTracker>();

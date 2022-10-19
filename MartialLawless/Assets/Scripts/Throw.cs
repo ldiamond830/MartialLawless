@@ -19,6 +19,8 @@ public class Throw : MonoBehaviour
     private Vector3 startCenter;
     private Vector3 endCenter;
 
+    //sounds
+
     void Start()
     {
         isThrown = false;
@@ -55,6 +57,7 @@ public class Throw : MonoBehaviour
         //if the enemy is not currently being thrown
         if(!isThrown)
         {
+
             enemy.GetComponent<EnemyAI>().Position = player.gameObject.transform.position + new Vector3(0.0f, 0.5f);
             //current location is updated to the passed in enemy's position and the
             //passed in enemy is set
@@ -93,6 +96,7 @@ public class Throw : MonoBehaviour
 
             //the enemy is now being thrown
             isThrown = true;
+           
         }
         
     }

@@ -97,6 +97,8 @@ public class PlayerController : MonoBehaviour
 
     public AudioSource kickSound;
     public AudioSource punchSound;
+    public AudioSource throwSound;
+
 
     public bool DamageAble
     {
@@ -154,7 +156,11 @@ public class PlayerController : MonoBehaviour
         rightBorderBounds = rightBorder.GetComponent<SpriteRenderer>().bounds;
 
         staminaSlider.GetComponent<Slider>();
-        
+
+        staminFill = stamina / 50.0f;
+        staminaSlider.value = staminFill;
+        playerStaminaText.text = "Stamina: " + (int)stamina;
+
 
     }
 
@@ -202,7 +208,7 @@ public class PlayerController : MonoBehaviour
                         stamina = maxStamina;
                         staminFill = stamina / 100f;
                         staminaSlider.value = staminFill;
-                        playerStaminaText.text = "Stamina: " + stamina;
+                        playerStaminaText.text = "Stamina: " + (int)stamina;
 
                     }
                 }
@@ -298,11 +304,11 @@ public class PlayerController : MonoBehaviour
                 break;
 
         }
-        /*
+        
         staminFill = stamina / 100f;
         staminaSlider.value = staminFill;
-        playerStaminaText.text = "Stamina: " + stamina;
-        */
+        playerStaminaText.text = "Stamina: " + (int)stamina;
+        
     }
 
 
@@ -347,7 +353,7 @@ public class PlayerController : MonoBehaviour
             stamina -= 10.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
-            playerStaminaText.text = "Stamina: " + stamina;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
 
             staminaRechargeTimer = staminaRechargeInterval;
 
@@ -413,7 +419,7 @@ public class PlayerController : MonoBehaviour
             stamina -= 15.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
-            playerStaminaText.text = "Stamina: " + stamina;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("Kick");
@@ -471,11 +477,18 @@ public class PlayerController : MonoBehaviour
             stamina -= 20.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
-            playerStaminaText.text = "Stamina: " + stamina;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("throw");
             state = State.isThrowing;
+            //sound effect here
+            throwSound.enabled = true;
+            if (throwSound != null)
+            {
+                throwSound.Play();
+                Debug.Log("throw Sound Played");
+            }
 
             thrown.EnemyList.Clear();
 
@@ -534,7 +547,7 @@ public class PlayerController : MonoBehaviour
             stamina -= 10.0f;
             staminFill = stamina / 50.0f;
             staminaSlider.value = staminFill;
-            playerStaminaText.text = "Stamina: " + stamina;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             state = State.isDodging;

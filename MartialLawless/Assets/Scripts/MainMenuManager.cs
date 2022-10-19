@@ -29,6 +29,7 @@ public class MainMenuManager : MonoBehaviour
     public void StartGame()
     {
         //0 is the index of gameScene in the build settings
+        introSong.Stop();
         SceneManager.LoadScene(0);
        
 
