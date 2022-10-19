@@ -23,6 +23,8 @@ public class EnemyAI : MonoBehaviour
 
     private Vector2 position;
 
+    private List<EnemyAI> enemies;
+
     // Copied from PlayerController.cs
     private State state;
 
@@ -56,6 +58,11 @@ public class EnemyAI : MonoBehaviour
 
     public Manager gameManager;
 
+    public AttackCollision PunchObj
+    {
+        get { return punch; }
+    }
+
     public Vector3 Position
     {
         get{return position;}
@@ -70,6 +77,7 @@ public class EnemyAI : MonoBehaviour
 
     [SerializeField]
     private int health = 1;
+
      public int Health
     {
         set { health = value; }
@@ -83,6 +91,21 @@ public class EnemyAI : MonoBehaviour
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
         attacks = new List<AttackCollision>();
+
+
+        //intializes the punch hit box
+        punch.manager = gameManager;
+        punch.Damage = punchDamage;
+        punch.IsPlayer = false;
+       
+
+        //initializes the kick hit box
+        kick.manager = gameManager;
+        kick.Damage = kickDamage;
+        kick.IsPlayer = false;
+        
+
+
     }
 
     // Update is called once per frame
@@ -93,6 +116,23 @@ public class EnemyAI : MonoBehaviour
         //position = transform.position;
         // Get the vector from this enemy to the player
         Vector2 moveVector = playerPosition - (Vector2)transform.position;
+
+        // Get an updated list of other active enemies
+        enemies = gameManager.EnemyList;
+
+        Vector2 personalSpaceVector = Vector2.zero;
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            // If this enemy is in this enemy's personal space
+            if ((enemies[i].Position - transform.position).sqrMagnitude < Mathf.Pow(stopDistance, 2))
+            {
+                // Move away from them
+                personalSpaceVector += (Vector2)(transform.position - enemies[i].Position).normalized;
+            }
+        }
+
+        moveVector = moveVector.normalized;
+        moveVector += personalSpaceVector.normalized;
 
         moveVector = moveVector.normalized;
 
@@ -128,7 +168,6 @@ public class EnemyAI : MonoBehaviour
                 attackTimer = 0.0f;
             }
         }
-
         switch (state)
         {
             case State.isIdle:
@@ -175,8 +214,9 @@ public class EnemyAI : MonoBehaviour
                     //after 60 cycles the player is able to move again
                     onCooldown = true;
                     attackTimer -= kickDuration;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    //returns punch hitbox to intial position
+                    kick.gameObject.transform.position = position;
+                    kick.IsActive = false;
                     state = State.isMoving;
                 }
 
@@ -190,8 +230,8 @@ public class EnemyAI : MonoBehaviour
                     //after 60 cycles the player is able to move again
                     onCooldown = true;
                     attackTimer -= punchDuration;
-                    attacks[0].IsActive = false;
-                    attacks.RemoveAt(0);
+                    punch.gameObject.transform.position = position;
+                    punch.IsActive = false;
                     state = State.isMoving;
                 }
 
@@ -220,35 +260,39 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Enemy punch");
         state = State.isPunching;
 
-        AttackCollision newPunch;
+        //AttackCollision newPunch;
 
+        //checks for orientation and spawns a hitbox in front of the player
         //checks for orientation and spawns a hitbox in front of the player
         switch (orientation)
         {
+
             case Orientation.up:
-                newPunch = Instantiate(punch, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+                //punch.gameObject.SetActive(true);
+                punch.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                 break;
+
             case Orientation.down:
-                newPunch = Instantiate(punch, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+                punch.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+
 
                 break;
+
             case Orientation.left:
-                newPunch = Instantiate(punch, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                punch.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
 
                 break;
             case Orientation.right:
-            default:
-                newPunch = Instantiate(punch, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                punch.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                 break;
         }
-        //sound effect here
 
-        newPunch.manager = gameManager;
-        newPunch.Damage = punchDamage;
-        newPunch.IsPlayer = false;
-        attacks.Add(newPunch);
+        
+
+        
+        punch.IsActive = true;
     }
 
     private void Kick()
@@ -256,33 +300,31 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Enemy kick");
         state = State.isKicking;
 
-        AttackCollision newKick = null;
+        //AttackCollision newKick = null;
 
+        //checks for orientation and spawns a hitbox in front of the player
         //checks for orientation and spawns a hitbox in front of the player
         switch (orientation)
         {
             case Orientation.up:
-                newKick = Instantiate(kick, new Vector2(position.x, position.y + 0.5f), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
 
                 break;
             case Orientation.down:
-                newKick = Instantiate(kick, new Vector2(position.x, position.y - 0.5f), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
 
                 break;
             case Orientation.left:
-                newKick = Instantiate(kick, new Vector2(position.x - 0.5f, position.y), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
 
                 break;
             case Orientation.right:
-                newKick = Instantiate(kick, new Vector2(position.x + 0.5f, position.y), Quaternion.identity);
+                kick.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
 
                 break;
         }
         //sound effect here
 
-        newKick.manager = gameManager;
-        newKick.Damage = kickDamage;
-        newKick.IsPlayer = false;
-        attacks.Add(newKick);
+        kick.IsActive = true;
     }
 }
