@@ -241,7 +241,7 @@ public class Manager : MonoBehaviour
             BoxCollider2D playerHitBox = player.GetComponent<BoxCollider2D>();
             foreach (GameObject healthDrop in activeHealthDrops)
             {
-                Debug.Log(healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox));
+                // Debug.Log(healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox));
                 // Debug.Log(playerHitBox);
                 // Check if any of the health drops are colliding with the player
                 if (healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox))
