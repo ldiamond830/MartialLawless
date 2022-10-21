@@ -125,6 +125,7 @@ public class Throw : MonoBehaviour
 
         //enemy's position is slerped along the determined coordinates
         enemy.GetComponent<EnemyAI>().Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
+        //enemy.GetComponent<EnemyAI>().punch.Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
 
     }
 }

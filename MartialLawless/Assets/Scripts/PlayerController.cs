@@ -63,8 +63,8 @@ public class PlayerController : MonoBehaviour
     public float wait = 0.0f;
     public bool isAttacking = false;
 
-    private float staminaRechargeInterval = 2.0f;
-    private float staminaRechargeTimer = 1.0f;
+    private float staminaRechargeInterval = 0.75f;
+    private float staminaRechargeTimer;
     private float stamina = 50;
 
     public Manager gameManager;
@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
     private Bounds rightBorderBounds;
 
 
-
+    
     [SerializeField]
     public Text playerStaminaText;
     public Image fillImageSta;
@@ -143,12 +143,12 @@ public class PlayerController : MonoBehaviour
         kick.Damage = kickDamage;
         kick.IsPlayer = true;
 
-        //intializes the punch hit box
+        //intializes the throw hit box
         thrown.manager = gameManager;
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
 
-        //gets bounds of each border object
+        //gets bounds of each border object and the player sprite
         playerBounds = this.GetComponent<SpriteRenderer>().bounds;
         leftBorderBounds = leftBorder.GetComponent<SpriteRenderer>().bounds;
         topBorderBounds = topBorder.GetComponent<SpriteRenderer>().bounds;
@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour
         staminaSlider.value = staminFill;
         playerStaminaText.text = "Stamina: " + (int)stamina;
 
-
+        staminaRechargeTimer = staminaRechargeInterval;
     }
 
     // Update is called once per frame
@@ -199,7 +199,7 @@ public class PlayerController : MonoBehaviour
                 if(staminaRechargeTimer <= 0 && stamina < maxStamina)
                 {
                     //increase or decrease constant to change stamina recharge rate
-                    stamina += 5 * Time.deltaTime;
+                    stamina += 7 * Time.deltaTime;
                     staminFill = stamina / 50.0f;
                     staminaSlider.value = staminFill;
 
@@ -474,8 +474,9 @@ public class PlayerController : MonoBehaviour
     {
         if(!isAttacking && stamina >= 15.0f)
         {
+            //sets stamina and slider values
             stamina -= 15.0f;
-            staminFill = stamina / 100f;
+            staminFill = stamina / 100.0f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;

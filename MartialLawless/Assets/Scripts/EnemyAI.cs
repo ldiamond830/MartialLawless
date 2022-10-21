@@ -97,13 +97,14 @@ public class EnemyAI : MonoBehaviour
         punch.manager = gameManager;
         punch.Damage = punchDamage;
         punch.IsPlayer = false;
+        punch.ParentEnemy = this;
        
 
         //initializes the kick hit box
         kick.manager = gameManager;
         kick.Damage = kickDamage;
         kick.IsPlayer = false;
-        
+        kick.ParentEnemy = this;
 
 
     }
@@ -201,7 +202,7 @@ public class EnemyAI : MonoBehaviour
                 transform.position = position;
 
                 break;
-
+                //currently not being implimented
             case State.isBlocking:
 
                 break;
