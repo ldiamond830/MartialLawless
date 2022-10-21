@@ -533,7 +533,7 @@ public class PlayerController : MonoBehaviour
     {
         //if the special attack bar is 10 or higher
         Debug.Log("Special bar fill: " + gameManager.SpecialAmountFull + "/ 10");
-        if (gameManager.SpecialAmountFull >= 3)
+        if (gameManager.SpecialAmountFull >= 10)
         {
             //activate the special attack and reset the special attack bar
             gameManager.SpecialAmountFull = 0;

@@ -40,6 +40,9 @@ public class Throw : MonoBehaviour
             {
                 //move enemy along arc towards landing position
                 ArcPosition(currentLocation, landingLocation, 2);
+
+                //update the enemy's current location
+                currentLocation = enemy.GetComponent<EnemyAI>().Position;
             }
             else
             {
@@ -51,8 +54,7 @@ public class Throw : MonoBehaviour
                 isThrown = false;
             }
 
-            //update the enemy's current location
-            currentLocation = enemy.GetComponent<EnemyAI>().Position;
+            
         }
         
     }
