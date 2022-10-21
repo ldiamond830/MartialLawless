@@ -587,6 +587,16 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("player collided");
+        if (collision.gameObject.name == "HealthDrop")
+        {
+            Debug.Log("Health drop touched");
+            Heal(20);
+            gameManager.CollectHealthDrop(collision.gameObject);
+        }
+    }
 
     public void Heal(int amount)
     {

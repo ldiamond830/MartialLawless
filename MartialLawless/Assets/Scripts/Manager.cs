@@ -211,6 +211,7 @@ public class Manager : MonoBehaviour
                         GameObject drop;
                         if (healthDropPool.Count > 0)
                         {
+                            Debug.Log("Drop pulled from pool");
                             drop = healthDropPool[0];
                             activeHealthDrops.Add(drop);
                             healthDropPool.RemoveAt(0);
@@ -220,7 +221,7 @@ public class Manager : MonoBehaviour
                             drop = Instantiate(healthDropPrefab);
                             activeHealthDrops.Add(drop);
                         }
-                        drop.transform.position = enemy.transform.position;
+                        drop.transform.position = enemy.Position;
                     }
 
                     enemy.PunchObj.IsActive = false;
@@ -238,23 +239,22 @@ public class Manager : MonoBehaviour
                 }
             }
 
-            BoxCollider2D playerHitBox = player.GetComponent<BoxCollider2D>();
-            foreach (GameObject healthDrop in activeHealthDrops)
-            {
-                // Debug.Log(healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox));
-                // Debug.Log(playerHitBox);
-                // Check if any of the health drops are colliding with the player
-                if (healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox))
-                {
-                    // If they are, heal the player and delete them
-                    Debug.Log("Drop touched");
-                    player.Heal(20);
-                    healthDropPool.Add(healthDrop);
-                    activeHealthDrops.Remove(healthDrop);
-                    healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
-
-                }
-            }
+            //BoxCollider2D playerHitBox = player.GetComponent<BoxCollider2D>();
+            //foreach (GameObject healthDrop in activeHealthDrops)
+            //{
+            //    // Debug.Log(healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox));
+            //    // Debug.Log(playerHitBox);
+            //    // Check if any of the health drops are colliding with the player
+            //    if (healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox))
+            //    {
+            //        // If they are, heal the player and delete them
+            //        Debug.Log("Drop touched");
+            //        player.Heal(20);
+            //        healthDropPool.Add(healthDrop);
+            //        activeHealthDrops.Remove(healthDrop);
+            //        healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+            //    }
+            //}
             
         }
         UpdatePlayerHealth();
@@ -272,5 +272,12 @@ public class Manager : MonoBehaviour
     public void UpdateWaveCountText()
     {
         waveCountText.text = "Wave Count: " + waveCount;
+    }
+
+    public void CollectHealthDrop(GameObject drop)
+    {
+        activeHealthDrops.Remove(drop);
+        healthDropPool.Add(drop);
+        drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
     }
 }
