@@ -9,6 +9,12 @@ public class SpecialMove : MonoBehaviour
     private float timer;
     private PlayerController player;
     
+    //getter for the variable isActive
+    public bool IsActive
+    {
+        get { return isActive; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +32,10 @@ public class SpecialMove : MonoBehaviour
             if (amountLeft <= 0)
             {
                 isActive = false;
+
+                player.thrown.Damage /= 2;
+                player.punch.Damage /= 2;
+                player.kick.Damage /= 2;
             }
             else
             {
@@ -51,5 +61,10 @@ public class SpecialMove : MonoBehaviour
     {
         amountLeft = 10;
         isActive = true;
+
+        player.thrown.Damage *= 2;
+        player.punch.Damage *= 2;
+        player.kick.Damage *= 2;
+        //player.maxStamina = 999999;
     }
 }

@@ -32,6 +32,9 @@ public class Manager : MonoBehaviour
     private List<GameObject> activeHealthDrops;
     public GameObject healthDropPrefab;
 
+    //variable for special move
+    public SpecialMove special;
+
     /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
     public GameObject bottomSpawn;
@@ -202,9 +205,14 @@ public class Manager : MonoBehaviour
                     //keeps track of al the enemies killed
                     //scoreTracker.enemies
 
-                    //increases special bar for each enemy killed
-                    specialAmountFull++;
-                    Debug.Log("enemy killed");
+                    //if the player is not currently using their special
+                    if(!special.IsActive)
+                    {
+                        //increases special bar for each enemy killed
+                        specialAmountFull++;
+                        Debug.Log("enemy killed");
+                    }
+                    
 
                     if (random.Next(0, 100) < 100)
                     {
