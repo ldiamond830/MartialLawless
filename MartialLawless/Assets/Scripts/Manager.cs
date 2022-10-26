@@ -129,8 +129,8 @@ public class Manager : MonoBehaviour
     {
         if (player.Health <= 0)
         {
-            //build index for the loss scene
-            SceneManager.LoadScene(2);
+            //takes the player to a game over screen
+            SceneManager.LoadScene("LossScene");
         }
 
         if (isSpawning)
