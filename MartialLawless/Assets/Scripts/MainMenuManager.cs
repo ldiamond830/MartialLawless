@@ -39,6 +39,7 @@ public class MainMenuManager : MonoBehaviour
 
     }
 
+    /* instructions were moved to their own scene so they can't be skipped
     public void ToggleInstructions()
     {
         //if instructions box is visible hides it
@@ -54,7 +55,7 @@ public class MainMenuManager : MonoBehaviour
             instructions.gameObject.SetActive(true);
         }
     }
-
+    */
     public void QuitGame()
     {
         Application.Quit();
