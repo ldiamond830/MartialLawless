@@ -13,7 +13,7 @@ public class EnemyAI : MonoBehaviour
 
     
     private float moveSpeed = 2.0f; // units per second
-    private float stopDistance = 1.4f; // units away the enemy stops to attack the player
+    private float stopDistance = 1.35f; // units away the enemy stops to attack the player
     public float attackTimer = 0.0f; // seconds
     private float attackCooldown = 1.0f; // seconds between attacks
     private float blockDuration = 0.5f; // seconds
