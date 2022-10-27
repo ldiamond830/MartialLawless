@@ -169,23 +169,9 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("stamina: " + stamina);
 
-        if (position.x - playerBounds.extents.x <= leftBorderBounds.max.x)
-        {
-            position.x = leftBorderBounds.max.x + playerBounds.extents.x;
-        }
-        else if(position.x + playerBounds.extents.x >= rightBorderBounds.min.x)
-        {
-            position.x = rightBorderBounds.min.x - playerBounds.extents.x;
-        }
-
-        if(position.y + playerBounds.extents.y >= topBorderBounds.min.y)
-        {
-            position.y = topBorderBounds.min.y - playerBounds.extents.y;
-        }
-        else if (position.y - playerBounds.extents.y <= bottomBorderBounds.max.y)
-        {
-            position.y = bottomBorderBounds.max.y + playerBounds.extents.y;
-        }
+        //prevents the player from moving out of bounds
+        BoundsCheck();
+       
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
@@ -556,6 +542,27 @@ public class PlayerController : MonoBehaviour
         }
        
        
+    }
+
+    private void BoundsCheck()
+    {
+        if (position.x - playerBounds.extents.x <= leftBorderBounds.max.x)
+        {
+            position.x = leftBorderBounds.max.x + playerBounds.extents.x;
+        }
+        else if (position.x + playerBounds.extents.x >= rightBorderBounds.min.x)
+        {
+            position.x = rightBorderBounds.min.x - playerBounds.extents.x;
+        }
+
+        if (position.y + playerBounds.extents.y >= topBorderBounds.min.y)
+        {
+            position.y = topBorderBounds.min.y - playerBounds.extents.y;
+        }
+        else if (position.y - playerBounds.extents.y <= bottomBorderBounds.max.y)
+        {
+            position.y = bottomBorderBounds.max.y + playerBounds.extents.y;
+        }
     }
 
     //might be necessary later
