@@ -12,12 +12,17 @@ public class Throw : MonoBehaviour
     private BoxCollider2D enemy;
     private BoxCollider2D player;
 
+    //damage dealt to enemy after they land
+    private int damage;
+
     //vectors to determine the trajectory of the enemy
     private Vector3 landingLocation;
     private Vector3 currentLocation;
     private Vector3 centerPivot;
     private Vector3 startCenter;
     private Vector3 endCenter;
+
+    //sounds
 
     void Start()
     {
@@ -31,36 +36,44 @@ public class Throw : MonoBehaviour
         if(enemy != null)
         {
             //if the enemy's current position is not the desired landing position
-            if (Vector3.Distance(currentLocation, landingLocation) > 0.01)
+            if (Vector3.Distance(currentLocation, landingLocation) > 0.3)
             {
                 //move enemy along arc towards landing position
                 ArcPosition(currentLocation, landingLocation, 2);
+
+                //update the enemy's current location
+                currentLocation = enemy.GetComponent<EnemyAI>().Position;
             }
             else
             {
+                //enemy is damaged
+                enemy.GetComponent<EnemyAI>().Health -= damage;
+
                 //enemy is no longer being thrown in an arc
                 enemy = null;
                 isThrown = false;
             }
 
-            //update the enemy's current location
-            currentLocation = enemy.GetComponent<EnemyAI>().Position;
+            
         }
         
     }
 
     //ThrowEnemy is called when an enemy collides with a throw box
-    public void ThrowEnemy(BoxCollider2D enemy, Orientation orientation, BoxCollider2D player)
+    public void ThrowEnemy(BoxCollider2D enemy, Orientation orientation, BoxCollider2D player, int damage)
     {
         //if the enemy is not currently being thrown
         if(!isThrown)
         {
+
             enemy.GetComponent<EnemyAI>().Position = player.gameObject.transform.position + new Vector3(0.0f, 0.5f);
             //current location is updated to the passed in enemy's position and the
             //passed in enemy is set
             currentLocation = enemy.GetComponent<EnemyAI>().Position;
             this.enemy = enemy;
 
+            //damage is updated
+            this.damage = damage;
 
             switch (orientation)
             {
@@ -93,6 +106,7 @@ public class Throw : MonoBehaviour
 
             //the enemy is now being thrown
             isThrown = true;
+           
         }
         
     }
@@ -121,6 +135,7 @@ public class Throw : MonoBehaviour
 
         //enemy's position is slerped along the determined coordinates
         enemy.GetComponent<EnemyAI>().Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
+        //enemy.GetComponent<EnemyAI>().punch.Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
 
     }
 }

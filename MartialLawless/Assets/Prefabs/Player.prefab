@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1577032684308923565}
   - component: {fileID: 1577032684308923564}
   - component: {fileID: 1577032684308923567}
+  - component: {fileID: -8790715896473125795}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -181,7 +182,8 @@ MonoBehaviour:
       m_Flags: 8
     m_Flags: 0
   moveSpeed: 5
-  health: 100
+  maxHealth: 100
+  maxStamina: 50
   punchDamage: 10
   kickDamage: 20
   throwDamage: 25
@@ -196,7 +198,25 @@ MonoBehaviour:
   wait: 0
   isAttacking: 0
   gameManager: {fileID: 0}
-  gruntSound: {fileID: 0}
+  leftBorder: {fileID: 0}
+  playerStaminaText: {fileID: 0}
+  fillImageSta: {fileID: 0}
+  staminaSlider: {fileID: 0}
+  special: {fileID: 0}
+  kickSound: {fileID: 0}
+  punchSound: {fileID: 0}
+--- !u!114 &-8790715896473125795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577032684308923566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c041a9c29e7f974cafdda1f1f0e8168, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2193696311612450879
 PrefabInstance:
   m_ObjectHideFlags: 0

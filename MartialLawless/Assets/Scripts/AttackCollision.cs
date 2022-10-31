@@ -12,6 +12,9 @@ public class AttackCollision : MonoBehaviour
     private int damage;
     private bool isPlayer = true;
     public Throw throwObject;
+
+    //stores the parent enemy of attack boxes, isn't used for player attack boxes so it should be null for those
+    private EnemyAI parentEnemy;
     
     private bool isActive;
 
@@ -37,6 +40,11 @@ public class AttackCollision : MonoBehaviour
         set { enemyList = value; }
     }
 
+    public EnemyAI ParentEnemy
+    {
+        set { parentEnemy = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,6 +67,8 @@ public class AttackCollision : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+       
         //prevents collision hitboxes from killing enemies while they are not being used to attack
         if (isActive)
         {
@@ -74,16 +84,16 @@ public class AttackCollision : MonoBehaviour
                     {
                         if (collider.IsTouching(enemyList[i]))
                         {
-                            if(collider.GetComponent<AttackCollision>() == manager.Player.thrown)
+                            if (collider.GetComponent<AttackCollision>() == manager.Player.thrown)
                             {
-                                throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation, player);
+                                throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation, player, damage);
                             }
-
-                            //deals damage
-                            manager.EnemyList[i].Health -= damage;
-                            isActive = false;
-                            
-                            
+                            else
+                            {
+                                //deals damage
+                                manager.EnemyList[i].Health -= damage;
+                                isActive = false;
+                            }
                         }
                     }
 
@@ -93,13 +103,23 @@ public class AttackCollision : MonoBehaviour
             }
             else
             {
+                
+
                 if (collider.IsTouching(player) && manager.Player.DamageAble)
                 {
                     //deals damage
-                    manager.Player.health -= damage;
-                    manager.UpdatePlayerHealth();
+                    manager.Player.Damage(damage);
+                    //manager.UpdatePlayerHealth();
                     isActive = false;
                 }
+            }
+        }
+        //prevents attack hit box from being offset when its parent enemy get's thrown
+        else
+        {
+            if (!isPlayer && this.transform.position != parentEnemy.transform.position)
+            {
+                this.transform.position = parentEnemy.transform.position;
             }
         }
         
