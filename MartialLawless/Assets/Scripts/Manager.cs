@@ -265,13 +265,10 @@ public class Manager : MonoBehaviour
 
                 foreach (GameObject healthDrop in activeHealthDrops)
                 {
-                    // Debug.Log(healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox));
-                    // Debug.Log(playerHitBox);
-                    // Check if any of the health drops are colliding with the player
+                    // Check if any of the health drops are close enough to the player
                     if ((healthDrop.transform.position - player.Position).sqrMagnitude <= Mathf.Pow(healthDropPickupRadius, 2))
                     {
-                        // If they are, heal the player and delete them
-                        Debug.Log("Drop touched");
+                        // If they are, heal the player and send them back to the pool
                         player.Heal(20);
                         healthDropPool.Add(healthDrop);
                         activeHealthDrops.Remove(healthDrop);
