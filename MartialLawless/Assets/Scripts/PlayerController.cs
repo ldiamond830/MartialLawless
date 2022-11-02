@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     public int moveSpeed = 5;
     private int health;
     public int maxHealth;
-    public int maxStamina;
+    public float maxStamina;
    
     public int punchDamage = 10;
     public int kickDamage = 20;
@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour
     private float staminaRechargeInterval = 0.75f;
     private float staminaRechargeTimer;
     private float stamina = 50;
+   // private float maxStamina;
 
     public Manager gameManager;
 
@@ -103,6 +104,11 @@ public class PlayerController : MonoBehaviour
     private float hitIndicatorInterval;
     private float hitIndicatorTimer;
 
+    public SpriteRenderer SpriteRender
+    {
+        get { return spriteRenderer; }
+    }
+
     public bool DamageAble
     {
         get { return damageAble; }
@@ -133,7 +139,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         health = maxHealth;
-
+        maxStamina = stamina;
         isRed = false;
         hitIndicatorInterval = 0.4f;
         hitIndicatorTimer = hitIndicatorInterval;
@@ -193,6 +199,11 @@ public class PlayerController : MonoBehaviour
             {
                 hitIndicatorTimer -= Time.deltaTime;
             }
+        }
+
+        if (!damageAble)
+        {
+
         }
        
         //what behavior the player is able to access is determined by the state of the player character
@@ -314,7 +325,7 @@ public class PlayerController : MonoBehaviour
 
         }
         
-        staminFill = stamina / 100f;
+        staminFill = stamina / 100.0f;
         staminaSlider.value = staminFill;
         playerStaminaText.text = "Stamina: " + (int)stamina;
         
@@ -357,7 +368,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking && stamina >= 5.0f)
+        if(!isAttacking && stamina >= 5.0f && state == State.isMoving)
         {
             stamina -= 5.0f;
             staminFill = stamina / 100f;
@@ -423,7 +434,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking && stamina >= 10.0f)
+        if(!isAttacking && stamina >= 10.0f && state == State.isMoving)
         {
             stamina -= 10.0f;
             staminFill = stamina / 100f;
@@ -481,7 +492,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking && stamina >= 15.0f)
+        if(!isAttacking && stamina >= 15.0f && state == State.isMoving)
         {
             //sets stamina and slider values
             stamina -= 15.0f;
@@ -553,7 +564,7 @@ public class PlayerController : MonoBehaviour
     private void OnDodge(InputValue value)
     {
         //dodge sound
-        if(state != State.isDodging && stamina >= 5.0f)
+        if(state != State.isDodging && stamina >= 5.0f && state == State.isMoving)
         {
             stamina -= 5.0f;
             staminFill = stamina / 50.0f;
