@@ -36,6 +36,8 @@ public class SpecialMove : MonoBehaviour
                 player.thrown.Damage /= 2;
                 player.punch.Damage /= 2;
                 player.kick.Damage /= 2;
+                player.SpriteRender.color = Color.white;
+                player.SpecialActive = false;
             }
             else
             {
@@ -60,6 +62,7 @@ public class SpecialMove : MonoBehaviour
 
     public void ActivateSpecial()
     {
+        player.SpriteRender.color = Color.cyan;
         amountLeft = 10;
         isActive = true;
 

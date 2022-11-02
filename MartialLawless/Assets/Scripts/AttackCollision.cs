@@ -56,7 +56,7 @@ public class AttackCollision : MonoBehaviour
         //stores colliders for each enemy
         enemyList = new List<BoxCollider2D>();
 
-        player = manager.Player.gameObject.GetComponent<BoxCollider2D>();
+        player = manager.Player.Collider;
 
         for(int i = 0; i < manager.EnemyList.Count; i++)
         {

@@ -712,6 +712,9 @@ MonoBehaviour:
     Lshift
     - Dodge
 
+    L - Activate Special
+
+
 '
 --- !u!222 &1490464642
 CanvasRenderer:
