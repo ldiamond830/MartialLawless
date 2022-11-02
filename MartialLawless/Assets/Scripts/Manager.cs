@@ -130,12 +130,13 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.Health <= 0 )
+        if (player.Health <= 0 && !player.SpecialActive)
         {
             float alpha = bloodTint.color.a;
             alpha += Time.deltaTime;
             bloodTint.color = new Color(245, 0, 0, alpha);
-
+            //prevents the player from moving during the fade to red
+            player.PlayerState = State.isIdle;
             if(alpha >= 1)
             {
              //takes the player to a game over screen when the fade is complete

@@ -37,6 +37,7 @@ public class SpecialMove : MonoBehaviour
                 player.punch.Damage /= 2;
                 player.kick.Damage /= 2;
                 player.SpriteRender.color = Color.white;
+                player.SpecialActive = false;
             }
             else
             {
