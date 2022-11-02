@@ -113,6 +113,7 @@ MonoBehaviour:
   punch: {fileID: 2921513077133963349}
   kick: {fileID: 3445899745521500335}
   gameManager: {fileID: 0}
+  gruntSound: {fileID: 4747279877004290980, guid: 95aeafa879c018642a763ff5f3d1ddcc, type: 3}
   health: 30
 --- !u!61 &4205042883466076210
 BoxCollider2D:
