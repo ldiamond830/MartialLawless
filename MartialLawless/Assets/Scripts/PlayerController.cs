@@ -206,6 +206,12 @@ public class PlayerController : MonoBehaviour
 
         }
        
+        //checks if the special is active
+        if(special.IsActive)
+        {
+            //player gets infinite stamina while active
+            stamina = maxStamina;
+        }
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
