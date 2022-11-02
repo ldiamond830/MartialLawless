@@ -59,6 +59,9 @@ public class EnemyAI : MonoBehaviour
     public Manager gameManager;
     public AudioClip gruntSound;
 
+    private float hitIndicatorInterval;
+    private float hitIndicatorTimer;
+
     public AttackCollision PunchObj
     {
         get { return punch; }
@@ -88,6 +91,9 @@ public class EnemyAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        hitIndicatorInterval = 0.4f;
+        hitIndicatorTimer = hitIndicatorInterval;
+
         orientation = Orientation.up;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
@@ -170,6 +176,21 @@ public class EnemyAI : MonoBehaviour
                 attackTimer = 0.0f;
             }
         }
+
+
+        if (spriteRenderer.color == Color.red)
+        {
+            if(hitIndicatorTimer <= 0)
+            {
+                hitIndicatorTimer = hitIndicatorInterval;
+                spriteRenderer.color = Color.white;
+            }
+            else
+            {
+                hitIndicatorTimer -= Time.deltaTime;
+            }
+        }
+
         switch (state)
         {
             case State.isIdle:

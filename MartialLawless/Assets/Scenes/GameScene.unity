@@ -2833,6 +2833,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1195575927}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: testPunch
       value: 
       objectReference: {fileID: 0}

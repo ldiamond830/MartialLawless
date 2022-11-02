@@ -37,9 +37,9 @@ public class PlayerController : MonoBehaviour
 
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
-    private int health = 100;
-    public int maxHealth = 100;
-    public int maxStamina = 50;
+    private int health;
+    public int maxHealth;
+    public int maxStamina;
    
     public int punchDamage = 10;
     public int kickDamage = 20;
@@ -99,6 +99,9 @@ public class PlayerController : MonoBehaviour
     public AudioSource punchSound;
     public AudioSource throwSound;
 
+    private bool isRed;
+    private float hitIndicatorInterval;
+    private float hitIndicatorTimer;
 
     public bool DamageAble
     {
@@ -129,6 +132,12 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        health = maxHealth;
+
+        isRed = false;
+        hitIndicatorInterval = 0.4f;
+        hitIndicatorTimer = hitIndicatorInterval;
+
         position = this.transform.position;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
@@ -171,6 +180,20 @@ public class PlayerController : MonoBehaviour
 
         //prevents the player from moving out of bounds
         BoundsCheck();
+
+        if (isRed)
+        {
+            if(hitIndicatorTimer <= 0)
+            {
+                spriteRenderer.color = Color.white;
+                isRed = false;
+                hitIndicatorTimer = hitIndicatorInterval;
+            }
+            else
+            {
+                hitIndicatorTimer -= Time.deltaTime;
+            }
+        }
        
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
@@ -618,6 +641,9 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(int amount)
     {
+        isRed = true;
+
+        spriteRenderer.color = Color.red;
         health -= amount;
         if (health < 0)
         {
