@@ -29,11 +29,14 @@ public class Manager : MonoBehaviour
     private bool isSpawning;
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
+    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
+    private Vector2 enemyPoolPosition = new Vector2(40.0f, 0.0f);
 
     private List<GameObject> healthDropPool;
     private List<GameObject> activeHealthDrops;
     public GameObject healthDropPrefab;
     private const float healthDropPickupRadius = 0.75f;
+    private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
 
     //variable for special move
     public SpecialMove special;
@@ -75,8 +78,6 @@ public class Manager : MonoBehaviour
 
     private ScoreTracker scoreTracker;
 
-    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
-
     // Start is called before the first frame update
     void Start()
     {
@@ -104,7 +105,7 @@ public class Manager : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
             GameObject drop = Instantiate(healthDropPrefab);
-            drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+            drop.transform.position = healthPoolPosition;
             healthDropPool.Add(drop);
         }
 
@@ -115,6 +116,7 @@ public class Manager : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
+            newEnemy.transform.position = enemyPoolPosition;
             newEnemy.PlayerTransform = player.transform;
             newEnemy.gameObject.SetActive(false);
             newEnemy.gameManager = this;
@@ -247,6 +249,8 @@ public class Manager : MonoBehaviour
                             }
                             drop.transform.position = enemy.Position;
                         }
+
+                        enemy.transform.position = enemyPoolPosition;
 
                         enemy.PunchObj.IsActive = false;
                         enemy.PunchObj.transform.position = enemy.transform.position;
