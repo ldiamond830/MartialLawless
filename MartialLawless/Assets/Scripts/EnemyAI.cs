@@ -144,28 +144,32 @@ public class EnemyAI : MonoBehaviour
 
         moveVector = moveVector.normalized;
 
-        // UP
-        if (moveVector.y > Mathf.Abs(moveVector.x))
+        if(state!=State.isIdle)
         {
-            orientation = Orientation.up;
-        }
-        // DOWN
-        else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
-        {
+            // UP
+            if (moveVector.y > Mathf.Abs(moveVector.x))
+            {
+                orientation = Orientation.up;
+            }
+            // DOWN
+            else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
+            {
 
-            orientation = Orientation.down;
-        }
-        // RIGHT
-        else if (moveVector.x > 0)
-        {
+                orientation = Orientation.down;
+            }
+            // RIGHT
+            else if (moveVector.x > 0)
+            {
 
-            orientation = Orientation.right;
+                orientation = Orientation.right;
+            }
+            // LEFT
+            else if (moveVector.x < 0)
+            {
+                orientation = Orientation.left;
+            }
         }
-        // LEFT
-        else if (moveVector.x < 0)
-        {
-            orientation = Orientation.left;
-        }
+        
 
         if (onCooldown)
         {
@@ -195,7 +199,7 @@ public class EnemyAI : MonoBehaviour
         {
             case State.isIdle:
                 // If this enemy is out of range
-                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2))
+                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance*1.5f, 2))
                 {
                     state = State.isMoving;
                 }
