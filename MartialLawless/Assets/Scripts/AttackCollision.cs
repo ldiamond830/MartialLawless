@@ -56,7 +56,7 @@ public class AttackCollision : MonoBehaviour
         //stores colliders for each enemy
         enemyList = new List<BoxCollider2D>();
 
-        player = manager.Player.gameObject.GetComponent<BoxCollider2D>();
+        player = manager.Player.Collider;
 
         for(int i = 0; i < manager.EnemyList.Count; i++)
         {
@@ -87,12 +87,16 @@ public class AttackCollision : MonoBehaviour
                             if (collider.GetComponent<AttackCollision>() == manager.Player.thrown)
                             {
                                 throwObject.ThrowEnemy(enemyList[i], player.GetComponent<PlayerController>().ReturnOrientation, player, damage);
+                                manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
                             }
                             else
                             {
                                 //deals damage
                                 manager.EnemyList[i].Health -= damage;
+                                manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
                                 isActive = false;
+
+                               
                             }
                         }
                     }

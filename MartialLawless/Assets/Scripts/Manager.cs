@@ -33,6 +33,7 @@ public class Manager : MonoBehaviour
     private List<GameObject> healthDropPool;
     private List<GameObject> activeHealthDrops;
     public GameObject healthDropPrefab;
+    private const float healthDropPickupRadius = 0.75f;
 
     //variable for special move
     public SpecialMove special;
@@ -129,12 +130,13 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.Health <= 0)
+        if (player.Health <= 0 && !player.SpecialActive)
         {
             float alpha = bloodTint.color.a;
             alpha += Time.deltaTime;
             bloodTint.color = new Color(245, 0, 0, alpha);
-
+            //prevents the player from moving during the fade to red
+            player.PlayerState = State.isIdle;
             if(alpha >= 1)
             {
              //takes the player to a game over screen when the fade is complete
@@ -262,22 +264,18 @@ public class Manager : MonoBehaviour
                     }
                 }
 
-                //BoxCollider2D playerHitBox = player.GetComponent<BoxCollider2D>();
-                //foreach (GameObject healthDrop in activeHealthDrops)
-                //{
-                //    // Debug.Log(healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox));
-                //    // Debug.Log(playerHitBox);
-                //    // Check if any of the health drops are colliding with the player
-                //    if (healthDrop.GetComponent<BoxCollider2D>().IsTouching(playerHitBox))
-                //    {
-                //        // If they are, heal the player and delete them
-                //        Debug.Log("Drop touched");
-                //        player.Heal(20);
-                //        healthDropPool.Add(healthDrop);
-                //        activeHealthDrops.Remove(healthDrop);
-                //        healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
-                //    }
-                //}
+                foreach (GameObject healthDrop in activeHealthDrops)
+                {
+                    // Check if any of the health drops are close enough to the player
+                    if ((healthDrop.transform.position - player.Position).sqrMagnitude <= Mathf.Pow(healthDropPickupRadius, 2))
+                    {
+                        // If they are, heal the player and send them back to the pool
+                        player.Heal(20);
+                        healthDropPool.Add(healthDrop);
+                        activeHealthDrops.Remove(healthDrop);
+                        healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+                    }
+                }
             
             }
         }
@@ -303,6 +301,7 @@ public class Manager : MonoBehaviour
 
     public void CollectHealthDrop(GameObject drop)
     {
+        //add pick up sound
         activeHealthDrops.Remove(drop);
         healthDropPool.Add(drop);
         drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
