@@ -57,6 +57,7 @@ public class EnemyAI : MonoBehaviour
     private List<AttackCollision> attacks;
 
     public Manager gameManager;
+    public AudioClip gruntSound;
 
     public AttackCollision PunchObj
     {
@@ -258,6 +259,12 @@ public class EnemyAI : MonoBehaviour
 
     private void Punch()
     {
+       // gruntSound.enabled = true;
+       // if (gruntSound != null)
+       // {
+       //     gruntSound.Play();
+        //    Debug.Log("grunt Played");
+       // }
         Debug.Log("Enemy punch");
         state = State.isPunching;
 
@@ -298,6 +305,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Kick()
     {
+       
         Debug.Log("Enemy kick");
         state = State.isKicking;
 
@@ -325,7 +333,12 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
         //sound effect here
-
+       // gruntSound.enabled = true;
+       // if (gruntSound != null)
+       // {
+       //     gruntSound.Play();
+       //     Debug.Log("grunt Played");
+       // }
         kick.IsActive = true;
     }
 }

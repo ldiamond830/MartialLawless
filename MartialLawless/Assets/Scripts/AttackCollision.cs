@@ -93,6 +93,8 @@ public class AttackCollision : MonoBehaviour
                                 //deals damage
                                 manager.EnemyList[i].Health -= damage;
                                 isActive = false;
+
+                               
                             }
                         }
                     }

@@ -303,6 +303,7 @@ public class Manager : MonoBehaviour
 
     public void CollectHealthDrop(GameObject drop)
     {
+        //add pick up sound
         activeHealthDrops.Remove(drop);
         healthDropPool.Add(drop);
         drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);

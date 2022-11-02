@@ -529,6 +529,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDodge(InputValue value)
     {
+        //dodge sound
         if(state != State.isDodging && stamina >= 5.0f)
         {
             stamina -= 5.0f;
