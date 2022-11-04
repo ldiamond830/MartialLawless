@@ -279,11 +279,21 @@ public class EnemyAI : MonoBehaviour
 
         }
 
-        // Only punches right now
+        
         if (state == State.isIdle && !onCooldown)
         {
-            Punch();
-            // Kick();
+            //randomly selects the enemy's attack when they are in range
+            int selector = Random.Range(0, 10);
+            if(selector <= 6)
+            {
+                Punch();
+            }
+            else
+            {
+                Kick();
+                
+            }
+            
         }
     }
 
