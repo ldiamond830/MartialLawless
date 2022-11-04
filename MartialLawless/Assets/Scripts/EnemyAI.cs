@@ -57,7 +57,8 @@ public class EnemyAI : MonoBehaviour
     private List<AttackCollision> attacks;
 
     public Manager gameManager;
-    public AudioClip gruntSound;
+    [SerializeField]
+    public AudioSource gruntSound;
 
     private float hitIndicatorInterval;
     private float hitIndicatorTimer;
@@ -78,6 +79,7 @@ public class EnemyAI : MonoBehaviour
         set { playerTransform = value; }
     }
 
+    
 
     [SerializeField]
     private int health = 1;
@@ -113,12 +115,15 @@ public class EnemyAI : MonoBehaviour
         kick.IsPlayer = false;
         kick.ParentEnemy = this;
 
+        gruntSound = GameObject.FindGameObjectWithTag("gun").GetComponent<AudioSource>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        //gruntSound.enabled = true;
+
         // Get the player's position this frame
         Vector2 playerPosition = (Vector2)playerTransform.position;
         //position = transform.position;
@@ -144,28 +149,32 @@ public class EnemyAI : MonoBehaviour
 
         moveVector = moveVector.normalized;
 
-        // UP
-        if (moveVector.y > Mathf.Abs(moveVector.x))
+        if(state!=State.isIdle)
         {
-            orientation = Orientation.up;
-        }
-        // DOWN
-        else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
-        {
+            // UP
+            if (moveVector.y > Mathf.Abs(moveVector.x))
+            {
+                orientation = Orientation.up;
+            }
+            // DOWN
+            else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
+            {
 
-            orientation = Orientation.down;
-        }
-        // RIGHT
-        else if (moveVector.x > 0)
-        {
+                orientation = Orientation.down;
+            }
+            // RIGHT
+            else if (moveVector.x > 0)
+            {
 
-            orientation = Orientation.right;
+                orientation = Orientation.right;
+            }
+            // LEFT
+            else if (moveVector.x < 0)
+            {
+                orientation = Orientation.left;
+            }
         }
-        // LEFT
-        else if (moveVector.x < 0)
-        {
-            orientation = Orientation.left;
-        }
+        
 
         if (onCooldown)
         {
@@ -195,7 +204,7 @@ public class EnemyAI : MonoBehaviour
         {
             case State.isIdle:
                 // If this enemy is out of range
-                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2))
+                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance*1.5f, 2))
                 {
                     state = State.isMoving;
                 }
@@ -280,12 +289,14 @@ public class EnemyAI : MonoBehaviour
 
     private void Punch()
     {
-       // gruntSound.enabled = true;
-       // if (gruntSound != null)
-       // {
-       //     gruntSound.Play();
-        //    Debug.Log("grunt Played");
-       // }
+        gruntSound.enabled = true;
+
+        if (gruntSound != null)
+        {
+            Debug.Log(gruntSound.isActiveAndEnabled);
+            gruntSound.Play();
+            Debug.Log("grunt Played");
+        }
         Debug.Log("Enemy punch");
         state = State.isPunching;
 
@@ -354,12 +365,12 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
         //sound effect here
-       // gruntSound.enabled = true;
-       // if (gruntSound != null)
-       // {
-       //     gruntSound.Play();
-       //     Debug.Log("grunt Played");
-       // }
+        gruntSound.enabled = true;
+        if (gruntSound != null)
+       {
+            gruntSound.Play();
+            Debug.Log("grunt Played");
+       }
         kick.IsActive = true;
     }
 }

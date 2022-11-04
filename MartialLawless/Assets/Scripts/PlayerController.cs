@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
     public GameObject rightBorder;
     private Bounds rightBorderBounds;
 
-
+    private BoxCollider2D collider;
     
     [SerializeField]
     public Text playerStaminaText;
@@ -93,6 +93,7 @@ public class PlayerController : MonoBehaviour
     float staminFill;
 
     public SpecialMove special;
+    private bool specialActive;
 
     //sounds
 
@@ -103,7 +104,11 @@ public class PlayerController : MonoBehaviour
     private bool isRed;
     private float hitIndicatorInterval;
     private float hitIndicatorTimer;
-
+    
+    public BoxCollider2D Collider
+    {
+        get { return collider; }
+    } 
     public SpriteRenderer SpriteRender
     {
         get { return spriteRenderer; }
@@ -135,9 +140,23 @@ public class PlayerController : MonoBehaviour
         get { return health; }
     }
 
+    public State PlayerState
+    {
+        set { state = value; }
+    }
+
+    public bool SpecialActive
+    {
+        get { return specialActive; }
+        set { specialActive = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        collider = gameObject.GetComponent<BoxCollider2D>();
+
+
         health = maxHealth;
         maxStamina = stamina;
         isRed = false;
@@ -189,6 +208,7 @@ public class PlayerController : MonoBehaviour
 
         if (isRed)
         {
+            
             if(hitIndicatorTimer <= 0)
             {
                 spriteRenderer.color = Color.white;
@@ -316,6 +336,8 @@ public class PlayerController : MonoBehaviour
                     state = State.isMoving;
                     damageAble = true;
                     wait = 0;
+                    position.z++;
+
                 }
                 else
                 {
@@ -325,7 +347,9 @@ public class PlayerController : MonoBehaviour
                     velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
                     velocity *= 2.5f;
                     position += velocity * Time.deltaTime;
+                    
                     transform.position = position;
+                    collider.enabled = true;
                 }
                 break;
 
@@ -564,6 +588,7 @@ public class PlayerController : MonoBehaviour
             //activate the special attack and reset the special attack bar
             gameManager.SpecialAmountFull = 0;
             special.ActivateSpecial();
+            specialActive = true;
         }
     }
 
@@ -580,6 +605,10 @@ public class PlayerController : MonoBehaviour
 
             state = State.isDodging;
             damageAble = false;
+
+            position.z--;
+
+            collider.enabled = false;
         }
        
        
