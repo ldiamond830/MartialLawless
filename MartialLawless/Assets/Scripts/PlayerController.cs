@@ -181,6 +181,7 @@ public class PlayerController : MonoBehaviour
         thrown.manager = gameManager;
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
+        
 
         //gets bounds of each border object and the player sprite
         playerBounds = this.GetComponent<SpriteRenderer>().bounds;
