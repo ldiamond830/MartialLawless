@@ -19,7 +19,7 @@ public class EnemyAI : MonoBehaviour
     private float throwTimer = 0.0f;
     private float throwDuration = 0.5f; // seconds
     private float kickDuration = 0.3f; // seconds
-    private float punchDuration = 0.1f; // seconds
+    private float punchDuration = 0.05f; // seconds
     private bool onCooldown = true;
 
     private float windUp = 0.0f;
@@ -306,7 +306,7 @@ public class EnemyAI : MonoBehaviour
         
         if (state == State.isIdle)
         {
-            if(windUp >= 0.5f)
+            if(windUp >= 0.7f)
             {
                 windUp = 0;
 
