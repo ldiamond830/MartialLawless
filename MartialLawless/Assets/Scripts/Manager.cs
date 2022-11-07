@@ -237,7 +237,7 @@ public class Manager : MonoBehaviour
                         }
                     
 
-                        if (random.Next(0, 100) < 100)
+                        if (random.Next(0, 100) < 30)
                         {
                             GameObject drop;
                             if (healthDropPool.Count > 0)
