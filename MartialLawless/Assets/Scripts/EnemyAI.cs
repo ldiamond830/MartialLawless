@@ -310,19 +310,23 @@ public class EnemyAI : MonoBehaviour
             {
                 windUp = 0;
                 Throw();
-                /*
+                
                 //randomly selects the enemy's attack when they are in range
                 int selector = Random.Range(0, 10);
-                if (selector <= 6)
+                if (selector <= 5)
                 {
                     Punch();
                 }
-                else
+                else if (selector <= 9)
                 {
                     Kick();
 
                 }
-                */
+                else
+                {
+                    Throw();
+                }
+                
             }
             else
             {
