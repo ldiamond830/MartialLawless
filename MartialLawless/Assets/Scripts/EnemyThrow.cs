@@ -43,7 +43,7 @@ public class EnemyThrow : MonoBehaviour
                 ArcPosition(currentLocation, landingLocation, 2);
 
                 //update the enemy's current location
-                currentLocation = enemy.GetComponent<EnemyAI>().Position;
+                currentLocation = player.GetComponent<PlayerController>().Position;
             }
             else
             {
@@ -65,11 +65,11 @@ public class EnemyThrow : MonoBehaviour
         if (!isThrown)
         {
 
-            player.GetComponent<EnemyAI>().Position = player.gameObject.transform.position + new Vector3(0.0f, 0.5f);
+            player.GetComponent<PlayerController>().Position = player.gameObject.transform.position + new Vector3(0.0f, 0.5f);
             //current location is updated to the passed in enemy's position and the
             //passed in enemy is set
-            currentLocation = player.GetComponent<EnemyAI>().Position;
-            this.enemy = player;
+            currentLocation = player.GetComponent<PlayerController>().Position;
+            this.player = player;
 
             //damage is updated
             this.damage = damage;
@@ -133,7 +133,7 @@ public class EnemyThrow : MonoBehaviour
         endCenter = endPos - centerPivot;
 
         //enemy's position is slerped along the determined coordinates
-        enemy.GetComponent<EnemyAI>().Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
+        player.GetComponent<PlayerController>().Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
         //enemy.GetComponent<EnemyAI>().punch.Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
 
     }

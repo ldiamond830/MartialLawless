@@ -133,6 +133,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 Position
     {
         get { return position; }
+        set { position = value; }
     }
 
     public int Health
