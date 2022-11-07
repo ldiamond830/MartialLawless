@@ -11,6 +11,9 @@ public class Manager : MonoBehaviour
     public Image fillImage;
     public Slider healthSlider;
 
+    public Text specialText;
+    public Slider specialSlider;
+
     [SerializeField]
     private SpriteRenderer bloodTint;
     
@@ -89,6 +92,7 @@ public class Manager : MonoBehaviour
         }
 
         healthSlider.GetComponent<Slider>();
+        specialSlider.GetComponent<Slider>();
 
         scoreTracker = gameObject.GetComponent<ScoreTracker>();
 
@@ -124,7 +128,7 @@ public class Manager : MonoBehaviour
         }
 
         //sets the initial value for player health
-        UpdatePlayerHealth();
+        UpdatePlayerUI();
         player.DamageAble = true;
 
     }
@@ -283,19 +287,23 @@ public class Manager : MonoBehaviour
             
             }
         }
-        
+
         //outside of else statement so player health is updated when it reaches 0
-        UpdatePlayerHealth();
+        UpdatePlayerUI();
         
     }
 
 
-    public void UpdatePlayerHealth()
+    public void UpdatePlayerUI()
     {
-        //Player health and Stamina
+        //Player health
         healthFill = player.Health / 100f;
         healthSlider.value = healthFill;
         playerHealthText.text = "Player Health: " + player.Health;
+
+        // Special
+        specialSlider.value = specialAmountFull / 10.0f;
+        specialText.text = "Special: " + specialAmountFull;
     }
 
     public void UpdateWaveCountText()
