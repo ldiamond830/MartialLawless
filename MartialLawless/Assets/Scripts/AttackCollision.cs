@@ -7,15 +7,20 @@ public class AttackCollision : MonoBehaviour
 
     private BoxCollider2D collider;
     public Manager manager;
+
     private PlayerController player;
     private BoxCollider2D playerCollider;
+
     private List<BoxCollider2D> enemyList;
     private int damage;
     private bool isPlayer = true;
+
     public Throw throwObject;
+    public EnemyThrow enemyThrowObject;
     public bool isThrow;
     //stores the parent enemy of attack boxes, isn't used for player attack boxes so it should be null for those
     private EnemyAI parentEnemy;
+    private BoxCollider2D parentEnemyCollider;
     
     private bool isActive;
 
@@ -64,6 +69,10 @@ public class AttackCollision : MonoBehaviour
         player = manager.Player;
         playerCollider = player.gameObject.GetComponent<BoxCollider2D>();
 
+        if(parentEnemy != null)
+        {
+            parentEnemyCollider = parentEnemy.gameObject.GetComponent<BoxCollider2D>();
+        }
         for(int i = 0; i < manager.EnemyList.Count; i++)
         {
             enemyList.Add(manager.EnemyList[i].GetComponent<BoxCollider2D>());
@@ -93,7 +102,7 @@ public class AttackCollision : MonoBehaviour
                             if (isThrow)
                             {
                                 throwObject.ThrowEnemy(enemyList[i], player.ReturnOrientation, playerCollider, damage);
-                                manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
+                                //manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
                             }
                             else
                             {
@@ -117,10 +126,19 @@ public class AttackCollision : MonoBehaviour
 
                 if (collider.IsTouching(playerCollider) && manager.Player.DamageAble)
                 {
-                    //deals damage
-                    manager.Player.Damage(damage);
-                    //manager.UpdatePlayerHealth();
-                    isActive = false;
+                    if (isThrow)
+                    {
+                        enemyThrowObject.ThrowPlayer(playerCollider, parentEnemy.Orientation, parentEnemyCollider, damage);
+
+                    }
+                    else
+                    {
+                        //deals damage
+                        manager.Player.Damage(damage);
+                        //manager.UpdatePlayerHealth();
+                        isActive = false;
+                    }
+                    
                 }
             }
         }

@@ -16,7 +16,8 @@ public class EnemyAI : MonoBehaviour
     private float stopDistance = 1.35f; // units away the enemy stops to attack the player
     public float attackTimer = 0.0f; // seconds
     private float attackCooldown = 1.0f; // seconds between attacks
-    private float blockDuration = 0.5f; // seconds
+    private float throwTimer = 0.0f;
+    private float throwDuration = 0.5f; // seconds
     private float kickDuration = 0.3f; // seconds
     private float punchDuration = 0.1f; // seconds
     private bool onCooldown = false;
@@ -53,6 +54,8 @@ public class EnemyAI : MonoBehaviour
     private AttackCollision punch;
     [SerializeField]
     private AttackCollision kick;
+    [SerializeField]
+    private AttackCollision throwBox;
 
     private List<AttackCollision> attacks;
 
@@ -79,7 +82,10 @@ public class EnemyAI : MonoBehaviour
         set { playerTransform = value; }
     }
 
-    
+    public Orientation Orientation
+    {
+        get { return orientation;}
+    }
 
     [SerializeField]
     private int health = 1;
@@ -114,6 +120,11 @@ public class EnemyAI : MonoBehaviour
         kick.Damage = kickDamage;
         kick.IsPlayer = false;
         kick.ParentEnemy = this;
+
+        throwBox.manager = gameManager;
+        throwBox.Damage = throwDamage;
+        throwBox.IsPlayer = false;
+        throwBox.ParentEnemy = this;
 
         gruntSound = GameObject.FindGameObjectWithTag("gun").GetComponent<AudioSource>();
 
@@ -270,6 +281,17 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case State.isThrowing:
+                attackTimer += Time.deltaTime;
+
+                if(attackTimer >= throwDuration)
+                {
+                    onCooldown = true;
+                    attackTimer = 0.0f;
+                    throwBox.gameObject.transform.position = position;
+                    throwBox.IsActive = false;
+                    state = State.isMoving;
+                }
+
 
                 break;
 
@@ -282,6 +304,8 @@ public class EnemyAI : MonoBehaviour
         
         if (state == State.isIdle && !onCooldown)
         {
+            Throw();
+            /*
             //randomly selects the enemy's attack when they are in range
             int selector = Random.Range(0, 10);
             if(selector <= 6)
@@ -293,7 +317,7 @@ public class EnemyAI : MonoBehaviour
                 Kick();
                 
             }
-            
+            */
         }
     }
 
@@ -382,5 +406,43 @@ public class EnemyAI : MonoBehaviour
             Debug.Log("grunt Played");
        }
         kick.IsActive = true;
+    }
+
+    private void Throw()
+    {
+        Debug.Log("Enemy throw");
+        state = State.isThrowing;
+
+        //AttackCollision newKick = null;
+
+        //checks for orientation and spawns a hitbox in front of the player
+        //checks for orientation and spawns a hitbox in front of the player
+        switch (orientation)
+        {
+            case Orientation.up:
+                throwBox.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
+
+                break;
+            case Orientation.down:
+                throwBox.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+
+                break;
+            case Orientation.left:
+                throwBox.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
+
+                break;
+            case Orientation.right:
+                throwBox.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
+
+                break;
+        }
+        //sound effect here
+        gruntSound.enabled = true;
+        if (gruntSound != null)
+        {
+            gruntSound.Play();
+            Debug.Log("grunt Played");
+        }
+        throwBox.IsActive = true;
     }
 }
