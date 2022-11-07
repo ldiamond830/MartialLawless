@@ -20,7 +20,9 @@ public class EnemyAI : MonoBehaviour
     private float throwDuration = 0.5f; // seconds
     private float kickDuration = 0.3f; // seconds
     private float punchDuration = 0.1f; // seconds
-    private bool onCooldown = false;
+    private bool onCooldown = true;
+
+    private float windUp = 0.0f;
 
     private Vector2 position;
 
@@ -127,7 +129,7 @@ public class EnemyAI : MonoBehaviour
         throwBox.ParentEnemy = this;
 
         gruntSound = GameObject.FindGameObjectWithTag("gun").GetComponent<AudioSource>();
-
+        onCooldown = true;
     }
 
     // Update is called once per frame
@@ -160,7 +162,7 @@ public class EnemyAI : MonoBehaviour
 
         moveVector = moveVector.normalized;
 
-        if(state!=State.isIdle)
+        if(state != State.isIdle)
         {
             // UP
             if (moveVector.y > Mathf.Abs(moveVector.x))
@@ -186,7 +188,7 @@ public class EnemyAI : MonoBehaviour
             }
         }
         
-
+        /*
         if (onCooldown)
         {
             attackTimer += Time.deltaTime;
@@ -196,7 +198,7 @@ public class EnemyAI : MonoBehaviour
                 attackTimer = 0.0f;
             }
         }
-
+        */
 
         if (spriteRenderer.color == Color.red)
         {
@@ -215,7 +217,7 @@ public class EnemyAI : MonoBehaviour
         {
             case State.isIdle:
                 // If this enemy is out of range
-                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance*1.5f, 2))
+                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUp == 0)
                 {
                     state = State.isMoving;
                 }
@@ -255,8 +257,8 @@ public class EnemyAI : MonoBehaviour
                 if (attackTimer > kickDuration)
                 {
                     //after 60 cycles the player is able to move again
-                    onCooldown = true;
-                    attackTimer -= kickDuration;
+                    //onCooldown = true;
+                    attackTimer = 0;
                     //returns punch hitbox to intial position
                     kick.gameObject.transform.position = position;
                     kick.IsActive = false;
@@ -271,8 +273,8 @@ public class EnemyAI : MonoBehaviour
                 if (attackTimer >= punchDuration)
                 {
                     //after 60 cycles the player is able to move again
-                    onCooldown = true;
-                    attackTimer -= punchDuration;
+                    //onCooldown = true;
+                    attackTimer = 0;
                     punch.gameObject.transform.position = position;
                     punch.IsActive = false;
                     state = State.isMoving;
@@ -302,27 +304,37 @@ public class EnemyAI : MonoBehaviour
         }
 
         
-        if (state == State.isIdle && !onCooldown)
+        if (state == State.isIdle)
         {
-            Throw();
-            /*
-            //randomly selects the enemy's attack when they are in range
-            int selector = Random.Range(0, 10);
-            if(selector <= 6)
+            if(windUp >= 0.5f)
             {
-                Punch();
+                windUp = 0;
+
+                //randomly selects the enemy's attack when they are in range
+                int selector = Random.Range(0, 10);
+                if (selector <= 6)
+                {
+                    Punch();
+                }
+                else
+                {
+                    Kick();
+
+                }
             }
             else
             {
-                Kick();
-                
+                windUp += Time.deltaTime;
             }
-            */
+            
+            
         }
     }
 
     private void Punch()
     {
+
+        
         gruntSound.enabled = true;
 
         if (gruntSound != null)
@@ -363,15 +375,15 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-        
+        punch.IsActive = true;
 
         
-        punch.IsActive = true;
     }
 
     private void Kick()
     {
-       
+
+        
         Debug.Log("Enemy kick");
         state = State.isKicking;
 
@@ -401,11 +413,12 @@ public class EnemyAI : MonoBehaviour
         //sound effect here
         gruntSound.enabled = true;
         if (gruntSound != null)
-       {
+        {
             gruntSound.Play();
             Debug.Log("grunt Played");
-       }
+        }
         kick.IsActive = true;
+        
     }
 
     private void Throw()
