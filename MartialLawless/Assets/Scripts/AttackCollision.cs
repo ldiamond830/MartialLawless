@@ -99,6 +99,8 @@ public class AttackCollision : MonoBehaviour
                     {
                         if (collider.IsTouching(enemyList[i]))
                         {
+                            manager.EnemyList[i].WindUp = 0;
+
                             if (isThrow)
                             {
                                 throwObject.ThrowEnemy(enemyList[i], player.ReturnOrientation, playerCollider, damage);
@@ -107,6 +109,7 @@ public class AttackCollision : MonoBehaviour
                             else
                             {
                                 //deals damage
+                                
                                 manager.EnemyList[i].Health -= damage;
                                 manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
                                 isActive = false;

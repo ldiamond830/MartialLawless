@@ -98,6 +98,11 @@ public class EnemyAI : MonoBehaviour
         get { return health; }
     }
 
+    public float WindUp
+    {
+        get { return windUp; }
+        set { windUp = value; }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -309,7 +314,7 @@ public class EnemyAI : MonoBehaviour
             if(windUp >= 0.7f)
             {
                 windUp = 0;
-                Throw();
+                //Throw();
                 
                 //randomly selects the enemy's attack when they are in range
                 int selector = Random.Range(0, 10);
