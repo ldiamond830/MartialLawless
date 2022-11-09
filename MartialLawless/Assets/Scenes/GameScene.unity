@@ -429,7 +429,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: dbf2068ec855030458cd4736832bec70, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -1984,8 +1984,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 1148, y: -314.67}
-  m_SizeDelta: {x: 386, y: 120}
+  m_AnchoredPosition: {x: 912.4, y: -314.67}
+  m_SizeDelta: {x: 360, y: 85.2}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1307561806
 MonoBehaviour:
@@ -3585,7 +3585,7 @@ PrefabInstance:
       objectReference: {fileID: 1195575927}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: maxHealth
-      value: 100
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: testPunch

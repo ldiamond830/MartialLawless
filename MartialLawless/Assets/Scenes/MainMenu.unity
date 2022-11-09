@@ -443,8 +443,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2399b80e083c27d49af7897ffe0da6d1, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.118
+  m_PlayOnAwake: 0
+  m_Volume: 0.036
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -776,7 +776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   introSong: {fileID: 608047129}
-  startButton: {fileID: 0}
+  startButton: {fileID: 2002533318}
   instructions: {fileID: 1633447478}
 --- !u!4 &1116318915
 Transform:
@@ -1612,7 +1612,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f7ce3cebfcf8561499150a82cf2f07fc, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.431
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
