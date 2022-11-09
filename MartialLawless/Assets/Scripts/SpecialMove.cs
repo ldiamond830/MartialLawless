@@ -9,6 +9,12 @@ public class SpecialMove : MonoBehaviour
     private float timer;
     private PlayerController player;
     
+    //getter for the variable isActive
+    public bool IsActive
+    {
+        get { return isActive; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +32,12 @@ public class SpecialMove : MonoBehaviour
             if (amountLeft <= 0)
             {
                 isActive = false;
+
+                player.thrown.Damage /= 2;
+                player.punch.Damage /= 2;
+                player.kick.Damage /= 2;
+                player.SpriteRender.color = Color.white;
+                player.SpecialActive = false;
             }
             else
             {
@@ -37,6 +49,7 @@ public class SpecialMove : MonoBehaviour
                 }
             }
             timer += Time.deltaTime;
+            //player.Stamina = player.maxStamina;
             //Debug.Log("special is active");
             Debug.Log("time left: " + amountLeft);
         }
@@ -49,7 +62,12 @@ public class SpecialMove : MonoBehaviour
 
     public void ActivateSpecial()
     {
+        player.SpriteRender.color = Color.cyan;
         amountLeft = 10;
         isActive = true;
+
+        player.thrown.Damage *= 2;
+        player.punch.Damage *= 2;
+        player.kick.Damage *= 2;
     }
 }

@@ -37,9 +37,9 @@ public class PlayerController : MonoBehaviour
 
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
-    private int health = 100;
-    public int maxHealth = 100;
-    public int maxStamina = 50;
+    private int health;
+    public int maxHealth;
+    public float maxStamina;
    
     public int punchDamage = 10;
     public int kickDamage = 20;
@@ -63,9 +63,10 @@ public class PlayerController : MonoBehaviour
     public float wait = 0.0f;
     public bool isAttacking = false;
 
-    private float staminaRechargeInterval = 2.0f;
-    private float staminaRechargeTimer = 2.0f;
+    private float staminaRechargeInterval = 0.75f;
+    private float staminaRechargeTimer;
     private float stamina = 50;
+   // private float maxStamina;
 
     public Manager gameManager;
 
@@ -82,8 +83,8 @@ public class PlayerController : MonoBehaviour
     public GameObject rightBorder;
     private Bounds rightBorderBounds;
 
-
-
+    private BoxCollider2D collider;
+    
     [SerializeField]
     public Text playerStaminaText;
     public Image fillImageSta;
@@ -92,6 +93,7 @@ public class PlayerController : MonoBehaviour
     float staminFill;
 
     public SpecialMove special;
+    private bool specialActive;
 
     //sounds
 
@@ -99,6 +101,18 @@ public class PlayerController : MonoBehaviour
     public AudioSource punchSound;
     public AudioSource throwSound;
 
+    private bool isRed;
+    private float hitIndicatorInterval;
+    private float hitIndicatorTimer;
+    
+    public BoxCollider2D Collider
+    {
+        get { return collider; }
+    } 
+    public SpriteRenderer SpriteRender
+    {
+        get { return spriteRenderer; }
+    }
 
     public bool DamageAble
     {
@@ -119,6 +133,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 Position
     {
         get { return position; }
+        set { position = value; }
     }
 
     public int Health
@@ -126,9 +141,29 @@ public class PlayerController : MonoBehaviour
         get { return health; }
     }
 
+    public State PlayerState
+    {
+        set { state = value; }
+    }
+
+    public bool SpecialActive
+    {
+        get { return specialActive; }
+        set { specialActive = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        collider = gameObject.GetComponent<BoxCollider2D>();
+
+
+        health = maxHealth;
+        maxStamina = stamina;
+        isRed = false;
+        hitIndicatorInterval = 0.4f;
+        hitIndicatorTimer = hitIndicatorInterval;
+
         position = this.transform.position;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
@@ -143,12 +178,13 @@ public class PlayerController : MonoBehaviour
         kick.Damage = kickDamage;
         kick.IsPlayer = true;
 
-        //intializes the punch hit box
+        //intializes the throw hit box
         thrown.manager = gameManager;
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
+        
 
-        //gets bounds of each border object
+        //gets bounds of each border object and the player sprite
         playerBounds = this.GetComponent<SpriteRenderer>().bounds;
         leftBorderBounds = leftBorder.GetComponent<SpriteRenderer>().bounds;
         topBorderBounds = topBorder.GetComponent<SpriteRenderer>().bounds;
@@ -161,7 +197,7 @@ public class PlayerController : MonoBehaviour
         staminaSlider.value = staminFill;
         playerStaminaText.text = "Stamina: " + (int)stamina;
 
-
+        staminaRechargeTimer = staminaRechargeInterval;
     }
 
     // Update is called once per frame
@@ -169,22 +205,34 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("stamina: " + stamina);
 
-        if (position.x - playerBounds.extents.x <= leftBorderBounds.max.x)
+        //prevents the player from moving out of bounds
+        BoundsCheck();
+
+        if (isRed)
         {
-            position.x = leftBorderBounds.max.x + playerBounds.extents.x;
-        }
-        else if(position.x + playerBounds.extents.x >= rightBorderBounds.min.x)
-        {
-            position.x = rightBorderBounds.min.x - playerBounds.extents.x;
+            
+            if(hitIndicatorTimer <= 0)
+            {
+                spriteRenderer.color = Color.white;
+                isRed = false;
+                hitIndicatorTimer = hitIndicatorInterval;
+            }
+            else
+            {
+                hitIndicatorTimer -= Time.deltaTime;
+            }
         }
 
-        if(position.y + playerBounds.extents.y >= topBorderBounds.min.y)
+        if (!damageAble)
         {
-            position.y = topBorderBounds.min.y - playerBounds.extents.y;
+
         }
-        else if (position.y - playerBounds.extents.y <= bottomBorderBounds.max.y)
+       
+        //checks if the special is active
+        if(special.IsActive)
         {
-            position.y = bottomBorderBounds.max.y + playerBounds.extents.y;
+            //player gets infinite stamina while active
+            stamina = maxStamina;
         }
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
@@ -199,7 +247,7 @@ public class PlayerController : MonoBehaviour
                 if(staminaRechargeTimer <= 0 && stamina < maxStamina)
                 {
                     //increase or decrease constant to change stamina recharge rate
-                    stamina += 3 * Time.deltaTime;
+                    stamina += 7 * Time.deltaTime;
                     staminFill = stamina / 50.0f;
                     staminaSlider.value = staminFill;
 
@@ -290,6 +338,8 @@ public class PlayerController : MonoBehaviour
                     state = State.isMoving;
                     damageAble = true;
                     wait = 0;
+                    position.z++;
+
                 }
                 else
                 {
@@ -299,13 +349,15 @@ public class PlayerController : MonoBehaviour
                     velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
                     velocity *= 2.5f;
                     position += velocity * Time.deltaTime;
+                    
                     transform.position = position;
+                    collider.enabled = true;
                 }
                 break;
 
         }
         
-        staminFill = stamina / 100f;
+        staminFill = stamina / 100.0f;
         staminaSlider.value = staminFill;
         playerStaminaText.text = "Stamina: " + (int)stamina;
         
@@ -348,9 +400,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking && stamina >= 10.0f)
+        if(!isAttacking && stamina >= 5.0f && state == State.isMoving)
         {
-            stamina -= 10.0f;
+            stamina -= 5.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -414,9 +466,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking && stamina >= 15.0f)
+        if(!isAttacking && stamina >= 10.0f && state == State.isMoving)
         {
-            stamina -= 15.0f;
+            stamina -= 10.0f;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -472,10 +524,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking && stamina >= 20.0f)
+        if(!isAttacking && stamina >= 15.0f && state == State.isMoving)
         {
-            stamina -= 20.0f;
-            staminFill = stamina / 100f;
+            //sets stamina and slider values
+            stamina -= 15.0f;
+            staminFill = stamina / 100.0f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
@@ -531,20 +584,22 @@ public class PlayerController : MonoBehaviour
     private void OnSpecial(InputValue value)
     {
         //if the special attack bar is 10 or higher
-        Debug.Log("Special bar fill: " + gameManager.SpecialAmountFull);
+        Debug.Log("Special bar fill: " + gameManager.SpecialAmountFull + "/ 10");
         if (gameManager.SpecialAmountFull >= 10)
         {
             //activate the special attack and reset the special attack bar
             gameManager.SpecialAmountFull = 0;
             special.ActivateSpecial();
+            specialActive = true;
         }
     }
 
     private void OnDodge(InputValue value)
     {
-        if(state != State.isDodging && stamina >= 10.0f)
+        //dodge sound
+        if(state != State.isDodging && stamina >= 5.0f && state == State.isMoving)
         {
-            stamina -= 10.0f;
+            stamina -= 5.0f;
             staminFill = stamina / 50.0f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -552,9 +607,34 @@ public class PlayerController : MonoBehaviour
 
             state = State.isDodging;
             damageAble = false;
+
+            position.z--;
+
+            collider.enabled = false;
         }
        
        
+    }
+
+    private void BoundsCheck()
+    {
+        if (position.x - playerBounds.extents.x <= leftBorderBounds.max.x)
+        {
+            position.x = leftBorderBounds.max.x + playerBounds.extents.x;
+        }
+        else if (position.x + playerBounds.extents.x >= rightBorderBounds.min.x)
+        {
+            position.x = rightBorderBounds.min.x - playerBounds.extents.x;
+        }
+
+        if (position.y + playerBounds.extents.y >= topBorderBounds.min.y)
+        {
+            position.y = topBorderBounds.min.y - playerBounds.extents.y;
+        }
+        else if (position.y - playerBounds.extents.y <= bottomBorderBounds.max.y)
+        {
+            position.y = bottomBorderBounds.max.y + playerBounds.extents.y;
+        }
     }
 
     //might be necessary later
@@ -587,6 +667,16 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("player collided");
+        if (collision.gameObject.name == "HealthDrop")
+        {
+            Debug.Log("Health drop touched");
+            Heal(20);
+            gameManager.CollectHealthDrop(collision.gameObject);
+        }
+    }
 
     public void Heal(int amount)
     {
@@ -599,6 +689,9 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(int amount)
     {
+        isRed = true;
+
+        spriteRenderer.color = Color.red;
         health -= amount;
         if (health < 0)
         {

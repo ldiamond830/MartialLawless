@@ -13,13 +13,16 @@ public class EnemyAI : MonoBehaviour
 
     
     private float moveSpeed = 2.0f; // units per second
-    private float stopDistance = 1.4f; // units away the enemy stops to attack the player
+    private float stopDistance = 1.35f; // units away the enemy stops to attack the player
     public float attackTimer = 0.0f; // seconds
     private float attackCooldown = 1.0f; // seconds between attacks
-    private float blockDuration = 0.5f; // seconds
+    private float throwTimer = 0.0f;
+    private float throwDuration = 0.5f; // seconds
     private float kickDuration = 0.3f; // seconds
-    private float punchDuration = 0.1f; // seconds
-    private bool onCooldown = false;
+    private float punchDuration = 0.05f; // seconds
+    private bool onCooldown = true;
+
+    private float windUp = 0.0f;
 
     private Vector2 position;
 
@@ -53,10 +56,17 @@ public class EnemyAI : MonoBehaviour
     private AttackCollision punch;
     [SerializeField]
     private AttackCollision kick;
+    [SerializeField]
+    private AttackCollision throwBox;
 
     private List<AttackCollision> attacks;
 
     public Manager gameManager;
+    [SerializeField]
+    public AudioSource gruntSound;
+
+    private float hitIndicatorInterval;
+    private float hitIndicatorTimer;
 
     public AttackCollision PunchObj
     {
@@ -74,6 +84,10 @@ public class EnemyAI : MonoBehaviour
         set { playerTransform = value; }
     }
 
+    public Orientation Orientation
+    {
+        get { return orientation;}
+    }
 
     [SerializeField]
     private int health = 1;
@@ -84,9 +98,17 @@ public class EnemyAI : MonoBehaviour
         get { return health; }
     }
 
+    public float WindUp
+    {
+        get { return windUp; }
+        set { windUp = value; }
+    }
     // Start is called before the first frame update
     void Start()
     {
+        hitIndicatorInterval = 0.4f;
+        hitIndicatorTimer = hitIndicatorInterval;
+
         orientation = Orientation.up;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
@@ -97,20 +119,29 @@ public class EnemyAI : MonoBehaviour
         punch.manager = gameManager;
         punch.Damage = punchDamage;
         punch.IsPlayer = false;
+        punch.ParentEnemy = this;
        
 
         //initializes the kick hit box
         kick.manager = gameManager;
         kick.Damage = kickDamage;
         kick.IsPlayer = false;
-        
+        kick.ParentEnemy = this;
 
+        throwBox.manager = gameManager;
+        throwBox.Damage = throwDamage;
+        throwBox.IsPlayer = false;
+        throwBox.ParentEnemy = this;
 
+        gruntSound = GameObject.FindGameObjectWithTag("gun").GetComponent<AudioSource>();
+        onCooldown = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        //gruntSound.enabled = true;
+
         // Get the player's position this frame
         Vector2 playerPosition = (Vector2)playerTransform.position;
         //position = transform.position;
@@ -136,29 +167,33 @@ public class EnemyAI : MonoBehaviour
 
         moveVector = moveVector.normalized;
 
-        // UP
-        if (moveVector.y > Mathf.Abs(moveVector.x))
+        if(state != State.isIdle)
         {
-            orientation = Orientation.up;
-        }
-        // DOWN
-        else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
-        {
+            // UP
+            if (moveVector.y > Mathf.Abs(moveVector.x))
+            {
+                orientation = Orientation.up;
+            }
+            // DOWN
+            else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
+            {
 
-            orientation = Orientation.down;
-        }
-        // RIGHT
-        else if (moveVector.x > 0)
-        {
+                orientation = Orientation.down;
+            }
+            // RIGHT
+            else if (moveVector.x > 0)
+            {
 
-            orientation = Orientation.right;
+                orientation = Orientation.right;
+            }
+            // LEFT
+            else if (moveVector.x < 0)
+            {
+                orientation = Orientation.left;
+            }
         }
-        // LEFT
-        else if (moveVector.x < 0)
-        {
-            orientation = Orientation.left;
-        }
-
+        
+        /*
         if (onCooldown)
         {
             attackTimer += Time.deltaTime;
@@ -168,11 +203,26 @@ public class EnemyAI : MonoBehaviour
                 attackTimer = 0.0f;
             }
         }
+        */
+
+        if (spriteRenderer.color == Color.red)
+        {
+            if(hitIndicatorTimer <= 0)
+            {
+                hitIndicatorTimer = hitIndicatorInterval;
+                spriteRenderer.color = Color.white;
+            }
+            else
+            {
+                hitIndicatorTimer -= Time.deltaTime;
+            }
+        }
+
         switch (state)
         {
             case State.isIdle:
                 // If this enemy is out of range
-                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2))
+                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUp == 0)
                 {
                     state = State.isMoving;
                 }
@@ -201,7 +251,7 @@ public class EnemyAI : MonoBehaviour
                 transform.position = position;
 
                 break;
-
+                //currently not being implimented
             case State.isBlocking:
 
                 break;
@@ -212,8 +262,8 @@ public class EnemyAI : MonoBehaviour
                 if (attackTimer > kickDuration)
                 {
                     //after 60 cycles the player is able to move again
-                    onCooldown = true;
-                    attackTimer -= kickDuration;
+                    //onCooldown = true;
+                    attackTimer = 0;
                     //returns punch hitbox to intial position
                     kick.gameObject.transform.position = position;
                     kick.IsActive = false;
@@ -228,8 +278,8 @@ public class EnemyAI : MonoBehaviour
                 if (attackTimer >= punchDuration)
                 {
                     //after 60 cycles the player is able to move again
-                    onCooldown = true;
-                    attackTimer -= punchDuration;
+                    //onCooldown = true;
+                    attackTimer = 0;
                     punch.gameObject.transform.position = position;
                     punch.IsActive = false;
                     state = State.isMoving;
@@ -238,6 +288,17 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case State.isThrowing:
+                attackTimer += Time.deltaTime;
+
+                if(attackTimer >= throwDuration)
+                {
+                    onCooldown = true;
+                    attackTimer = 0.0f;
+                    throwBox.gameObject.transform.position = position;
+                    throwBox.IsActive = false;
+                    state = State.isMoving;
+                }
+
 
                 break;
 
@@ -247,16 +308,52 @@ public class EnemyAI : MonoBehaviour
 
         }
 
-        // Only punches right now
-        if (state == State.isIdle && !onCooldown)
+        
+        if (state == State.isIdle)
         {
-            Punch();
-            // Kick();
+            if(windUp >= 0.7f)
+            {
+                windUp = 0;
+                //Throw();
+                
+                //randomly selects the enemy's attack when they are in range
+                int selector = Random.Range(0, 10);
+                if (selector <= 5)
+                {
+                    Punch();
+                }
+                else if (selector <= 9)
+                {
+                    Kick();
+
+                }
+                else
+                {
+                    Throw();
+                }
+                
+            }
+            else
+            {
+                windUp += Time.deltaTime;
+            }
+            
+            
         }
     }
 
     private void Punch()
     {
+
+        
+        gruntSound.enabled = true;
+
+        if (gruntSound != null)
+        {
+            Debug.Log(gruntSound.isActiveAndEnabled);
+            gruntSound.Play();
+            Debug.Log("grunt Played");
+        }
         Debug.Log("Enemy punch");
         state = State.isPunching;
 
@@ -289,14 +386,15 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-        
+        punch.IsActive = true;
 
         
-        punch.IsActive = true;
     }
 
     private void Kick()
     {
+
+        
         Debug.Log("Enemy kick");
         state = State.isKicking;
 
@@ -324,7 +422,51 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
         //sound effect here
-
+        gruntSound.enabled = true;
+        if (gruntSound != null)
+        {
+            gruntSound.Play();
+            Debug.Log("grunt Played");
+        }
         kick.IsActive = true;
+        
+    }
+
+    private void Throw()
+    {
+        Debug.Log("Enemy throw");
+        state = State.isThrowing;
+
+        //AttackCollision newKick = null;
+
+        //checks for orientation and spawns a hitbox in front of the player
+        //checks for orientation and spawns a hitbox in front of the player
+        switch (orientation)
+        {
+            case Orientation.up:
+                throwBox.gameObject.transform.position = new Vector2(position.x, position.y + 0.5f);
+
+                break;
+            case Orientation.down:
+                throwBox.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
+
+                break;
+            case Orientation.left:
+                throwBox.gameObject.transform.position = new Vector2(position.x - 0.5f, position.y);
+
+                break;
+            case Orientation.right:
+                throwBox.gameObject.transform.position = new Vector2(position.x + 0.5f, position.y);
+
+                break;
+        }
+        //sound effect here
+        gruntSound.enabled = true;
+        if (gruntSound != null)
+        {
+            gruntSound.Play();
+            Debug.Log("grunt Played");
+        }
+        throwBox.IsActive = true;
     }
 }
