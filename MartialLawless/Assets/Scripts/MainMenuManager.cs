@@ -9,6 +9,8 @@ using UnityEngine.UI;
 public class MainMenuManager : MonoBehaviour
 {
     public AudioSource introSong;
+    public AudioSource startButton;
+    
     public Image instructions;
     private bool instructionsVisible = false;
 
@@ -34,6 +36,7 @@ public class MainMenuManager : MonoBehaviour
     {
         //1 is the index of gameScene in the build settings
         introSong.Stop();
+        startButton.Play();
         SceneManager.LoadScene(1);
        
 

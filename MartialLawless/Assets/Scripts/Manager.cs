@@ -62,6 +62,7 @@ public class Manager : MonoBehaviour
 
     //sounds
     public AudioSource beginningWavesSound;
+    public AudioSource endningWavesSound;
 
     //and getter setter for special attack bar
     public int SpecialAmountFull
@@ -291,6 +292,12 @@ public class Manager : MonoBehaviour
         //outside of else statement so player health is updated when it reaches 0
         UpdatePlayerUI();
         
+        if(waveCount >5)
+        {
+            beginningWavesSound.Stop();
+            endningWavesSound.enabled = true;
+            endningWavesSound.Play();
+        }
     }
 
 

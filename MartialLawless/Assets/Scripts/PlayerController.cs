@@ -100,6 +100,8 @@ public class PlayerController : MonoBehaviour
     public AudioSource kickSound;
     public AudioSource punchSound;
     public AudioSource throwSound;
+    public AudioSource specialSound;
+    public AudioSource healthPickUpSound;
 
     private bool isRed;
     private float hitIndicatorInterval;
@@ -233,6 +235,8 @@ public class PlayerController : MonoBehaviour
         {
             //player gets infinite stamina while active
             stamina = maxStamina;
+            specialSound.enabled = true;
+            specialSound.Play();
         }
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
@@ -672,9 +676,12 @@ public class PlayerController : MonoBehaviour
         Debug.Log("player collided");
         if (collision.gameObject.name == "HealthDrop")
         {
+            healthPickUpSound.enabled = true;
+            healthPickUpSound.Play();
             Debug.Log("Health drop touched");
             Heal(20);
             gameManager.CollectHealthDrop(collision.gameObject);
+
         }
     }
 
