@@ -41,6 +41,9 @@ public class Manager : MonoBehaviour
     private const float healthDropPickupRadius = 0.75f;
     private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
 
+    [SerializeField]
+    private float healthDropRate = 20.0f; // percent
+
     //variable for special move
     public SpecialMove special;
 
@@ -232,7 +235,7 @@ public class Manager : MonoBehaviour
                         }
                     
 
-                        if (random.Next(0, 100) < 30)
+                        if (random.NextDouble() * 100 < healthDropRate)
                         {
                             GameObject drop;
                             if (healthDropPool.Count > 0)
