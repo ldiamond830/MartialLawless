@@ -210,9 +210,19 @@ public class PlayerController : MonoBehaviour
             
             if(hitIndicatorTimer <= 0)
             {
-                spriteRenderer.color = Color.white;
-                isRed = false;
-                hitIndicatorTimer = hitIndicatorInterval;
+                if(special.IsActive)
+                {
+                    spriteRenderer.color = Color.cyan;
+                    isRed = false;
+                    hitIndicatorTimer = hitIndicatorInterval;
+                }
+                else
+                {
+                    spriteRenderer.color = Color.white;
+                    isRed = false;
+                    hitIndicatorTimer = hitIndicatorInterval;
+                }
+                
             }
             else
             {
