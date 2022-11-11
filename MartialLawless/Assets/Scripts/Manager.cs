@@ -137,7 +137,7 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.Health <= 0 && !player.SpecialActive)
+        if (player.Health <= 0)
         {
             float alpha = bloodTint.color.a;
             alpha += Time.deltaTime;
