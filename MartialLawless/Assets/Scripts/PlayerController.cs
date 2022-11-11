@@ -230,8 +230,6 @@ public class PlayerController : MonoBehaviour
         {
             //player gets infinite stamina while active
             stamina = maxStamina;
-            //specialSound.enabled = true;
-            //specialSound.Play();
         }
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
@@ -589,6 +587,15 @@ public class PlayerController : MonoBehaviour
             //activate the special attack and reset the special attack bar
             gameManager.SpecialAmountFull = 0;
             special.ActivateSpecial();
+        }
+
+        //sound effect here
+        specialSound.enabled = true;
+        if (specialSound != null)
+        {
+
+            specialSound.Play();
+            Debug.Log("Special Sound Played");
         }
     }
 
