@@ -65,6 +65,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     public AudioSource gruntSound;
 
+    private PauseController pauseController;
+
     private float hitIndicatorInterval;
     private float hitIndicatorTimer;
 
@@ -87,6 +89,11 @@ public class EnemyAI : MonoBehaviour
     public Orientation Orientation
     {
         get { return orientation;}
+    }
+
+    public PauseController PauseController
+    {
+        set { pauseController = value; }
     }
 
     [SerializeField]
@@ -140,205 +147,211 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //gruntSound.enabled = true;
-
-        // Get the player's position this frame
-        Vector2 playerPosition = (Vector2)playerTransform.position;
-        //position = transform.position;
-        // Get the vector from this enemy to the player
-        Vector2 moveVector = playerPosition - (Vector2)transform.position;
-
-        // Get an updated list of other active enemies
-        enemies = gameManager.EnemyList;
-
-        Vector2 personalSpaceVector = Vector2.zero;
-        for (int i = 0; i < enemies.Count; i++)
+        //checks if the game has been paused before updating
+        if (!pauseController.IsPaused)
         {
-            // If this enemy is in this enemy's personal space
-            if ((enemies[i].Position - transform.position).sqrMagnitude < Mathf.Pow(stopDistance, 2))
-            {
-                // Move away from them
-                personalSpaceVector += (Vector2)(transform.position - enemies[i].Position).normalized;
-            }
-        }
 
-        moveVector = moveVector.normalized;
-        moveVector += personalSpaceVector.normalized;
 
-        moveVector = moveVector.normalized;
+            //gruntSound.enabled = true;
 
-        if(state != State.isIdle)
-        {
-            // UP
-            if (moveVector.y > Mathf.Abs(moveVector.x))
-            {
-                orientation = Orientation.up;
-            }
-            // DOWN
-            else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
-            {
+            // Get the player's position this frame
+            Vector2 playerPosition = (Vector2)playerTransform.position;
+            //position = transform.position;
+            // Get the vector from this enemy to the player
+            Vector2 moveVector = playerPosition - (Vector2)transform.position;
 
-                orientation = Orientation.down;
-            }
-            // RIGHT
-            else if (moveVector.x > 0)
-            {
+            // Get an updated list of other active enemies
+            enemies = gameManager.EnemyList;
 
-                orientation = Orientation.right;
-            }
-            // LEFT
-            else if (moveVector.x < 0)
+            Vector2 personalSpaceVector = Vector2.zero;
+            for (int i = 0; i < enemies.Count; i++)
             {
-                orientation = Orientation.left;
-            }
-        }
-        
-        /*
-        if (onCooldown)
-        {
-            attackTimer += Time.deltaTime;
-            if (attackTimer >= attackCooldown)
-            {
-                onCooldown = false;
-                attackTimer = 0.0f;
-            }
-        }
-        */
-
-        if (spriteRenderer.color == Color.red)
-        {
-            if(hitIndicatorTimer <= 0)
-            {
-                hitIndicatorTimer = hitIndicatorInterval;
-                spriteRenderer.color = Color.white;
-            }
-            else
-            {
-                hitIndicatorTimer -= Time.deltaTime;
-            }
-        }
-
-        switch (state)
-        {
-            case State.isIdle:
-                // If this enemy is out of range
-                if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUp == 0)
+                // If this enemy is in this enemy's personal space
+                if ((enemies[i].Position - transform.position).sqrMagnitude < Mathf.Pow(stopDistance, 2))
                 {
-                    state = State.isMoving;
+                    // Move away from them
+                    personalSpaceVector += (Vector2)(transform.position - enemies[i].Position).normalized;
                 }
-                
-                break;
+            }
 
-            case State.isMoving:
-                // If it's already inside the radius
-                if ((playerPosition - position).sqrMagnitude <= Mathf.Pow(stopDistance, 2))
+            moveVector = moveVector.normalized;
+            moveVector += personalSpaceVector.normalized;
+
+            moveVector = moveVector.normalized;
+
+            if (state != State.isIdle)
+            {
+                // UP
+                if (moveVector.y > Mathf.Abs(moveVector.x))
                 {
-                    // Don't move
-                    state = State.isIdle;
+                    orientation = Orientation.up;
                 }
-                // If the new position would be inside the stopDistance radius
-                else if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude < Mathf.Pow(stopDistance, 2))
+                // DOWN
+                else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
                 {
-                    // Apply the movement but only to the edge of that circle
-                    position += moveVector * ((playerPosition - position).magnitude - stopDistance);
-                    state = State.isIdle;
+
+                    orientation = Orientation.down;
                 }
-                else
+                // RIGHT
+                else if (moveVector.x > 0)
                 {
-                    position += moveVector * moveSpeed * Time.deltaTime;
+
+                    orientation = Orientation.right;
                 }
+                // LEFT
+                else if (moveVector.x < 0)
+                {
+                    orientation = Orientation.left;
+                }
+            }
 
-                transform.position = position;
-
-                break;
-                //currently not being implimented
-            case State.isBlocking:
-
-                break;
-
-            case State.isKicking:
+            /*
+            if (onCooldown)
+            {
                 attackTimer += Time.deltaTime;
-
-                if (attackTimer > kickDuration)
+                if (attackTimer >= attackCooldown)
                 {
-                    //after 60 cycles the player is able to move again
-                    //onCooldown = true;
-                    attackTimer = 0;
-                    //returns punch hitbox to intial position
-                    kick.gameObject.transform.position = position;
-                    kick.IsActive = false;
-                    state = State.isMoving;
-                }
-
-                break;
-
-            case State.isPunching:
-                attackTimer += Time.deltaTime;
-
-                if (attackTimer >= punchDuration)
-                {
-                    //after 60 cycles the player is able to move again
-                    //onCooldown = true;
-                    attackTimer = 0;
-                    punch.gameObject.transform.position = position;
-                    punch.IsActive = false;
-                    state = State.isMoving;
-                }
-
-                break;
-
-            case State.isThrowing:
-                attackTimer += Time.deltaTime;
-
-                if(attackTimer >= throwDuration)
-                {
-                    onCooldown = true;
+                    onCooldown = false;
                     attackTimer = 0.0f;
-                    throwBox.gameObject.transform.position = position;
-                    throwBox.IsActive = false;
-                    state = State.isMoving;
                 }
+            }
+            */
 
-
-                break;
-
-            case State.isStunned:
-
-                break;
-
-        }
-
-        
-        if (state == State.isIdle)
-        {
-            if(windUp >= 0.7f)
+            if (spriteRenderer.color == Color.red)
             {
-                windUp = 0;
-                Throw();
-                /*
-                //randomly selects the enemy's attack when they are in range
-                int selector = Random.Range(0, 10);
-                if (selector <= 5)
+                if (hitIndicatorTimer <= 0)
                 {
-                    Punch();
-                }
-                else if (selector <= 9)
-                {
-                    Kick();
-
+                    hitIndicatorTimer = hitIndicatorInterval;
+                    spriteRenderer.color = Color.white;
                 }
                 else
                 {
-                    Throw();
+                    hitIndicatorTimer -= Time.deltaTime;
                 }
-                */
             }
-            else
+
+            switch (state)
             {
-                windUp += Time.deltaTime;
+                case State.isIdle:
+                    // If this enemy is out of range
+                    if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUp == 0)
+                    {
+                        state = State.isMoving;
+                    }
+
+                    break;
+
+                case State.isMoving:
+                    // If it's already inside the radius
+                    if ((playerPosition - position).sqrMagnitude <= Mathf.Pow(stopDistance, 2))
+                    {
+                        // Don't move
+                        state = State.isIdle;
+                    }
+                    // If the new position would be inside the stopDistance radius
+                    else if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude < Mathf.Pow(stopDistance, 2))
+                    {
+                        // Apply the movement but only to the edge of that circle
+                        position += moveVector * ((playerPosition - position).magnitude - stopDistance);
+                        state = State.isIdle;
+                    }
+                    else
+                    {
+                        position += moveVector * moveSpeed * Time.deltaTime;
+                    }
+
+                    transform.position = position;
+
+                    break;
+                //currently not being implimented
+                case State.isBlocking:
+
+                    break;
+
+                case State.isKicking:
+                    attackTimer += Time.deltaTime;
+
+                    if (attackTimer > kickDuration)
+                    {
+                        //after 60 cycles the player is able to move again
+                        //onCooldown = true;
+                        attackTimer = 0;
+                        //returns punch hitbox to intial position
+                        kick.gameObject.transform.position = position;
+                        kick.IsActive = false;
+                        state = State.isMoving;
+                    }
+
+                    break;
+
+                case State.isPunching:
+                    attackTimer += Time.deltaTime;
+
+                    if (attackTimer >= punchDuration)
+                    {
+                        //after 60 cycles the player is able to move again
+                        //onCooldown = true;
+                        attackTimer = 0;
+                        punch.gameObject.transform.position = position;
+                        punch.IsActive = false;
+                        state = State.isMoving;
+                    }
+
+                    break;
+
+                case State.isThrowing:
+                    attackTimer += Time.deltaTime;
+
+                    if (attackTimer >= throwDuration)
+                    {
+                        onCooldown = true;
+                        attackTimer = 0.0f;
+                        throwBox.gameObject.transform.position = position;
+                        throwBox.IsActive = false;
+                        state = State.isMoving;
+                    }
+
+
+                    break;
+
+                case State.isStunned:
+
+                    break;
+
             }
-            
-            
+
+
+            if (state == State.isIdle)
+            {
+                if (windUp >= 0.7f)
+                {
+                    windUp = 0;
+                    Throw();
+                    /*
+                    //randomly selects the enemy's attack when they are in range
+                    int selector = Random.Range(0, 10);
+                    if (selector <= 5)
+                    {
+                        Punch();
+                    }
+                    else if (selector <= 9)
+                    {
+                        Kick();
+
+                    }
+                    else
+                    {
+                        Throw();
+                    }
+                    */
+                }
+                else
+                {
+                    windUp += Time.deltaTime;
+                }
+
+
+            }
         }
     }
 
