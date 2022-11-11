@@ -22,7 +22,8 @@ public enum State
     isThrowing,
     isStunned,
     isBlocking,
-    isDodging
+    isDodging,
+    isPaused
 }
 
 public class PlayerController : MonoBehaviour
@@ -34,6 +35,11 @@ public class PlayerController : MonoBehaviour
     
     private Orientation orientation;
     private State state;
+
+    //pause variables
+    private State stateBeforePause;
+    [SerializeField]
+    private PauseController pauseController;
 
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
@@ -358,6 +364,10 @@ public class PlayerController : MonoBehaviour
                     collider.enabled = true;
                 }
                 break;
+            case State.isPaused:
+                //does nothing while paused
+                break;
+
 
         }
         
@@ -618,6 +628,33 @@ public class PlayerController : MonoBehaviour
         }
        
        
+    }
+
+    //method called by resume button on pause screen, needed because player controls methods are inaccessable 
+    public void ButtonResume()
+    {
+        OnTogglePause(null);
+    }
+
+    private void OnTogglePause(InputValue value)
+    {
+        //resume
+        if (pauseController.IsPaused)
+        {
+            //returns the player to whatever action they were taking before pausing
+            state = stateBeforePause;
+            pauseController.HidePauseScreen();
+
+        }
+        //pause
+        else
+        {
+            
+            stateBeforePause = state;
+            //stops the player from being able to take actions while paused, since all other control methods can only be called when state is isMoving
+            state = State.isPaused;
+            pauseController.ShowPauseScreen();
+        }
     }
 
     private void BoundsCheck()
