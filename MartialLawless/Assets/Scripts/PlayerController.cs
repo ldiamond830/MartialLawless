@@ -251,9 +251,6 @@ public class PlayerController : MonoBehaviour
         switch (state)
         {
             case State.isMoving:
-
-               
-
                 Movement();
 
                 //when recharge timer is zero and stamina is below max recharges stamina

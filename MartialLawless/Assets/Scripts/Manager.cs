@@ -62,7 +62,8 @@ public class Manager : MonoBehaviour
 
     //sounds
     public AudioSource beginningWavesSound;
-    public AudioSource endningWavesSound;
+    public AudioSource endingWavesSound;
+    public AudioSource healthPickupSound;
 
     //and getter setter for special attack bar
     public int SpecialAmountFull
@@ -144,19 +145,16 @@ public class Manager : MonoBehaviour
             bloodTint.color = new Color(245, 0, 0, alpha);
             //prevents the player from moving during the fade to red
             player.PlayerState = State.isIdle;
-            if(alpha >= 1)
+            if (alpha >= 1)
             {
-             //takes the player to a game over screen when the fade is complete
-             SceneManager.LoadScene("LossScene");
+                //takes the player to a game over screen when the fade is complete
+                SceneManager.LoadScene("LossScene");
 
             }
 
         }
         else
         {
-
-       
-
             if (isSpawning)
             {
 
@@ -203,10 +201,6 @@ public class Manager : MonoBehaviour
                     }
 
                 }
-
-
-
-
 
                 isSpawning = false;
             }
@@ -295,8 +289,8 @@ public class Manager : MonoBehaviour
         if(waveCount >5)
         {
             beginningWavesSound.Stop();
-            endningWavesSound.enabled = true;
-            endningWavesSound.Play();
+            endingWavesSound.enabled = true;
+            endingWavesSound.Play();
         }
     }
 
@@ -324,5 +318,6 @@ public class Manager : MonoBehaviour
         activeHealthDrops.Remove(drop);
         healthDropPool.Add(drop);
         drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+        healthPickupSound.Play();
     }
 }
