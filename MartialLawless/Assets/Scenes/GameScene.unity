@@ -3311,6 +3311,7 @@ MonoBehaviour:
   special: {fileID: 689959282}
   cameraObject: {fileID: 519420031}
   beginningWavesSound: {fileID: 1886599797}
+  endningWavesSound: {fileID: 0}
 --- !u!114 &1977513165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3630,6 +3631,10 @@ PrefabInstance:
       propertyPath: fillImageSta
       value: 
       objectReference: {fileID: 1385233534}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: specialSound
+      value: 
+      objectReference: {fileID: 1951587897}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: staminaSlider
       value: 
