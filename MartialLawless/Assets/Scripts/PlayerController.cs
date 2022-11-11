@@ -93,7 +93,6 @@ public class PlayerController : MonoBehaviour
     float staminFill;
 
     public SpecialMove special;
-    private bool specialActive;
 
     //sounds
 
@@ -148,11 +147,7 @@ public class PlayerController : MonoBehaviour
         set { state = value; }
     }
 
-    public bool SpecialActive
-    {
-        get { return specialActive; }
-        set { specialActive = value; }
-    }
+    
 
     // Start is called before the first frame update
     void Start()
@@ -235,8 +230,6 @@ public class PlayerController : MonoBehaviour
         {
             //player gets infinite stamina while active
             stamina = maxStamina;
-            specialSound.enabled = true;
-            specialSound.Play();
         }
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
@@ -591,7 +584,15 @@ public class PlayerController : MonoBehaviour
             //activate the special attack and reset the special attack bar
             gameManager.SpecialAmountFull = 0;
             special.ActivateSpecial();
-            specialActive = true;
+        }
+
+        //sound effect here
+        specialSound.enabled = true;
+        if (specialSound != null)
+        {
+
+            specialSound.Play();
+            Debug.Log("Special Sound Played");
         }
     }
 
