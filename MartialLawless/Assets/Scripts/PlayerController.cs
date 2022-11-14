@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum Orientation
 {
@@ -20,7 +22,8 @@ public enum State
     isThrowing,
     isStunned,
     isBlocking,
-    isDodging
+    isDodging,
+    isPaused
 }
 
 public class PlayerController : MonoBehaviour
@@ -33,10 +36,16 @@ public class PlayerController : MonoBehaviour
     private Orientation orientation;
     private State state;
 
+    //pause variables
+    private State stateBeforePause;
+    [SerializeField]
+    private PauseController pauseController;
+
     //stats are public so they can be edited in the inspector
     public int moveSpeed = 5;
-    public int health = 100;
-    public int maxStamina = 50;
+    private int health;
+    public int maxHealth;
+    public float maxStamina;
    
     public int punchDamage = 10;
     public int kickDamage = 20;
@@ -60,19 +69,57 @@ public class PlayerController : MonoBehaviour
     public float wait = 0.0f;
     public bool isAttacking = false;
 
-    private float staminaRechargeInterval = 2.0f;
-    private float staminaRechargeTimer = 2.0f;
+    private float staminaRechargeInterval = 0.75f;
+    private float staminaRechargeTimer;
     private float stamina = 50;
+   // private float maxStamina;
 
     public Manager gameManager;
 
     private bool damageAble;
 
+    //borders
+    private Bounds playerBounds;
+    public GameObject leftBorder;
+    private Bounds leftBorderBounds;
+    public GameObject topBorder;
+    private Bounds topBorderBounds;
+    public GameObject bottomBorder;
+    private Bounds bottomBorderBounds;
+    public GameObject rightBorder;
+    private Bounds rightBorderBounds;
+
+    private BoxCollider2D collider;
+    
+    [SerializeField]
+    public Text playerStaminaText;
+    public Image fillImageSta;
+    public Slider staminaSlider;
+
+    float staminFill;
+
+    public SpecialMove special;
 
     //sounds
-  
+
     public AudioSource kickSound;
     public AudioSource punchSound;
+    public AudioSource throwSound;
+    public AudioSource specialSound;
+    public AudioSource healthPickUpSound;
+
+    private bool isRed;
+    private float hitIndicatorInterval;
+    private float hitIndicatorTimer;
+    
+    public BoxCollider2D Collider
+    {
+        get { return collider; }
+    } 
+    public SpriteRenderer SpriteRender
+    {
+        get { return spriteRenderer; }
+    }
 
     public bool DamageAble
     {
@@ -93,11 +140,33 @@ public class PlayerController : MonoBehaviour
     public Vector3 Position
     {
         get { return position; }
+        set { position = value; }
     }
+
+    public int Health
+    {
+        get { return health; }
+    }
+
+    public State PlayerState
+    {
+        set { state = value; }
+    }
+
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        collider = gameObject.GetComponent<BoxCollider2D>();
+
+
+        health = maxHealth;
+        maxStamina = stamina;
+        isRed = false;
+        hitIndicatorInterval = 0.4f;
+        hitIndicatorTimer = hitIndicatorInterval;
+
         position = this.transform.position;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
@@ -112,37 +181,93 @@ public class PlayerController : MonoBehaviour
         kick.Damage = kickDamage;
         kick.IsPlayer = true;
 
-        //intializes the punch hit box
+        //intializes the throw hit box
         thrown.manager = gameManager;
         thrown.Damage = punchDamage;
         thrown.IsPlayer = true;
-
         
 
+        //gets bounds of each border object and the player sprite
+        playerBounds = this.GetComponent<SpriteRenderer>().bounds;
+        leftBorderBounds = leftBorder.GetComponent<SpriteRenderer>().bounds;
+        topBorderBounds = topBorder.GetComponent<SpriteRenderer>().bounds;
+        bottomBorderBounds = bottomBorder.GetComponent<SpriteRenderer>().bounds;
+        rightBorderBounds = rightBorder.GetComponent<SpriteRenderer>().bounds;
+
+        staminaSlider.GetComponent<Slider>();
+
+        staminFill = stamina / 50.0f;
+        staminaSlider.value = staminFill;
+        playerStaminaText.text = "Stamina: " + (int)stamina;
+
+        staminaRechargeTimer = staminaRechargeInterval;
     }
 
     // Update is called once per frame
     void Update()
     {
         //Debug.Log("stamina: " + stamina);
+
+        //prevents the player from moving out of bounds
+        BoundsCheck();
+
+        if (isRed)
+        {
+            
+            if(hitIndicatorTimer <= 0)
+            {
+                if(special.IsActive)
+                {
+                    spriteRenderer.color = Color.cyan;
+                    isRed = false;
+                    hitIndicatorTimer = hitIndicatorInterval;
+                }
+                else
+                {
+                    spriteRenderer.color = Color.white;
+                    isRed = false;
+                    hitIndicatorTimer = hitIndicatorInterval;
+                }
+                
+            }
+            else
+            {
+                hitIndicatorTimer -= Time.deltaTime;
+            }
+        }
+
+        if (!damageAble)
+        {
+
+        }
+       
+        //checks if the special is active
+        if(special.IsActive)
+        {
+            //player gets infinite stamina while active
+            stamina = maxStamina;
+        }
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
             case State.isMoving:
-
-               
-
                 Movement();
 
                 //when recharge timer is zero and stamina is below max recharges stamina
                 if(staminaRechargeTimer <= 0 && stamina < maxStamina)
                 {
                     //increase or decrease constant to change stamina recharge rate
-                    stamina += 3 * Time.deltaTime;
-                    
-                    if(stamina > maxStamina)
+                    stamina += 7 * Time.deltaTime;
+                    staminFill = stamina / 50.0f;
+                    staminaSlider.value = staminFill;
+
+                    if (stamina > maxStamina)
                     {
                         stamina = maxStamina;
+                        staminFill = stamina / 100f;
+                        staminaSlider.value = staminFill;
+                        playerStaminaText.text = "Stamina: " + (int)stamina;
+
                     }
                 }
                 //uses else if so if stamina is maxed recharge timer doesn't change
@@ -223,6 +348,8 @@ public class PlayerController : MonoBehaviour
                     state = State.isMoving;
                     damageAble = true;
                     wait = 0;
+                    position.z++;
+
                 }
                 else
                 {
@@ -232,11 +359,21 @@ public class PlayerController : MonoBehaviour
                     velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
                     velocity *= 2.5f;
                     position += velocity * Time.deltaTime;
+                    
                     transform.position = position;
+                    collider.enabled = true;
                 }
                 break;
+            case State.isPaused:
+                //does nothing while paused
+                break;
+
 
         }
+        
+        staminFill = stamina / 100.0f;
+        staminaSlider.value = staminFill;
+        playerStaminaText.text = "Stamina: " + (int)stamina;
         
     }
 
@@ -277,9 +414,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking && stamina >= 10)
+        if(!isAttacking && stamina >= 5.0f && state == State.isMoving)
         {
-            stamina -= 10;
+            stamina -= 5.0f;
+            staminFill = stamina / 100f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
+
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("Punch");
@@ -319,7 +460,6 @@ public class PlayerController : MonoBehaviour
             punchSound.enabled = true;
             if (punchSound != null)
             {
-                
                 punchSound.Play();
                 Debug.Log("Punch Sound Played");
             }
@@ -340,9 +480,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking && stamina >= 15)
+        if(!isAttacking && stamina >= 10.0f && state == State.isMoving)
         {
-            stamina -= 15;
+            stamina -= 10.0f;
+            staminFill = stamina / 100f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("Kick");
@@ -395,13 +538,24 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking && stamina >= 20)
+        if(!isAttacking && stamina >= 15.0f && state == State.isMoving)
         {
-            stamina -= 20;
+            //sets stamina and slider values
+            stamina -= 15.0f;
+            staminFill = stamina / 100.0f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             Debug.Log("throw");
             state = State.isThrowing;
+            //sound effect here
+            throwSound.enabled = true;
+            if (throwSound != null)
+            {
+                throwSound.Play();
+                Debug.Log("throw Sound Played");
+            }
 
             thrown.EnemyList.Clear();
 
@@ -441,19 +595,95 @@ public class PlayerController : MonoBehaviour
         }
         
     }
+    private void OnSpecial(InputValue value)
+    {
+        //if the special attack bar is 10 or higher
+        Debug.Log("Special bar fill: " + gameManager.SpecialAmountFull + "/ 10");
+        if (gameManager.SpecialAmountFull >= 10)
+        {
+            //activate the special attack and reset the special attack bar
+            gameManager.SpecialAmountFull = 0;
+            special.ActivateSpecial();
+        }
+
+        //sound effect added here
+        specialSound.enabled = true;
+        if (specialSound != null)
+        {
+
+            specialSound.Play();
+            Debug.Log("Special Sound Played");
+        }
+    }
 
     private void OnDodge(InputValue value)
     {
-        if(state != State.isDodging && stamina >= 10)
+        //dodge sound
+        if(state != State.isDodging && stamina >= 5.0f && state == State.isMoving)
         {
-            stamina -= 10;
+            stamina -= 5.0f;
+            staminFill = stamina / 50.0f;
+            staminaSlider.value = staminFill;
+            playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
             state = State.isDodging;
             damageAble = false;
+
+            position.z--;
+
+            collider.enabled = false;
         }
        
        
+    }
+
+    //method called by resume button on pause screen, needed because player controls methods are inaccessable 
+    public void ButtonResume()
+    {
+        OnTogglePause(null);
+    }
+
+    private void OnTogglePause(InputValue value)
+    {
+        //resume
+        if (pauseController.IsPaused)
+        {
+            //returns the player to whatever action they were taking before pausing
+            state = stateBeforePause;
+            pauseController.HidePauseScreen();
+
+        }
+        //pause
+        else
+        {
+            
+            stateBeforePause = state;
+            //stops the player from being able to take actions while paused, since all other control methods can only be called when state is isMoving
+            state = State.isPaused;
+            pauseController.ShowPauseScreen();
+        }
+    }
+
+    private void BoundsCheck()
+    {
+        if (position.x - playerBounds.extents.x <= leftBorderBounds.max.x)
+        {
+            position.x = leftBorderBounds.max.x + playerBounds.extents.x;
+        }
+        else if (position.x + playerBounds.extents.x >= rightBorderBounds.min.x)
+        {
+            position.x = rightBorderBounds.min.x - playerBounds.extents.x;
+        }
+
+        if (position.y + playerBounds.extents.y >= topBorderBounds.min.y)
+        {
+            position.y = topBorderBounds.min.y - playerBounds.extents.y;
+        }
+        else if (position.y - playerBounds.extents.y <= bottomBorderBounds.max.y)
+        {
+            position.y = bottomBorderBounds.max.y + playerBounds.extents.y;
+        }
     }
 
     //might be necessary later
@@ -477,5 +707,47 @@ public class PlayerController : MonoBehaviour
     {
         playerControls.Disable();
     }
-    
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+       // Gizmos.DrawWireCube(leftBorderBounds.offset, leftBorderBounds.size);
+        
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("player collided");
+        if (collision.gameObject.name == "HealthDrop")
+        {
+            healthPickUpSound.enabled = true;
+            healthPickUpSound.Play();
+            Debug.Log("Health drop touched");
+            Heal(20);
+            gameManager.CollectHealthDrop(collision.gameObject);
+
+        }
+    }
+
+    public void Heal(int amount)
+    {
+        health += amount;
+        if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
+    }
+
+    public void Damage(int amount)
+    {
+        isRed = true;
+
+        spriteRenderer.color = Color.red;
+        health -= amount;
+        if (health < 0)
+        {
+            health = 0;
+        }
+    }
 }

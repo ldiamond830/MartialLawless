@@ -10,6 +10,14 @@ public class Manager : MonoBehaviour
     public Text playerHealthText;
     public Image fillImage;
     public Slider healthSlider;
+
+    public Text specialText;
+    public Slider specialSlider;
+
+    [SerializeField]
+    private SpriteRenderer bloodTint;
+    
+
     [SerializeField]
     private Text waveCountText;
 
@@ -24,8 +32,20 @@ public class Manager : MonoBehaviour
     private bool isSpawning;
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
+    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
+    private Vector2 enemyPoolPosition = new Vector2(40.0f, 0.0f);
 
+    private List<GameObject> healthDropPool;
+    private List<GameObject> activeHealthDrops;
     public GameObject healthDropPrefab;
+    private const float healthDropPickupRadius = 0.75f;
+    private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
+
+    [SerializeField]
+    private float healthDropRate = 20.0f; // percent
+
+    //variable for special move
+    public SpecialMove special;
 
     /* failed idea may be useful later so I'm not deleting
     public GameObject topSpawn;
@@ -40,6 +60,24 @@ public class Manager : MonoBehaviour
     //health
     float healthFill;
 
+    //variable for tracking/controlling the special attack bar
+    private int specialAmountFull;
+
+    //sounds
+    public AudioSource beginningWavesSound;
+    public AudioSource endingWavesSound;
+    public AudioSource healthPickupSound;
+
+    [SerializeField]
+    private PauseController pauseController;
+
+    //and getter setter for special attack bar
+    public int SpecialAmountFull
+    {
+        get { return specialAmountFull; }
+        set { specialAmountFull = value; }
+    }
+
     public PlayerController Player
     {
         get { return player; }
@@ -51,12 +89,18 @@ public class Manager : MonoBehaviour
 
     private ScoreTracker scoreTracker;
 
-    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
-
     // Start is called before the first frame update
     void Start()
     {
+        beginningWavesSound.enabled = true;
+        if (beginningWavesSound != null)
+        {
+            beginningWavesSound.Play();
+            Debug.Log("beginningWavesSound Played");
+        }
+
         healthSlider.GetComponent<Slider>();
+        specialSlider.GetComponent<Slider>();
 
         scoreTracker = gameObject.GetComponent<ScoreTracker>();
 
@@ -67,6 +111,16 @@ public class Manager : MonoBehaviour
         isSpawning = true;
         enemyList = new List<EnemyAI>();
 
+        healthDropPool = new List<GameObject>();
+        activeHealthDrops = new List<GameObject>();
+
+        for (int i = 0; i < 20; i++)
+        {
+            GameObject drop = Instantiate(healthDropPrefab);
+            drop.transform.position = healthPoolPosition;
+            healthDropPool.Add(drop);
+        }
+
         cameraHeight = cameraObject.orthographicSize * 2f;
         cameraWidth = cameraHeight * cameraObject.aspect;
 
@@ -74,16 +128,17 @@ public class Manager : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
+            newEnemy.transform.position = enemyPoolPosition;
             newEnemy.PlayerTransform = player.transform;
             newEnemy.gameObject.SetActive(false);
             newEnemy.gameManager = this;
+            newEnemy.PauseController = pauseController;
             basicEnemySpawnPool.Add(newEnemy);
-           
 
         }
 
         //sets the initial value for player health
-        UpdatePlayerHealth();
+        UpdatePlayerUI();
         player.DamageAble = true;
 
     }
@@ -91,122 +146,192 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
-
-        if (player.health <= 0)
+        if (player.Health <= 0)
         {
-
-            //build index for the loss scene
-            SceneManager.LoadScene(1);
-
-        }
-
-        if (isSpawning)
-        {
-
-            //creates a short interval between spawns so the player isn't rushed all at once
-            if (basicEnemySpawnPool.Count > 0)
+            float alpha = bloodTint.color.a;
+            alpha += Time.deltaTime;
+            bloodTint.color = new Color(245, 0, 0, alpha);
+            //prevents the player from moving during the fade to red
+            player.PlayerState = State.isIdle;
+            if (alpha >= 1)
             {
-                for (int i = 0; i < waveCount; i++)
-                {
-                    if (waveCount == 4)
-                    {
-                        Debug.Log("test");
-                    }
-
-                    EnemyAI newEnemy = basicEnemySpawnPool[i];
-
-
-                    enemyList.Add(newEnemy);
-                    basicEnemySpawnPool.Remove(newEnemy);
-
-                    //chooses a random spawn point for the new enemy
-                    int doorSelect = Random.Range(0, 4);
-
-                    if (doorSelect == 0)
-                    {
-                        //constant value makes it so enemy doesnt pop in on screen
-                        newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
-                    }
-                    else if (doorSelect == 1)
-                    {
-                        newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
-                    }
-                    else if (doorSelect == 2)
-                    {
-                        newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
-                    }
-                    else
-                    {
-                        newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
-                    }
-
-
-                    newEnemy.gameObject.SetActive(true);
-
-                }
+                //takes the player to a game over screen when the fade is complete
+                SceneManager.LoadScene("LossScene");
 
             }
 
-
-
-
-
-            isSpawning = false;
         }
         else
         {
-
-            if (enemyList.Count == 0)
+            if (!pauseController.IsPaused) ;
             {
-                isSpawning = true;
 
-                waveCount++;
-                UpdateWaveCountText();
-            }
 
-            foreach (EnemyAI enemy in enemyList)
-            {
-               
-                if (enemy.Health <= 0)
+                if (isSpawning)
                 {
-                    //keeps track of al the enemies killed
-                    //scoreTracker.enemies
 
-                    if (random.Next(0, 100) < 50)
+                    //creates a short interval between spawns so the player isn't rushed all at once
+                    if (basicEnemySpawnPool.Count > 0)
                     {
-                        GameObject drop = Instantiate(healthDropPrefab);
-                        drop.transform.position = enemy.Position;
+                        for (int i = 0; i < waveCount; i++)
+                        {
+                            if (waveCount == 4)
+                            {
+                                Debug.Log("test");
+                            }
+
+                            EnemyAI newEnemy = basicEnemySpawnPool[i];
+
+
+                            enemyList.Add(newEnemy);
+                            basicEnemySpawnPool.Remove(newEnemy);
+
+                            //chooses a random spawn point for the new enemy
+                            int doorSelect = Random.Range(0, 4);
+
+                            if (doorSelect == 0)
+                            {
+                                //constant value makes it so enemy doesnt pop in on screen ll
+                                newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                            }
+                            else if (doorSelect == 1)
+                            {
+                                newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                            }
+                            else if (doorSelect == 2)
+                            {
+                                newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                            }
+                            else
+                            {
+                                newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                            }
+
+
+                            newEnemy.gameObject.SetActive(true);
+
+                        }
+
                     }
 
-                    enemy.PunchObj.IsActive = false;
-                    enemy.PunchObj.transform.position = enemy.transform.position;
-
-                    enemyList.Remove(enemy);
-
-                    enemy.gameObject.SetActive(false);
-
-                    enemy.Health = enemyPrefab.Health;
-
-                    //returns the enemy to the spawning pool for reuse
-                    basicEnemySpawnPool.Add(enemy);
-                    ScoreTracker.enemiesKilled++;
+                    isSpawning = false;
                 }
+                else
+                {
+
+                    if (enemyList.Count == 0)
+                    {
+                        isSpawning = true;
+
+                        waveCount++;
+                        UpdateWaveCountText();
+                    }
+
+                    foreach (EnemyAI enemy in enemyList)
+                    {
+
+                        if (enemy.Health <= 0)
+                        {
+                            //keeps track of al the enemies killed
+                            //scoreTracker.enemies
+
+                            //if the player is not currently using their special
+                            if (!special.IsActive)
+                            {
+                                //increases special bar for each enemy killed
+                                specialAmountFull++;
+                                Debug.Log("enemy killed");
+                            }
+
+
+                            if (random.NextDouble() * 100 < healthDropRate)
+                            {
+                                GameObject drop;
+                                if (healthDropPool.Count > 0)
+                                {
+                                    Debug.Log("Drop pulled from pool");
+                                    drop = healthDropPool[0];
+                                    activeHealthDrops.Add(drop);
+                                    healthDropPool.RemoveAt(0);
+                                }
+                                else
+                                {
+                                    drop = Instantiate(healthDropPrefab);
+                                    activeHealthDrops.Add(drop);
+                                }
+                                drop.transform.position = enemy.Position;
+                            }
+
+                            enemy.transform.position = enemyPoolPosition;
+
+                            enemy.PunchObj.IsActive = false;
+                            enemy.PunchObj.transform.position = enemy.transform.position;
+
+                            enemyList.Remove(enemy);
+
+                            enemy.gameObject.SetActive(false);
+
+                            enemy.Health = enemyPrefab.Health;
+
+                            //returns the enemy to the spawning pool for reuse
+                            basicEnemySpawnPool.Add(enemy);
+                            ScoreTracker.enemiesKilled++;
+                        }
+                    }
+
+                    foreach (GameObject healthDrop in activeHealthDrops)
+                    {
+                        // Check if any of the health drops are close enough to the player
+                        if ((healthDrop.transform.position - player.Position).sqrMagnitude <= Mathf.Pow(healthDropPickupRadius, 2))
+                        {
+                            // If they are, heal the player and send them back to the pool
+                            player.Heal(20);
+                            healthDropPool.Add(healthDrop);
+                            activeHealthDrops.Remove(healthDrop);
+                            healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+                        }
+                    }
+
+                }
+            }
+
+
+            //outside of else statement so player health is updated when it reaches 0
+            UpdatePlayerUI();
+
+            if (waveCount > 5)
+            {
+                beginningWavesSound.Stop();
+                endingWavesSound.enabled = true;
+                endingWavesSound.Play();
             }
         }
     }
 
 
-    public void UpdatePlayerHealth()
+    public void UpdatePlayerUI()
     {
-        //Player health and Stamina
-         healthFill = player.health / 100f;
+        //Player health
+        healthFill = player.Health / 100f;
         healthSlider.value = healthFill;
-        playerHealthText.text = "Player Health: " + player.health;
+        playerHealthText.text = "Player Health: " + player.Health;
+
+        // Special
+        specialSlider.value = specialAmountFull / 10.0f;
+        specialText.text = "Special: " + specialAmountFull;
     }
 
     public void UpdateWaveCountText()
     {
         waveCountText.text = "Wave Count: " + waveCount;
+    }
+
+    public void CollectHealthDrop(GameObject drop)
+    {
+        //add pick up sound
+        activeHealthDrops.Remove(drop);
+        healthDropPool.Add(drop);
+        drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+        healthPickupSound.Play();
     }
 }
