@@ -191,7 +191,7 @@ public class Manager : MonoBehaviour
 
                             if (doorSelect == 0)
                             {
-                                //constant value makes it so enemy doesnt pop in on screen
+                                //constant value makes it so enemy doesnt pop in on screen ll
                                 newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
                             }
                             else if (doorSelect == 1)

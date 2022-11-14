@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\MartialLawless",
+    "\\MartialLawless\\Assets",
+    "\\MartialLawless\\Assets\\Scripts"
   ],
+  "SelectedNode": "\\MartialLawless\\Assets\\Scripts\\SpecialMove.cs",
   "PreviewInSolutionExplorer": false
 }

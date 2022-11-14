@@ -15,7 +15,7 @@ public class MainMenuManager : MonoBehaviour
     private bool instructionsVisible = false;
 
 
-    // Start is called before the first frame update
+    // Start is called before the first frame update commet
     void Start()
     {
         introSong.enabled = true;
