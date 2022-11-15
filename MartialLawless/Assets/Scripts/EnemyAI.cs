@@ -10,6 +10,7 @@ public class EnemyAI : MonoBehaviour
 
     [SerializeField]
     private Transform playerTransform;
+    private PlayerController player;
 
     
     private float moveSpeed = 2.0f; // units per second
@@ -58,6 +59,7 @@ public class EnemyAI : MonoBehaviour
     private AttackCollision kick;
     [SerializeField]
     private AttackCollision throwBox;
+    private EnemyThrow throwScript;
 
     private List<AttackCollision> attacks;
 
@@ -110,6 +112,11 @@ public class EnemyAI : MonoBehaviour
         get { return windUp; }
         set { windUp = value; }
     }
+
+    public PlayerController Player
+    {
+        set { player = value; }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -139,6 +146,8 @@ public class EnemyAI : MonoBehaviour
         throwBox.Damage = throwDamage;
         throwBox.IsPlayer = false;
         throwBox.ParentEnemy = this;
+        throwScript = throwBox.GetComponent<EnemyThrow>();
+        throwScript.PlayerController = player;
 
         gruntSound = GameObject.FindGameObjectWithTag("gun").GetComponent<AudioSource>();
         onCooldown = true;
@@ -182,7 +191,7 @@ public class EnemyAI : MonoBehaviour
             if (state != State.isIdle)
             {
                 // UP
-                if (moveVector.y > Mathf.Abs(moveVector.x))
+                if (moveVector.y > Mathf.Abs(moveVector.x) && moveVector.y >= 0)
                 {
                     orientation = Orientation.up;
                 }
@@ -203,6 +212,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     orientation = Orientation.left;
                 }
+                Debug.Log("Orientation: " + orientation);
             }
 
             /*
@@ -326,7 +336,7 @@ public class EnemyAI : MonoBehaviour
                 if (windUp >= 0.7f)
                 {
                     windUp = 0;
-                    //Throw();
+                    Throw();
                     
                     //randomly selects the enemy's attack when they are in range
                     int selector = Random.Range(0, 10);
@@ -343,6 +353,7 @@ public class EnemyAI : MonoBehaviour
                     {
                         Throw();
                     }
+                    
                     
                 }
                 else
@@ -473,6 +484,9 @@ public class EnemyAI : MonoBehaviour
 
                 break;
         }
+
+        throwScript.orientation = this.orientation;
+
         //sound effect here
         gruntSound.enabled = true;
         if (gruntSound != null)

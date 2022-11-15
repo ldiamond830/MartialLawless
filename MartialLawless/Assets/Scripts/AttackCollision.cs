@@ -131,7 +131,7 @@ public class AttackCollision : MonoBehaviour
                 {
                     if (isThrow)
                     {
-                        enemyThrowObject.ThrowPlayer(playerCollider, parentEnemy.Orientation, parentEnemyCollider, damage);
+                        enemyThrowObject.ThrowPlayer(playerCollider, parentEnemyCollider, damage);
 
                     }
                     else

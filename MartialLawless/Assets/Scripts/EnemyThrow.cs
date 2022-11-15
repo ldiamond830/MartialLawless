@@ -10,8 +10,8 @@ public class EnemyThrow : MonoBehaviour
 
     //the player being thrown and the enemy doing the throw
     private BoxCollider2D enemy;
-    private BoxCollider2D player;
-
+    private BoxCollider2D playerCollider;
+    private PlayerController playerController;
     //damage dealt to enemy after they land
     private int damage;
 
@@ -24,6 +24,13 @@ public class EnemyThrow : MonoBehaviour
 
     //sounds
 
+    public Orientation orientation;
+
+    public PlayerController PlayerController
+    {
+        set { playerController = value; }
+    }
+
     void Start()
     {
         isThrown = false;
@@ -34,7 +41,7 @@ public class EnemyThrow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player != null)
+        if (playerCollider != null)
         {
             //if the enemy's current position is not the desired landing position
             if (Vector3.Distance(currentLocation, landingLocation) > 0.3)
@@ -43,15 +50,15 @@ public class EnemyThrow : MonoBehaviour
                 ArcPosition(currentLocation, landingLocation, 2);
 
                 //update the enemy's current location
-                currentLocation = player.GetComponent<PlayerController>().Position;
+                currentLocation = playerController.Position;
             }
             else
             {
-                //enemy is damaged
-                player.GetComponent<PlayerController>().Damage(damage);
+                //player is damaged
+                playerController.Damage(damage);
 
                 //player is no longer being thrown in an arc
-                player = null;
+                playerCollider = null;
                 isThrown = false;
             }
 
@@ -59,7 +66,7 @@ public class EnemyThrow : MonoBehaviour
         }
     }
 
-    public void ThrowPlayer(BoxCollider2D player, Orientation orientation, BoxCollider2D enemy, int damage)
+    public void ThrowPlayer(BoxCollider2D player, BoxCollider2D enemy, int damage)
     {
         //if the enemy is not currently being thrown
         if (!isThrown)
@@ -69,7 +76,7 @@ public class EnemyThrow : MonoBehaviour
             //current location is updated to the passed in enemy's position and the
             //passed in enemy is set
             currentLocation = player.GetComponent<PlayerController>().Position;
-            this.player = player;
+            this.playerCollider = player;
 
             //damage is updated
             this.damage = damage;
@@ -133,7 +140,7 @@ public class EnemyThrow : MonoBehaviour
         endCenter = endPos - centerPivot;
 
         //enemy's position is slerped along the determined coordinates
-        player.GetComponent<PlayerController>().Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
+        playerCollider.GetComponent<PlayerController>().Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
         //enemy.GetComponent<EnemyAI>().punch.Position = Vector3.Slerp(startCenter, endCenter, Time.deltaTime * 2.5f) + centerPivot;
 
     }

@@ -129,6 +129,7 @@ public class Manager : MonoBehaviour
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
             newEnemy.transform.position = enemyPoolPosition;
+            newEnemy.Player = player;
             newEnemy.PlayerTransform = player.transform;
             newEnemy.gameObject.SetActive(false);
             newEnemy.gameManager = this;
