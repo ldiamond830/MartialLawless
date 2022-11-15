@@ -149,6 +149,10 @@ public class Manager : MonoBehaviour
     {
         if (player.Health <= 0)
         {
+            //sets health to 0
+            player.Health = 0;
+            UpdatePlayerUI();
+
             float alpha = bloodTint.color.a;
             alpha += Time.deltaTime;
             bloodTint.color = new Color(245, 0, 0, alpha);

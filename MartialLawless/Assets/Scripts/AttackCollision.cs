@@ -51,6 +51,11 @@ public class AttackCollision : MonoBehaviour
         set { parentEnemy = value; }
     }
 
+    public PlayerController Player
+    {
+        set { player = value; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -132,14 +137,15 @@ public class AttackCollision : MonoBehaviour
                     if (isThrow)
                     {
                         enemyThrowObject.ThrowPlayer(playerCollider, parentEnemyCollider, damage);
-
+                        isActive = false;
                     }
                     else
                     {
-                        //deals damage
-                        manager.Player.Damage(damage);
-                        //manager.UpdatePlayerHealth();
+                        //throw damage is handled in the throw script itself
+                        player.Damage(damage);
                         isActive = false;
+                        this.transform.position = Vector3.zero;
+                        
                     }
                     
                 }

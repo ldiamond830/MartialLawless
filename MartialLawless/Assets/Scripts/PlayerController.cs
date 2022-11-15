@@ -146,6 +146,7 @@ public class PlayerController : MonoBehaviour
     public int Health
     {
         get { return health; }
+        set { health = value; }
     }
 
     public State PlayerState

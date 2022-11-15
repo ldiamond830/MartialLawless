@@ -134,6 +134,7 @@ public class EnemyAI : MonoBehaviour
         punch.Damage = punchDamage;
         punch.IsPlayer = false;
         punch.ParentEnemy = this;
+        punch.Player = this.player;
        
 
         //initializes the kick hit box
@@ -141,11 +142,14 @@ public class EnemyAI : MonoBehaviour
         kick.Damage = kickDamage;
         kick.IsPlayer = false;
         kick.ParentEnemy = this;
+        kick.Player = this.player;
 
         throwBox.manager = gameManager;
         throwBox.Damage = throwDamage;
         throwBox.IsPlayer = false;
+        throwBox.isThrow = true;
         throwBox.ParentEnemy = this;
+        throwBox.Player = this.player;
         throwScript = throwBox.GetComponent<EnemyThrow>();
         throwScript.PlayerController = player;
 
@@ -336,15 +340,15 @@ public class EnemyAI : MonoBehaviour
                 if (windUp >= 0.7f)
                 {
                     windUp = 0;
-                    Throw();
+                    //Throw();
                     
                     //randomly selects the enemy's attack when they are in range
-                    int selector = Random.Range(0, 10);
+                    int selector = Random.Range(0, 11);
                     if (selector <= 5)
                     {
                         Punch();
                     }
-                    else if (selector <= 9)
+                    else if (selector < 9)
                     {
                         Kick();
 

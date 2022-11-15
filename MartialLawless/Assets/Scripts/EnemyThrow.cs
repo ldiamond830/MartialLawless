@@ -31,9 +31,12 @@ public class EnemyThrow : MonoBehaviour
         set { playerController = value; }
     }
 
+    private AttackCollision hitBox;
+
     void Start()
     {
         isThrown = false;
+        hitBox = gameObject.GetComponent<AttackCollision>();
     }
     // Start is called before the first frame update
     
@@ -56,7 +59,7 @@ public class EnemyThrow : MonoBehaviour
             {
                 //player is damaged
                 playerController.Damage(damage);
-
+                
                 //player is no longer being thrown in an arc
                 playerCollider = null;
                 isThrown = false;
@@ -68,6 +71,7 @@ public class EnemyThrow : MonoBehaviour
 
     public void ThrowPlayer(BoxCollider2D player, BoxCollider2D enemy, int damage)
     {
+
         //if the enemy is not currently being thrown
         if (!isThrown)
         {
