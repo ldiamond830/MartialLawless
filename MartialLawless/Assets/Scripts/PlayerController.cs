@@ -215,6 +215,7 @@ public class PlayerController : MonoBehaviour
 
         // Animation logic
         animator.SetBool("isMoving", state == State.isMoving);
+        animator.SetInteger("orientation", (int)orientation);
 
         //prevents the player from moving out of bounds
         BoundsCheck();
