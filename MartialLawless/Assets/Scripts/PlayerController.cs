@@ -59,6 +59,10 @@ public class PlayerController : MonoBehaviour
     public Sprite leftSprite;
     public Sprite rightSprite;
 
+    //animation assets
+    [SerializeField]
+    private Animator animator;
+
     //variables for controlling combat
     public AttackCollision punch;
     public AttackCollision kick;
@@ -169,7 +173,7 @@ public class PlayerController : MonoBehaviour
         hitIndicatorTimer = hitIndicatorInterval;
 
         position = this.transform.position;
-        state = State.isMoving;
+        state = State.isIdle;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
 
         //intializes the punch hit box
@@ -208,6 +212,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //Debug.Log("stamina: " + stamina);
+
+        // Animation logic
+        animator.SetBool("isMoving", state == State.isMoving);
 
         //prevents the player from moving out of bounds
         BoundsCheck();
@@ -251,6 +258,34 @@ public class PlayerController : MonoBehaviour
         //what behavior the player is able to access is determined by the state of the player character
         switch (state)
         {
+            case State.isIdle:
+                Movement();
+
+                //when recharge timer is zero and stamina is below max recharges stamina
+                if (staminaRechargeTimer <= 0 && stamina < maxStamina)
+                {
+                    //increase or decrease constant to change stamina recharge rate
+                    stamina += 7 * Time.deltaTime;
+                    staminFill = stamina / 50.0f;
+                    staminaSlider.value = staminFill;
+
+                    if (stamina > maxStamina)
+                    {
+                        stamina = maxStamina;
+                        staminFill = stamina / 100f;
+                        staminaSlider.value = staminFill;
+                        playerStaminaText.text = "Stamina: " + (int)stamina;
+
+                    }
+                }
+                //uses else if so if stamina is maxed recharge timer doesn't change
+                else if (staminaRechargeTimer > 0)
+                {
+                    staminaRechargeTimer -= Time.deltaTime;
+                }
+
+                break;
+
             case State.isMoving:
                 Movement();
 
@@ -277,7 +312,7 @@ public class PlayerController : MonoBehaviour
                     staminaRechargeTimer -= Time.deltaTime;
                 }
 
-            break;
+                break;
 
             case State.isThrowing:
                 if (wait >= 0.5f)
@@ -406,6 +441,15 @@ public class PlayerController : MonoBehaviour
             orientation = Orientation.left;
         }
         
+        if (direction.x == 0 && direction.y == 0)
+        {
+            state = State.isIdle;
+        }
+        else
+        {
+            state = State.isMoving;
+        }
+        
 
         //moves the player based on speed value, read in direction and scales by delta time
         velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
@@ -415,7 +459,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking && stamina >= 5.0f && state == State.isMoving)
+        if(!isAttacking && stamina >= 5.0f)
         {
             stamina -= 5.0f;
             staminFill = stamina / 100f;
@@ -481,7 +525,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking && stamina >= 10.0f && state == State.isMoving)
+        if(!isAttacking && stamina >= 10.0f)
         {
             stamina -= 10.0f;
             staminFill = stamina / 100f;
@@ -539,7 +583,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking && stamina >= 15.0f && state == State.isMoving)
+        if(!isAttacking && stamina >= 15.0f)
         {
             //sets stamina and slider values
             stamina -= 15.0f;

@@ -1280,6 +1280,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c041a9c29e7f974cafdda1f1f0e8168, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &689959286
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689959274}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: aa611a8eac5170243ac8f5c452d5bd7f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &717930245 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8032284955464926081, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
@@ -4602,6 +4622,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 689959282}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: animator
+      value: 
+      objectReference: {fileID: 689959286}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: kickSound
       value: 
       objectReference: {fileID: 1195575927}
@@ -4657,6 +4681,10 @@ PrefabInstance:
       propertyPath: specialSound
       value: 
       objectReference: {fileID: 1951587897}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: horizontalRun
+      value: 
+      objectReference: {fileID: 471473213, guid: c9f94c838d16d1d4eafdfe869a273b2a, type: 3}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: staminaSlider
       value: 
