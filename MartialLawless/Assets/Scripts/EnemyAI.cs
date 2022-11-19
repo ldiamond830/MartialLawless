@@ -118,7 +118,7 @@ public class EnemyAI : MonoBehaviour
         set { player = value; }
     }
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         hitIndicatorInterval = 0.4f;
         hitIndicatorTimer = hitIndicatorInterval;
@@ -158,7 +158,7 @@ public class EnemyAI : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         //checks if the game has been paused before updating
         if (!pauseController.IsPaused)
