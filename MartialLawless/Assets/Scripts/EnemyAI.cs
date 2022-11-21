@@ -500,4 +500,11 @@ public class EnemyAI : MonoBehaviour
         }
         throwBox.IsActive = true;
     }
+
+    public void takeDamage(int damage)
+    {
+        health -= damage;
+        spriteRenderer.color = Color.red;
+
+    }
 }
