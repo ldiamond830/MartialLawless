@@ -29,6 +29,8 @@ public class Manager : MonoBehaviour
 
     private float timeBetweenSpawn;
 
+    private float damageMultiplier = 1.25f;
+
     //when set to true spawns new wave of enemies, when set to false wave is in progress
     private bool isSpawning;
     public List<EnemyAI> enemyList;
@@ -42,7 +44,7 @@ public class Manager : MonoBehaviour
     private List<HealthDrop> activeHealthDrops;
     public GameObject healthDropPrefab;
     private const float healthDropPickupRadius = 0.75f;
-    private const float healthDropDuration = 15.0f;
+    private const float healthDropDuration = 5.0f;
     private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
 
     [SerializeField]

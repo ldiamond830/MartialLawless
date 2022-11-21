@@ -23,7 +23,8 @@ public class EnemyAI : MonoBehaviour
     private float punchDuration = 0.05f; // seconds
     private bool onCooldown = true;
 
-    private float windUp = 0.0f;
+    private float windUp;
+    private float windUpTimer = 0.0f;
 
     private Vector2 position;
 
@@ -107,10 +108,10 @@ public class EnemyAI : MonoBehaviour
         get { return health; }
     }
 
-    public float WindUp
+    public float WindUpTimer
     {
-        get { return windUp; }
-        set { windUp = value; }
+        get { return windUpTimer; }
+        set { windUpTimer = value; }
     }
 
     public PlayerController Player
@@ -156,6 +157,15 @@ public class EnemyAI : MonoBehaviour
 
         gruntSound = GameObject.FindGameObjectWithTag("gun").GetComponent<AudioSource>();
         onCooldown = true;
+
+        if(GetComponent<ShieldEnemy>())
+        {
+            windUp = 0.7f;
+        }
+        else
+        {
+            windUp = 0.6f;
+        }
     }
 
     // Update is called once per frame
@@ -217,7 +227,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     orientation = Orientation.left;
                 }
-                Debug.Log("Orientation: " + orientation);
+                //Debug.Log("Orientation: " + orientation);
             }
 
             /*
@@ -249,7 +259,7 @@ public class EnemyAI : MonoBehaviour
             {
                 case State.isIdle:
                     // If this enemy is out of range
-                    if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUp == 0)
+                    if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUpTimer == 0)
                     {
                         state = State.isMoving;
                     }
@@ -338,9 +348,9 @@ public class EnemyAI : MonoBehaviour
 
             if (state == State.isIdle)
             {
-                if (windUp >= 0.7f)
+                if (windUpTimer >= windUp)
                 {
-                    windUp = 0;
+                    windUpTimer = 0;
                     //Throw();
                     
                     //randomly selects the enemy's attack when they are in range
@@ -363,7 +373,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 else
                 {
-                    windUp += Time.deltaTime;
+                    windUpTimer += Time.deltaTime;
                 }
 
 
@@ -502,10 +512,17 @@ public class EnemyAI : MonoBehaviour
         throwBox.IsActive = true;
     }
 
-    public virtual void TakeDamage(int damage)
+    public void takeDamage(int damage)
     {
         health -= damage;
         spriteRenderer.color = Color.red;
 
+=======
+    public void ScaleDamage(float multiplier)
+    {
+        punchDamage = (int)Mathf.Floor(punchDamage * multiplier);
+        kickDamage = (int)Mathf.Floor(kickDamage * multiplier);
+        throwDamage = (int)Mathf.Floor(throwDamage * multiplier);
+>>>>>>> Stashed changes
     }
 }
