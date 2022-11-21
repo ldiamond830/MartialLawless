@@ -226,7 +226,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     orientation = Orientation.left;
                 }
-                Debug.Log("Orientation: " + orientation);
+                //Debug.Log("Orientation: " + orientation);
             }
 
             /*
@@ -511,10 +511,18 @@ public class EnemyAI : MonoBehaviour
         throwBox.IsActive = true;
     }
 
+<<<<<<< Updated upstream
     public void takeDamage(int damage)
     {
         health -= damage;
         spriteRenderer.color = Color.red;
 
+=======
+    public void ScaleDamage(float multiplier)
+    {
+        punchDamage = (int)Mathf.Floor(punchDamage * multiplier);
+        kickDamage = (int)Mathf.Floor(kickDamage * multiplier);
+        throwDamage = (int)Mathf.Floor(throwDamage * multiplier);
+>>>>>>> Stashed changes
     }
 }

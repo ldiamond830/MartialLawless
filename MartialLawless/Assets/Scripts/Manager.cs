@@ -29,6 +29,8 @@ public class Manager : MonoBehaviour
 
     private float timeBetweenSpawn;
 
+    private float damageMultiplier = 1.25f;
+
     //when set to true spawns new wave of enemies, when set to false wave is in progress
     private bool isSpawning;
     public List<EnemyAI> enemyList;
@@ -182,13 +184,12 @@ public class Manager : MonoBehaviour
                     {
                         for (int i = 0; i < waveCount; i++)
                         {
-                            if (waveCount == 4)
+                            for (int j = 0; j < basicEnemySpawnPool.Count; j++)
                             {
-                                Debug.Log("test");
+                                basicEnemySpawnPool[j].ScaleDamage(damageMultiplier);
                             }
 
                             EnemyAI newEnemy = basicEnemySpawnPool[i];
-
 
                             enemyList.Add(newEnemy);
                             basicEnemySpawnPool.Remove(newEnemy);
