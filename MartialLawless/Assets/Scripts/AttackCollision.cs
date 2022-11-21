@@ -104,7 +104,7 @@ public class AttackCollision : MonoBehaviour
                     {
                         if (collider.IsTouching(enemyList[i]))
                         {
-                            manager.EnemyList[i].WindUp = 0;
+                            manager.EnemyList[i].WindUpTimer = 0;
 
                             if (isThrow)
                             {

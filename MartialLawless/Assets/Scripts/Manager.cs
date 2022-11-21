@@ -40,7 +40,7 @@ public class Manager : MonoBehaviour
     private List<HealthDrop> activeHealthDrops;
     public GameObject healthDropPrefab;
     private const float healthDropPickupRadius = 0.75f;
-    private const float healthDropDuration = 15.0f;
+    private const float healthDropDuration = 5.0f;
     private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
 
     [SerializeField]
