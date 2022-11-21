@@ -243,7 +243,7 @@ public class Manager : MonoBehaviour
                             //scoreTracker.enemies
 
                             //if the player is not currently using their special
-                            if (!special.IsActive)
+                            if (!special.IsActive && specialAmountFull < 10)
                             {
                                 //increases special bar for each enemy killed
                                 specialAmountFull++;
