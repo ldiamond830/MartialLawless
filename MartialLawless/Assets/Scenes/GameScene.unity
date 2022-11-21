@@ -4435,14 +4435,16 @@ MonoBehaviour:
   enemyList:
   - {fileID: 445234706}
   enemyPrefab: {fileID: 8491509145549980111, guid: 7d4797e96683ef641a35551e99b97bfd, type: 3}
+  sheildEnemyPrefab: {fileID: 983121105671472435, guid: 5e9d64009a00aad4cb27d64ec0bdf4a2, type: 3}
   basicEnemySpawnPool: []
+  shieldEnemySpawnPool: []
   healthDropPrefab: {fileID: 2626286806664553748, guid: 9c6635a9b6687224bab5e803b8656162, type: 3}
   healthDropRate: 20
   special: {fileID: 689959282}
   cameraObject: {fileID: 519420031}
   beginningWavesSound: {fileID: 1886599797}
-  endingWavesSound: {fileID: 0}
-  healthPickupSound: {fileID: 0}
+  endingWavesSound: {fileID: 318977617}
+  healthPickupSound: {fileID: 2065040015}
   pauseController: {fileID: 513015369}
 --- !u!114 &1977513165
 MonoBehaviour:
@@ -4755,6 +4757,10 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1977513164}
+    - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
+      propertyPath: punchDamage
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1577032684308923567, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: rightBorder
       value: 

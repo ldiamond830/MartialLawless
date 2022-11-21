@@ -33,7 +33,9 @@ public class Manager : MonoBehaviour
     private bool isSpawning;
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
+    public ShieldEnemy sheildEnemyPrefab;
     public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
+    public List<ShieldEnemy> shieldEnemySpawnPool = new List<ShieldEnemy>();
     private Vector2 enemyPoolPosition = new Vector2(40.0f, 0.0f);
 
     private List<HealthDrop> healthDropPool;
@@ -138,6 +140,15 @@ public class Manager : MonoBehaviour
             newEnemy.PauseController = pauseController;
             basicEnemySpawnPool.Add(newEnemy);
 
+            ShieldEnemy newShield = Instantiate(sheildEnemyPrefab);
+            newShield.transform.position = enemyPoolPosition;
+            newShield.Player = player;
+            newShield.PlayerTransform = player.transform;
+            newShield.gameObject.SetActive(false);
+            newShield.gameManager = this;
+            newShield.PauseController = pauseController;
+            shieldEnemySpawnPool.Add(newShield);
+
         }
 
         //sets the initial value for player health
@@ -176,49 +187,9 @@ public class Manager : MonoBehaviour
 
                 if (isSpawning)
                 {
-
-                    //creates a short interval between spawns so the player isn't rushed all at once
-                    if (basicEnemySpawnPool.Count > 0)
+                    for(int i =0; i < waveCount; i++)
                     {
-                        for (int i = 0; i < waveCount; i++)
-                        {
-                            if (waveCount == 4)
-                            {
-                                Debug.Log("test");
-                            }
-
-                            EnemyAI newEnemy = basicEnemySpawnPool[i];
-
-
-                            enemyList.Add(newEnemy);
-                            basicEnemySpawnPool.Remove(newEnemy);
-
-                            //chooses a random spawn point for the new enemy
-                            int doorSelect = Random.Range(0, 4);
-
-                            if (doorSelect == 0)
-                            {
-                                //constant value makes it so enemy doesnt pop in on screen ll
-                                newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
-                            }
-                            else if (doorSelect == 1)
-                            {
-                                newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
-                            }
-                            else if (doorSelect == 2)
-                            {
-                                newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
-                            }
-                            else
-                            {
-                                newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
-                            }
-
-
-                            newEnemy.gameObject.SetActive(true);
-
-                        }
-
+                        Spawning();
                     }
 
                     isSpawning = false;
@@ -349,5 +320,53 @@ public class Manager : MonoBehaviour
         healthDropPool.Add(drop);
         drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
         healthPickupSound.Play();
+    }
+
+
+    private void Spawning()
+    {
+        SpawnBasic();
+    }
+
+    private void SpawnBasic()
+    {
+        if (basicEnemySpawnPool.Count > 0)
+        {
+            
+                EnemyAI newEnemy = basicEnemySpawnPool[0];
+
+
+                enemyList.Add(newEnemy);
+                basicEnemySpawnPool.Remove(newEnemy);
+
+                //chooses a random spawn point for the new enemy
+                int doorSelect = Random.Range(0, 4);
+
+                if (doorSelect == 0)
+                {
+                    //constant value makes it so enemy doesnt pop in on screen ll
+                    newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                }
+                else if (doorSelect == 1)
+                {
+                    newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                }
+                else if (doorSelect == 2)
+                {
+                    newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                }
+                else
+                {
+                    newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                }
+
+
+                newEnemy.gameObject.SetActive(true);
+
+        }
+
+        
+
+       
     }
 }

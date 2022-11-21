@@ -116,6 +116,7 @@ public class EnemyAI : MonoBehaviour
     public PlayerController Player
     {
         set { player = value; }
+        get { return player; }
     }
     // Start is called before the first frame update
     protected void Start()
@@ -501,7 +502,7 @@ public class EnemyAI : MonoBehaviour
         throwBox.IsActive = true;
     }
 
-    public void takeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         health -= damage;
         spriteRenderer.color = Color.red;

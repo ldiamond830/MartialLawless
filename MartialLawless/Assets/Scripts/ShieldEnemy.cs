@@ -7,11 +7,19 @@ public class ShieldEnemy : EnemyAI
     [SerializeField]
     private GameObject shield;
     public PauseController temp;
+
+    private bool hasShield;
+
+    public bool HasShield
+    {
+        set { hasShield = value; }
+    }
     // Start is called before the first frame update
     void Start()
     {
         base.Start();
         base.PauseController = temp;
+        WindUp = 0.8f;
     }
 
     // Update is called once per frame
@@ -39,4 +47,48 @@ public class ShieldEnemy : EnemyAI
                 break;
         }
     }
+
+    public override void TakeDamage(int damage)
+    {
+        Debug.Log("Sheild enemy take damage");
+        if (hasShield)
+        {
+            switch (Orientation)
+            {
+                case Orientation.up:
+                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
+                    if(Player.ReturnOrientation != Orientation.down)
+                    {
+                        base.TakeDamage(damage);
+                    }
+                    break;
+                case Orientation.down:
+                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
+                    if (Player.ReturnOrientation != Orientation.up)
+                    {
+                        base.TakeDamage(damage);
+                    }
+                    break;
+                case Orientation.left:
+                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
+                    if (Player.ReturnOrientation != Orientation.right)
+                    {
+                        base.TakeDamage(damage);
+                    }
+                    break;
+                case Orientation.right:
+                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
+                    if (Player.ReturnOrientation != Orientation.left)
+                    {
+                        base.TakeDamage(damage);
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            base.TakeDamage(damage);
+        }
+    }
+
 }
