@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -35,10 +36,11 @@ public class Manager : MonoBehaviour
     public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
     private Vector2 enemyPoolPosition = new Vector2(40.0f, 0.0f);
 
-    private List<GameObject> healthDropPool;
-    private List<GameObject> activeHealthDrops;
+    private List<HealthDrop> healthDropPool;
+    private List<HealthDrop> activeHealthDrops;
     public GameObject healthDropPrefab;
     private const float healthDropPickupRadius = 0.75f;
+    private const float healthDropDuration = 15.0f;
     private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
 
     [SerializeField]
@@ -111,12 +113,12 @@ public class Manager : MonoBehaviour
         isSpawning = true;
         enemyList = new List<EnemyAI>();
 
-        healthDropPool = new List<GameObject>();
-        activeHealthDrops = new List<GameObject>();
+        healthDropPool = new List<HealthDrop>();
+        activeHealthDrops = new List<HealthDrop>();
 
         for (int i = 0; i < 20; i++)
         {
-            GameObject drop = Instantiate(healthDropPrefab);
+            HealthDrop drop = Instantiate(healthDropPrefab).GetComponent<HealthDrop>();
             drop.transform.position = healthPoolPosition;
             healthDropPool.Add(drop);
         }
@@ -168,7 +170,7 @@ public class Manager : MonoBehaviour
         }
         else
         {
-            if (!pauseController.IsPaused) ;
+            if (!pauseController.IsPaused)
             {
 
 
@@ -251,7 +253,7 @@ public class Manager : MonoBehaviour
 
                             if (random.NextDouble() * 100 < healthDropRate)
                             {
-                                GameObject drop;
+                                HealthDrop drop;
                                 if (healthDropPool.Count > 0)
                                 {
                                     Debug.Log("Drop pulled from pool");
@@ -261,10 +263,11 @@ public class Manager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    drop = Instantiate(healthDropPrefab);
+                                    drop = Instantiate(healthDropPrefab).GetComponent<HealthDrop>();
                                     activeHealthDrops.Add(drop);
                                 }
                                 drop.transform.position = enemy.Position;
+                                drop.StartTimer();
                             }
 
                             enemy.transform.position = enemyPoolPosition;
@@ -284,13 +287,21 @@ public class Manager : MonoBehaviour
                         }
                     }
 
-                    foreach (GameObject healthDrop in activeHealthDrops)
+                    foreach (HealthDrop healthDrop in activeHealthDrops)
                     {
                         // Check if any of the health drops are close enough to the player
                         if ((healthDrop.transform.position - player.Position).sqrMagnitude <= Mathf.Pow(healthDropPickupRadius, 2))
                         {
                             // If they are, heal the player and send them back to the pool
                             player.Heal(20);
+                            healthDropPool.Add(healthDrop);
+                            activeHealthDrops.Remove(healthDrop);
+                            healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+                        }
+
+                        // If it's reached it's despawn time threshold
+                        if (healthDrop.Timer >= healthDropDuration)
+                        {
                             healthDropPool.Add(healthDrop);
                             activeHealthDrops.Remove(healthDrop);
                             healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
@@ -331,7 +342,7 @@ public class Manager : MonoBehaviour
         waveCountText.text = "Wave Count: " + waveCount;
     }
 
-    public void CollectHealthDrop(GameObject drop)
+    public void CollectHealthDrop(HealthDrop drop)
     {
         //add pick up sound
         activeHealthDrops.Remove(drop);
