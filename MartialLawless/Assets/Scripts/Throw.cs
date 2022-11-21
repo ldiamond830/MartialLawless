@@ -47,7 +47,7 @@ public class Throw : MonoBehaviour
             else
             {
                 //enemy is damaged
-                enemy.GetComponent<EnemyAI>().Health -= damage;
+                enemy.GetComponent<EnemyAI>().takeDamage(damage);
 
                 //enemy is no longer being thrown in an arc
                 enemy = null;

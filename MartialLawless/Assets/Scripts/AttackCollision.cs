@@ -114,9 +114,9 @@ public class AttackCollision : MonoBehaviour
                             else
                             {
                                 //deals damage
-                                
-                                manager.EnemyList[i].Health -= damage;
-                                manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
+
+                                manager.EnemyList[i].takeDamage(damage);
+                                //manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
                                 isActive = false;
 
                                

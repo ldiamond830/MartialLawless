@@ -3343,6 +3343,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShieldEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 4242505963126533335, guid: 5e9d64009a00aad4cb27d64ec0bdf4a2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4769677116042653699, guid: 5e9d64009a00aad4cb27d64ec0bdf4a2, type: 3}
       propertyPath: m_RootOrder
       value: 1
