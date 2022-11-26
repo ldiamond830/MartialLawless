@@ -133,8 +133,8 @@ public class Manager : MonoBehaviour
         cameraWidth = cameraHeight * cameraObject.aspect;
 
         //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
-        //NOTE change 5 to 20 if I forget 5 is just for testing
-        for (int i = 0; i < 5; i++)
+        
+        for (int i = 0; i < 20; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
             newEnemy.transform.position = enemyPoolPosition;
@@ -408,11 +408,11 @@ public class Manager : MonoBehaviour
         if (shieldEnemySpawnPool.Count > 0)
         {
 
-            EnemyAI newEnemy = shieldEnemySpawnPool[0];
+            ShieldEnemy newEnemy = shieldEnemySpawnPool[0];
 
 
             enemyList.Add(newEnemy);
-            basicEnemySpawnPool.Remove(newEnemy);
+            shieldEnemySpawnPool.Remove(newEnemy);
 
             //chooses a random spawn point for the new enemy
             int doorSelect = Random.Range(0, 4);
@@ -437,6 +437,7 @@ public class Manager : MonoBehaviour
 
 
             newEnemy.gameObject.SetActive(true);
+            
 
         }
     }
