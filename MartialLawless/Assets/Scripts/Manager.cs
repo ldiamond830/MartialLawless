@@ -95,6 +95,8 @@ public class Manager : MonoBehaviour
 
     private ScoreTracker scoreTracker;
 
+    private int enemiesKilledThisWave;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -131,7 +133,7 @@ public class Manager : MonoBehaviour
         cameraWidth = cameraHeight * cameraObject.aspect;
 
         //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 20; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
             newEnemy.transform.position = enemyPoolPosition;
@@ -189,7 +191,7 @@ public class Manager : MonoBehaviour
 
                 if (isSpawning)
                 {
-                    for(int i =0; i < waveCount; i++)
+                    for(int i = 0; i <  waveCount; i++)
                     {
                         Spawning();
                     }
@@ -203,8 +205,12 @@ public class Manager : MonoBehaviour
                     {
                         isSpawning = true;
 
-                        waveCount++;
-                        UpdateWaveCountText();
+                        if(enemiesKilledThisWave >= waveCount)
+                        {
+                            waveCount++;
+                            UpdateWaveCountText();
+                        }
+                        
                     }
 
                     foreach (EnemyAI enemy in enemyList)
@@ -257,6 +263,7 @@ public class Manager : MonoBehaviour
                             //returns the enemy to the spawning pool for reuse
                             basicEnemySpawnPool.Add(enemy);
                             ScoreTracker.enemiesKilled++;
+                            enemiesKilledThisWave++;
                         }
                     }
 
@@ -327,7 +334,16 @@ public class Manager : MonoBehaviour
 
     private void Spawning()
     {
-        SpawnBasic();
+        int rng = Random.Range(0, 6);
+        if(rng <= 4)
+        {
+            SpawnBasic();
+        }
+        else
+        {
+            SpawnShield();
+        }
+        
     }
 
     private void SpawnBasic()
@@ -370,5 +386,43 @@ public class Manager : MonoBehaviour
         
 
        
+    }
+
+    private void SpawnShield()
+    {
+        if (shieldEnemySpawnPool.Count > 0)
+        {
+
+            EnemyAI newEnemy = shieldEnemySpawnPool[0];
+
+
+            enemyList.Add(newEnemy);
+            basicEnemySpawnPool.Remove(newEnemy);
+
+            //chooses a random spawn point for the new enemy
+            int doorSelect = Random.Range(0, 4);
+
+            if (doorSelect == 0)
+            {
+                //constant value makes it so enemy doesnt pop in on screen ll
+                newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+            }
+            else if (doorSelect == 1)
+            {
+                newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+            }
+            else if (doorSelect == 2)
+            {
+                newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+            }
+            else
+            {
+                newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+            }
+
+
+            newEnemy.gameObject.SetActive(true);
+
+        }
     }
 }

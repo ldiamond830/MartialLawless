@@ -18,8 +18,8 @@ public class ShieldEnemy : EnemyAI
     void Start()
     {
         base.Start();
-        base.PauseController = temp;
-        WindUp = 0.8f;
+        //base.PauseController = temp;
+        windUp = 0.8f;
     }
 
     // Update is called once per frame
@@ -91,4 +91,10 @@ public class ShieldEnemy : EnemyAI
         }
     }
 
+
+    public void RemoveShield()
+    {
+        hasShield = false;
+        shield.SetActive(false);
+    }
 }

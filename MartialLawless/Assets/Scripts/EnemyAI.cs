@@ -23,7 +23,7 @@ public class EnemyAI : MonoBehaviour
     private float punchDuration = 0.05f; // seconds
     private bool onCooldown = true;
 
-    private float windUp;
+    protected float windUp;
     private float windUpTimer = 0.0f;
 
     private Vector2 position;
@@ -158,14 +158,8 @@ public class EnemyAI : MonoBehaviour
         gruntSound = GameObject.FindGameObjectWithTag("gun").GetComponent<AudioSource>();
         onCooldown = true;
 
-        if(GetComponent<ShieldEnemy>())
-        {
-            windUp = 0.7f;
-        }
-        else
-        {
             windUp = 0.6f;
-        }
+        
     }
 
     // Update is called once per frame
@@ -512,17 +506,17 @@ public class EnemyAI : MonoBehaviour
         throwBox.IsActive = true;
     }
 
-    public void takeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         health -= damage;
         spriteRenderer.color = Color.red;
 
-=======
+    }
     public void ScaleDamage(float multiplier)
     {
         punchDamage = (int)Mathf.Floor(punchDamage * multiplier);
         kickDamage = (int)Mathf.Floor(kickDamage * multiplier);
         throwDamage = (int)Mathf.Floor(throwDamage * multiplier);
->>>>>>> Stashed changes
+
     }
 }
