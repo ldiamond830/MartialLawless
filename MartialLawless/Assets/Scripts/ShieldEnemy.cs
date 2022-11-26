@@ -57,7 +57,7 @@ public class ShieldEnemy : EnemyAI
             {
                 case Orientation.up:
                     //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
-                    if(Player.ReturnOrientation != Orientation.down)
+                    if (Player.ReturnOrientation != Orientation.down)
                     {
                         base.TakeDamage(damage);
                     }
@@ -96,5 +96,11 @@ public class ShieldEnemy : EnemyAI
     {
         hasShield = false;
         shield.SetActive(false);
+    }
+
+    public void AddShield()
+    {
+        hasShield = true;
+        shield.SetActive(true);
     }
 }

@@ -191,7 +191,7 @@ public class Manager : MonoBehaviour
 
                 if (isSpawning)
                 {
-                    for(int i = 0; i <  waveCount; i++)
+                    for(int i = 0; i < waveCount - enemiesKilledThisWave; i++)
                     {
                         Spawning();
                     }
@@ -209,6 +209,7 @@ public class Manager : MonoBehaviour
                         {
                             waveCount++;
                             UpdateWaveCountText();
+                            enemiesKilledThisWave = 0;
                         }
                         
                     }
@@ -259,9 +260,21 @@ public class Manager : MonoBehaviour
                             enemy.gameObject.SetActive(false);
 
                             enemy.Health = enemyPrefab.Health;
-
                             //returns the enemy to the spawning pool for reuse
-                            basicEnemySpawnPool.Add(enemy);
+                            if (enemy is ShieldEnemy)
+                            {
+                                ShieldEnemy temp = (ShieldEnemy)enemy;
+                                temp.AddShield();
+                                shieldEnemySpawnPool.Add(temp);
+
+                            }
+                            else
+                            {
+                                
+                                basicEnemySpawnPool.Add(enemy);
+                            }
+
+                            
                             ScoreTracker.enemiesKilled++;
                             enemiesKilledThisWave++;
                         }

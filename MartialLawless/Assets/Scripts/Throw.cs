@@ -22,6 +22,8 @@ public class Throw : MonoBehaviour
     private Vector3 startCenter;
     private Vector3 endCenter;
 
+    EnemyAI enemyAI;
+
     //sounds
 
     void Start()
@@ -35,6 +37,7 @@ public class Throw : MonoBehaviour
         //if the enemy has been set
         if(enemy != null)
         {
+            enemyAI = enemy.GetComponent<EnemyAI>();
             //if the enemy's current position is not the desired landing position
             if (Vector3.Distance(currentLocation, landingLocation) > 0.3)
             {
@@ -47,7 +50,12 @@ public class Throw : MonoBehaviour
             else
             {
                 //enemy is damaged
-                enemy.GetComponent<EnemyAI>().TakeDamage(damage);
+                enemyAI.TakeDamage(damage);
+
+                if(enemyAI is ShieldEnemy)
+                {
+                    enemy.GetComponent<ShieldEnemy>().RemoveShield();
+                }
 
                 //enemy is no longer being thrown in an arc
                 enemy = null;
