@@ -133,7 +133,8 @@ public class Manager : MonoBehaviour
         cameraWidth = cameraHeight * cameraObject.aspect;
 
         //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
-        for (int i = 0; i < 20; i++)
+        //NOTE change 5 to 20 if I forget 5 is just for testing
+        for (int i = 0; i < 5; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
             newEnemy.transform.position = enemyPoolPosition;
@@ -265,6 +266,7 @@ public class Manager : MonoBehaviour
                             {
                                 ShieldEnemy temp = (ShieldEnemy)enemy;
                                 temp.AddShield();
+                                temp.Health = sheildEnemyPrefab.Health;
                                 shieldEnemySpawnPool.Add(temp);
 
                             }
