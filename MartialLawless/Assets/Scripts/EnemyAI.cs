@@ -73,6 +73,8 @@ public class EnemyAI : MonoBehaviour
     private float hitIndicatorInterval;
     private float hitIndicatorTimer;
 
+    private bool isTrapping;
+
     public AttackCollision PunchObj
     {
         get { return punch; }
@@ -119,6 +121,8 @@ public class EnemyAI : MonoBehaviour
         set { player = value; }
         get { return player; }
     }
+
+    
     // Start is called before the first frame update
     protected void Start()
     {
@@ -159,6 +163,8 @@ public class EnemyAI : MonoBehaviour
         onCooldown = true;
 
             windUp = 0.6f;
+
+        isTrapping = false;
         
     }
 
@@ -176,7 +182,23 @@ public class EnemyAI : MonoBehaviour
             Vector2 playerPosition = (Vector2)playerTransform.position;
             //position = transform.position;
             // Get the vector from this enemy to the player
-            Vector2 moveVector = playerPosition - (Vector2)transform.position;
+            Vector2 moveVector;
+            if (isTrapping)
+            {
+                if(playerPosition.y > transform.position.y)
+                {
+                    moveVector = ( new Vector2(playerPosition.x, playerPosition.y + 5)) - (Vector2)transform.position;
+                }
+                else
+                {
+                    moveVector = (new Vector2(playerPosition.x, playerPosition.y - 5)) - (Vector2)transform.position;
+                }
+            }
+            else
+            {
+                 moveVector = playerPosition - (Vector2)transform.position;
+            }
+           
 
             // Get an updated list of other active enemies
             enemies = gameManager.EnemyList;
@@ -518,5 +540,10 @@ public class EnemyAI : MonoBehaviour
         kickDamage = (int)Mathf.Floor(kickDamage * multiplier);
         throwDamage = (int)Mathf.Floor(throwDamage * multiplier);
 
+    }
+
+    public void toggleTrapping()
+    {
+        isTrapping = !isTrapping;
     }
 }

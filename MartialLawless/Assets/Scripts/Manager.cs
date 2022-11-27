@@ -97,9 +97,15 @@ public class Manager : MonoBehaviour
 
     private int enemiesKilledThisWave;
 
+    private float trapSwitchInterval;
+    private float trapSwitchTimer;
+
     // Start is called before the first frame update
     void Start()
     {
+        trapSwitchInterval = 6.0f;
+        trapSwitchTimer = trapSwitchInterval;
+
         beginningWavesSound.enabled = true;
         if (beginningWavesSound != null)
         {
@@ -215,8 +221,31 @@ public class Manager : MonoBehaviour
                         
                     }
 
+                    //when there are more than three enemies one will be toggled to start or stop a different movement behavior where they try to box the player in 
+                    if (enemyList.Count > 3)
+
+                    {
+                        trapSwitchTimer -= Time.deltaTime;
+
+                        if (trapSwitchTimer <= 0)
+                        {
+                            trapSwitchTimer = trapSwitchInterval;
+
+                            int rng = Random.Range(0, enemyList.Count);
+
+                            enemyList[rng].toggleTrapping();
+                            //Debug.Log("toggling");
+                        }
+                    }
+
                     foreach (EnemyAI enemy in enemyList)
                     {
+                    
+                        
+                        
+
+                        
+                        
 
                         if (enemy.Health <= 0)
                         {
