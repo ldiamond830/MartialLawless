@@ -120,6 +120,7 @@ MonoBehaviour:
   health: 50
   shield: {fileID: 5482884427965492994}
   temp: {fileID: 0}
+  shieldChangeInterval: 0.2
 --- !u!61 &937172730764844036
 BoxCollider2D:
   m_ObjectHideFlags: 0

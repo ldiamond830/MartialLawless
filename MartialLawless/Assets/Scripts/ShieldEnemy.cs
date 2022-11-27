@@ -10,9 +10,14 @@ public class ShieldEnemy : EnemyAI
 
     private bool hasShield;
 
+    [SerializeField]
+    private float shieldChangeInterval;
+    private float shieldChangeTimer;
+
     public bool HasShield
     {
         set { hasShield = value; }
+        
     }
     // Start is called before the first frame update
     void Start()
@@ -20,32 +25,43 @@ public class ShieldEnemy : EnemyAI
         base.Start();
         //base.PauseController = temp;
         windUp = 0.8f;
+        shieldChangeTimer = shieldChangeInterval;
     }
 
     // Update is called once per frame
     void Update()
     {
         base.Update();
-
-        switch (Orientation)
+        if (hasShield)
         {
-            case Orientation.up:
-                shield.transform.localPosition = new Vector3(0.0f, 0.6f, 0.0f);
-                shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 90.0f);
-                break;
-            case Orientation.down:
-                shield.transform.localPosition = new Vector3(0.0f, -0.6f, 0.0f);
-                shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, -90.0f);
-                break;
-            case Orientation.left:
-                shield.transform.localPosition = new Vector3(-0.6f, 0.0f, 0.0f);
-                shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                break;
-            case Orientation.right:
-                shield.transform.localPosition = new Vector3(0.6f, 0.0f, 0.0f);
-                shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-                break;
+            //uses short timer before checking to change sheild position to prevent it swaping back and forth every frame
+            shieldChangeTimer -= Time.deltaTime;
+            if(shieldChangeTimer <= 0)
+            {
+                shieldChangeTimer = shieldChangeInterval;
+                switch (Orientation)
+                {
+                    case Orientation.up:
+                        shield.transform.localPosition = new Vector3(0.0f, 0.6f, 0.0f);
+                        shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 90.0f);
+                        break;
+                    case Orientation.down:
+                        shield.transform.localPosition = new Vector3(0.0f, -0.6f, 0.0f);
+                        shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, -90.0f);
+                        break;
+                    case Orientation.left:
+                        shield.transform.localPosition = new Vector3(-0.6f, 0.0f, 0.0f);
+                        shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                        break;
+                    case Orientation.right:
+                        shield.transform.localPosition = new Vector3(0.6f, 0.0f, 0.0f);
+                        shield.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+                        break;
+                }
+            }
+            
         }
+       
     }
 
     public override void TakeDamage(int damage)

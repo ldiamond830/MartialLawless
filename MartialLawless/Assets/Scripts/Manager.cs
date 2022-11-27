@@ -76,6 +76,9 @@ public class Manager : MonoBehaviour
 
     [SerializeField]
     private PauseController pauseController;
+    [SerializeField]
+    private TutorialTextController tutorialText;
+    private bool firstShieldSpawn;
 
     //and getter setter for special attack bar
     public int SpecialAmountFull
@@ -165,6 +168,8 @@ public class Manager : MonoBehaviour
         //sets the initial value for player health
         UpdatePlayerUI();
         player.DamageAble = true;
+
+        firstShieldSpawn = false;
 
     }
 
@@ -436,6 +441,11 @@ public class Manager : MonoBehaviour
     {
         if (shieldEnemySpawnPool.Count > 0)
         {
+            if (!firstShieldSpawn)
+            {
+                firstShieldSpawn = true;
+                tutorialText.ShowShieldTutorial();
+            }
 
             ShieldEnemy newEnemy = shieldEnemySpawnPool[0];
 
