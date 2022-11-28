@@ -650,16 +650,19 @@ public class PlayerController : MonoBehaviour
             //activate the special attack and reset the special attack bar
             gameManager.SpecialAmountFull = 0;
             special.ActivateSpecial();
+
+
+            //sound effect added here
+            specialSound.enabled = true;
+            if (specialSound != null)
+            {
+
+                specialSound.Play();
+                Debug.Log("Special Sound Played");
+            }
         }
 
-        //sound effect added here
-        specialSound.enabled = true;
-        if (specialSound != null)
-        {
-
-            specialSound.Play();
-            Debug.Log("Special Sound Played");
-        }
+       
     }
 
     private void OnDodge(InputValue value)
