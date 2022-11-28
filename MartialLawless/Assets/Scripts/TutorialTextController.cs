@@ -12,7 +12,7 @@ public class TutorialTextController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        shieldTutorialTimer = 2.0f;
+        shieldTutorialTimer = 4.0f;
         //shieldTutorialVisible = false;
     }
 
