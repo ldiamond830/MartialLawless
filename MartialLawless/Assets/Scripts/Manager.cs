@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,6 +11,9 @@ public class Manager : MonoBehaviour
     public Text playerHealthText;
     public Image fillImage;
     public Slider healthSlider;
+
+    public Text specialText;
+    public Slider specialSlider;
 
     [SerializeField]
     private SpriteRenderer bloodTint;
@@ -25,15 +29,26 @@ public class Manager : MonoBehaviour
 
     private float timeBetweenSpawn;
 
+    private float damageMultiplier = 1.25f;
+
     //when set to true spawns new wave of enemies, when set to false wave is in progress
     private bool isSpawning;
     public List<EnemyAI> enemyList;
     public EnemyAI enemyPrefab;
+    public ShieldEnemy sheildEnemyPrefab;
+    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
+    public List<ShieldEnemy> shieldEnemySpawnPool = new List<ShieldEnemy>();
+    private Vector2 enemyPoolPosition = new Vector2(40.0f, 0.0f);
 
-    private List<GameObject> healthDropPool;
-    private List<GameObject> activeHealthDrops;
+    private List<HealthDrop> healthDropPool;
+    private List<HealthDrop> activeHealthDrops;
     public GameObject healthDropPrefab;
     private const float healthDropPickupRadius = 0.75f;
+    private const float healthDropDuration = 5.0f;
+    private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
+
+    [SerializeField]
+    private float healthDropRate = 20.0f; // percent
 
     //variable for special move
     public SpecialMove special;
@@ -56,6 +71,14 @@ public class Manager : MonoBehaviour
 
     //sounds
     public AudioSource beginningWavesSound;
+    public AudioSource endingWavesSound;
+    public AudioSource healthPickupSound;
+
+    [SerializeField]
+    private PauseController pauseController;
+    [SerializeField]
+    private TutorialTextController tutorialText;
+    private bool firstShieldSpawn;
 
     //and getter setter for special attack bar
     public int SpecialAmountFull
@@ -75,11 +98,17 @@ public class Manager : MonoBehaviour
 
     private ScoreTracker scoreTracker;
 
-    public List<EnemyAI> basicEnemySpawnPool = new List<EnemyAI>();
+    private int enemiesKilledThisWave;
+
+    private float trapSwitchInterval;
+    private float trapSwitchTimer;
 
     // Start is called before the first frame update
     void Start()
     {
+        trapSwitchInterval = 6.0f;
+        trapSwitchTimer = trapSwitchInterval;
+
         beginningWavesSound.enabled = true;
         if (beginningWavesSound != null)
         {
@@ -88,6 +117,7 @@ public class Manager : MonoBehaviour
         }
 
         healthSlider.GetComponent<Slider>();
+        specialSlider.GetComponent<Slider>();
 
         scoreTracker = gameObject.GetComponent<ScoreTracker>();
 
@@ -98,13 +128,13 @@ public class Manager : MonoBehaviour
         isSpawning = true;
         enemyList = new List<EnemyAI>();
 
-        healthDropPool = new List<GameObject>();
-        activeHealthDrops = new List<GameObject>();
+        healthDropPool = new List<HealthDrop>();
+        activeHealthDrops = new List<HealthDrop>();
 
         for (int i = 0; i < 20; i++)
         {
-            GameObject drop = Instantiate(healthDropPrefab);
-            drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+            HealthDrop drop = Instantiate(healthDropPrefab).GetComponent<HealthDrop>();
+            drop.transform.position = healthPoolPosition;
             healthDropPool.Add(drop);
         }
 
@@ -112,185 +142,228 @@ public class Manager : MonoBehaviour
         cameraWidth = cameraHeight * cameraObject.aspect;
 
         //populating spawn queue this sets the maximum number of enemies that can be on the screen at one time
-        for (int i = 0; i < 10; i++)
+        
+        for (int i = 0; i < 20; i++)
         {
             EnemyAI newEnemy = Instantiate(enemyPrefab);
+            newEnemy.transform.position = enemyPoolPosition;
+            newEnemy.Player = player;
             newEnemy.PlayerTransform = player.transform;
             newEnemy.gameObject.SetActive(false);
             newEnemy.gameManager = this;
+            newEnemy.PauseController = pauseController;
             basicEnemySpawnPool.Add(newEnemy);
+
+            ShieldEnemy newShield = Instantiate(sheildEnemyPrefab);
+            newShield.transform.position = enemyPoolPosition;
+            newShield.Player = player;
+            newShield.PlayerTransform = player.transform;
+            newShield.gameObject.SetActive(false);
+            newShield.gameManager = this;
+            newShield.PauseController = pauseController;
+            shieldEnemySpawnPool.Add(newShield);
+
         }
 
         //sets the initial value for player health
-        UpdatePlayerHealth();
+        UpdatePlayerUI();
         player.DamageAble = true;
+
+        firstShieldSpawn = false;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player.Health <= 0 )
+        if (player.Health <= 0)
         {
+            //sets health to 0
+            player.Health = 0;
+            UpdatePlayerUI();
+
             float alpha = bloodTint.color.a;
             alpha += Time.deltaTime;
             bloodTint.color = new Color(245, 0, 0, alpha);
-
-            if(alpha >= 1)
+            //prevents the player from moving during the fade to red
+            player.PlayerState = State.isIdle;
+            if (alpha >= 1)
             {
-             //takes the player to a game over screen when the fade is complete
-             SceneManager.LoadScene("LossScene");
+                //takes the player to a game over screen when the fade is complete
+                SceneManager.LoadScene("LossScene");
 
             }
 
         }
         else
         {
-
-       
-
-            if (isSpawning)
+            if (!pauseController.IsPaused)
             {
 
-                //creates a short interval between spawns so the player isn't rushed all at once
-                if (basicEnemySpawnPool.Count > 0)
+
+                if (isSpawning)
                 {
-                    for (int i = 0; i < waveCount; i++)
+                    for(int i = 0; i < waveCount - enemiesKilledThisWave; i++)
                     {
-                        if (waveCount == 4)
-                        {
-                            Debug.Log("test");
-                        }
-
-                        EnemyAI newEnemy = basicEnemySpawnPool[i];
-
-
-                        enemyList.Add(newEnemy);
-                        basicEnemySpawnPool.Remove(newEnemy);
-
-                        //chooses a random spawn point for the new enemy
-                        int doorSelect = Random.Range(0, 4);
-
-                        if (doorSelect == 0)
-                        {
-                            //constant value makes it so enemy doesnt pop in on screen
-                            newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
-                        }
-                        else if (doorSelect == 1)
-                        {
-                            newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
-                        }
-                        else if (doorSelect == 2)
-                        {
-                            newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
-                        }
-                        else
-                        {
-                            newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
-                        }
-
-
-                        newEnemy.gameObject.SetActive(true);
-
+                        Spawning();
                     }
 
+                    isSpawning = false;
                 }
-
-
-
-
-
-                isSpawning = false;
-            }
-            else
-            {
-
-                if (enemyList.Count == 0)
+                else
                 {
-                    isSpawning = true;
 
-                    waveCount++;
-                    UpdateWaveCountText();
-                }
-
-                foreach (EnemyAI enemy in enemyList)
-                {
-               
-                    if (enemy.Health <= 0)
+                    if (enemyList.Count == 0)
                     {
-                        //keeps track of al the enemies killed
-                        //scoreTracker.enemies
+                        isSpawning = true;
 
-                        //if the player is not currently using their special
-                        if(!special.IsActive)
+                        if(enemiesKilledThisWave >= waveCount)
                         {
-                            //increases special bar for each enemy killed
-                            specialAmountFull++;
-                            Debug.Log("enemy killed");
+                            waveCount++;
+                            UpdateWaveCountText();
+                            enemiesKilledThisWave = 0;
                         }
-                    
+                        
+                    }
 
-                        if (random.Next(0, 100) < 100)
+                    //when there are more than three enemies one will be toggled to start or stop a different movement behavior where they try to box the player in 
+                    if (enemyList.Count > 3)
+
+                    {
+                        trapSwitchTimer -= Time.deltaTime;
+
+                        if (trapSwitchTimer <= 0)
                         {
-                            GameObject drop;
-                            if (healthDropPool.Count > 0)
+                            trapSwitchTimer = trapSwitchInterval;
+
+                            int rng = Random.Range(0, enemyList.Count);
+
+                            enemyList[rng].toggleTrapping();
+                            //Debug.Log("toggling");
+                        }
+                    }
+
+                    foreach (EnemyAI enemy in enemyList)
+                    {
+                    
+                        
+                        
+
+                        
+                        
+
+                        if (enemy.Health <= 0)
+                        {
+                            //keeps track of al the enemies killed
+                            //scoreTracker.enemies
+
+                            //if the player is not currently using their special
+                            if (!special.IsActive && specialAmountFull < 10)
                             {
-                                Debug.Log("Drop pulled from pool");
-                                drop = healthDropPool[0];
-                                activeHealthDrops.Add(drop);
-                                healthDropPool.RemoveAt(0);
+                                //increases special bar for each enemy killed
+                                specialAmountFull++;
+                                Debug.Log("enemy killed");
+                            }
+
+
+                            if (random.NextDouble() * 100 < healthDropRate)
+                            {
+                                HealthDrop drop;
+                                if (healthDropPool.Count > 0)
+                                {
+                                    Debug.Log("Drop pulled from pool");
+                                    drop = healthDropPool[0];
+                                    activeHealthDrops.Add(drop);
+                                    healthDropPool.RemoveAt(0);
+                                }
+                                else
+                                {
+                                    drop = Instantiate(healthDropPrefab).GetComponent<HealthDrop>();
+                                    activeHealthDrops.Add(drop);
+                                }
+                                drop.transform.position = enemy.Position;
+                                drop.StartTimer();
+                            }
+
+                            enemy.transform.position = enemyPoolPosition;
+
+                            enemy.PunchObj.IsActive = false;
+                            enemy.PunchObj.transform.position = enemy.transform.position;
+
+                            enemyList.Remove(enemy);
+
+                            enemy.gameObject.SetActive(false);
+
+                            enemy.Health = enemyPrefab.Health;
+                            //returns the enemy to the spawning pool for reuse
+                            if (enemy is ShieldEnemy)
+                            {
+                                ShieldEnemy temp = (ShieldEnemy)enemy;
+                                temp.AddShield();
+                                temp.Health = sheildEnemyPrefab.Health;
+                                shieldEnemySpawnPool.Add(temp);
+
                             }
                             else
                             {
-                                drop = Instantiate(healthDropPrefab);
-                                activeHealthDrops.Add(drop);
+                                
+                                basicEnemySpawnPool.Add(enemy);
                             }
-                            drop.transform.position = enemy.Position;
+
+                            
+                            ScoreTracker.enemiesKilled++;
+                            enemiesKilledThisWave++;
+                        }
+                    }
+
+                    foreach (HealthDrop healthDrop in activeHealthDrops)
+                    {
+                        // Check if any of the health drops are close enough to the player
+                        if ((healthDrop.transform.position - player.Position).sqrMagnitude <= Mathf.Pow(healthDropPickupRadius, 2))
+                        {
+                            // If they are, heal the player and send them back to the pool
+                            player.Heal(20);
+                            healthDropPool.Add(healthDrop);
+                            activeHealthDrops.Remove(healthDrop);
+                            healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
                         }
 
-                        enemy.PunchObj.IsActive = false;
-                        enemy.PunchObj.transform.position = enemy.transform.position;
-
-                        enemyList.Remove(enemy);
-
-                        enemy.gameObject.SetActive(false);
-
-                        enemy.Health = enemyPrefab.Health;
-
-                        //returns the enemy to the spawning pool for reuse
-                        basicEnemySpawnPool.Add(enemy);
-                        ScoreTracker.enemiesKilled++;
+                        // If it's reached it's despawn time threshold
+                        if (healthDrop.Timer >= healthDropDuration)
+                        {
+                            healthDropPool.Add(healthDrop);
+                            activeHealthDrops.Remove(healthDrop);
+                            healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+                        }
                     }
-                }
 
-                foreach (GameObject healthDrop in activeHealthDrops)
-                {
-                    // Check if any of the health drops are close enough to the player
-                    if ((healthDrop.transform.position - player.Position).sqrMagnitude <= Mathf.Pow(healthDropPickupRadius, 2))
-                    {
-                        // If they are, heal the player and send them back to the pool
-                        player.Heal(20);
-                        healthDropPool.Add(healthDrop);
-                        activeHealthDrops.Remove(healthDrop);
-                        healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
-                    }
                 }
-            
+            }
+
+
+            //outside of else statement so player health is updated when it reaches 0
+            UpdatePlayerUI();
+
+            if (waveCount > 5)
+            {
+                beginningWavesSound.Stop();
+                endingWavesSound.enabled = true;
+                endingWavesSound.Play();
             }
         }
-        
-        //outside of else statement so player health is updated when it reaches 0
-        UpdatePlayerHealth();
-        
     }
 
 
-    public void UpdatePlayerHealth()
+    public void UpdatePlayerUI()
     {
-        //Player health and Stamina
+        //Player health
         healthFill = player.Health / 100f;
         healthSlider.value = healthFill;
         playerHealthText.text = "Player Health: " + player.Health;
+
+        // Special
+        specialSlider.value = specialAmountFull / 10.0f;
+        specialText.text = "Special: " + specialAmountFull;
     }
 
     public void UpdateWaveCountText()
@@ -298,11 +371,113 @@ public class Manager : MonoBehaviour
         waveCountText.text = "Wave Count: " + waveCount;
     }
 
-    public void CollectHealthDrop(GameObject drop)
+    public void CollectHealthDrop(HealthDrop drop)
     {
         //add pick up sound
         activeHealthDrops.Remove(drop);
         healthDropPool.Add(drop);
         drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+        healthPickupSound.Play();
+    }
+
+
+    private void Spawning()
+    {
+        int rng = Random.Range(0, 6);
+        if(rng <= 4)
+        {
+            SpawnBasic();
+        }
+        else
+        {
+            SpawnShield();
+        }
+        
+    }
+
+    private void SpawnBasic()
+    {
+        if (basicEnemySpawnPool.Count > 0)
+        {
+            
+                EnemyAI newEnemy = basicEnemySpawnPool[0];
+
+
+                enemyList.Add(newEnemy);
+                basicEnemySpawnPool.Remove(newEnemy);
+
+                //chooses a random spawn point for the new enemy
+                int doorSelect = Random.Range(0, 4);
+
+                if (doorSelect == 0)
+                {
+                    //constant value makes it so enemy doesnt pop in on screen ll
+                    newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+                }
+                else if (doorSelect == 1)
+                {
+                    newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+                }
+                else if (doorSelect == 2)
+                {
+                    newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+                }
+                else
+                {
+                    newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+                }
+
+
+                newEnemy.gameObject.SetActive(true);
+
+        }
+
+        
+
+       
+    }
+
+    private void SpawnShield()
+    {
+        if (shieldEnemySpawnPool.Count > 0)
+        {
+            if (!firstShieldSpawn)
+            {
+                firstShieldSpawn = true;
+                tutorialText.ShowShieldTutorial();
+            }
+
+            ShieldEnemy newEnemy = shieldEnemySpawnPool[0];
+
+
+            enemyList.Add(newEnemy);
+            shieldEnemySpawnPool.Remove(newEnemy);
+
+            //chooses a random spawn point for the new enemy
+            int doorSelect = Random.Range(0, 4);
+
+            if (doorSelect == 0)
+            {
+                //constant value makes it so enemy doesnt pop in on screen ll
+                newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
+            }
+            else if (doorSelect == 1)
+            {
+                newEnemy.Position = new Vector3(0, cameraHeight / -2 - 5, 0);
+            }
+            else if (doorSelect == 2)
+            {
+                newEnemy.Position = new Vector3(cameraWidth / -2 - 5, 0, 0);
+            }
+            else
+            {
+                newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
+            }
+
+
+            newEnemy.gameObject.SetActive(true);
+            
+
+        }
     }
 }

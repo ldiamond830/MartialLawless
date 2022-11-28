@@ -9,11 +9,13 @@ using UnityEngine.UI;
 public class MainMenuManager : MonoBehaviour
 {
     public AudioSource introSong;
+    public AudioSource startButton;
+    
     public Image instructions;
     private bool instructionsVisible = false;
 
 
-    // Start is called before the first frame update
+    // Start is called before the first frame update commet
     void Start()
     {
         introSong.enabled = true;
@@ -34,6 +36,7 @@ public class MainMenuManager : MonoBehaviour
     {
         //1 is the index of gameScene in the build settings
         introSong.Stop();
+        startButton.Play();
         SceneManager.LoadScene(1);
        
 
