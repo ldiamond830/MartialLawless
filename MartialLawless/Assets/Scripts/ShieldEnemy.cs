@@ -72,15 +72,15 @@ public class ShieldEnemy : EnemyAI
             switch (Orientation)
             {
                 case Orientation.up:
-                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
-                    if (Player.ReturnOrientation != Orientation.down)
+                    //if the player is attacking from above when the shield is positioned up it is blocked by the sheild and take damage isn't called
+                    if (playerTransform.position.y < Position.y)
                     {
                         base.TakeDamage(damage);
                     }
                     break;
                 case Orientation.down:
-                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
-                    if (Player.ReturnOrientation != Orientation.up)
+                    //if the player is attacking from below when the shield is positioned down it is blocked by the sheild and take damage isn't called
+                    if (playerTransform.position.y >= Position.y)
                     {
                         base.TakeDamage(damage);
                     }
