@@ -345,12 +345,7 @@ public class Manager : MonoBehaviour
             //outside of else statement so player health is updated when it reaches 0
             UpdatePlayerUI();
 
-            if (waveCount > 5 && endingWavesSound.isPlaying==false)
-            {
-                beginningWavesSound.Stop();
-                endingWavesSound.enabled = true;
-                endingWavesSound.Play();
-            }
+            
         }
     }
 
@@ -440,12 +435,23 @@ public class Manager : MonoBehaviour
 
     private void SpawnShield()
     {
+
         if (shieldEnemySpawnPool.Count > 0)
         {
+
+
+
             if (!firstShieldSpawn)
             {
                 firstShieldSpawn = true;
                 tutorialText.ShowShieldTutorial();
+
+                if (endingWavesSound.isPlaying == false)
+                {
+                    beginningWavesSound.Stop();
+                    endingWavesSound.enabled = true;
+                    endingWavesSound.Play();
+                }
             }
 
             ShieldEnemy newEnemy = shieldEnemySpawnPool[0];
