@@ -187,6 +187,7 @@ public class Manager : MonoBehaviour
             bloodTint.color = new Color(245, 0, 0, alpha);
             //prevents the player from moving during the fade to red
             player.PlayerState = State.isIdle;
+            player.moveSpeed = 0;
             if (alpha >= 1)
             {
                 //takes the player to a game over screen when the fade is complete
