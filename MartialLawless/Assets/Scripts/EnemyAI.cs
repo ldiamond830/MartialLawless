@@ -9,7 +9,7 @@ public class EnemyAI : MonoBehaviour
     private Orientation orientation;
 
     [SerializeField]
-    private Transform playerTransform;
+    protected Transform playerTransform;
     private PlayerController player;
 
     
