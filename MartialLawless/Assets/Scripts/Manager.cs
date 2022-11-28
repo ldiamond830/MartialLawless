@@ -24,7 +24,7 @@ public class Manager : MonoBehaviour
 
     public static System.Random random = new System.Random();
 
-    private int waveCount;
+    public int waveCount;
     public PlayerController player;
 
     private float timeBetweenSpawn;
@@ -122,7 +122,7 @@ public class Manager : MonoBehaviour
         scoreTracker = gameObject.GetComponent<ScoreTracker>();
 
         timeBetweenSpawn = 0.2f;
-        waveCount = 1;
+        //waveCount = 1;
         UpdateWaveCountText();
 
         isSpawning = true;
