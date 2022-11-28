@@ -249,9 +249,25 @@ public class PlayerController : MonoBehaviour
         {
 
         }
-       
+
+        //speed is adjusted based on player reamining stamina
+        if (stamina <= 10)
+        {
+            moveSpeed = 3;
+
+        }
+        else if (stamina > 10 && stamina <= 30)
+        {
+            moveSpeed = 4;
+
+        }
+        else if (moveSpeed != 5)
+        {
+            moveSpeed = 5;
+        }
+
         //checks if the special is active
-        if(special.IsActive)
+        if (special.IsActive)
         {
             //player gets infinite stamina while active
             stamina = maxStamina;
@@ -261,6 +277,8 @@ public class PlayerController : MonoBehaviour
         {
             case State.isIdle:
                 Movement();
+
+                
 
                 //when recharge timer is zero and stamina is below max recharges stamina
                 if (staminaRechargeTimer <= 0 && stamina < maxStamina)
