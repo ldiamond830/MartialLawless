@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class PauseController : MonoBehaviour
 {
     private bool isPaused;
@@ -10,6 +11,7 @@ public class PauseController : MonoBehaviour
     private Image greyFilter;
     [SerializeField]
     private GameObject pauseContent;
+
 
     public bool IsPaused
     {
@@ -44,6 +46,6 @@ public class PauseController : MonoBehaviour
 
     public void QuitGame()
     {
-        Application.Quit();
+        SceneManager.LoadScene(0);
     }
 }
