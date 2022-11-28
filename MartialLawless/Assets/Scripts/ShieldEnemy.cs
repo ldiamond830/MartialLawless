@@ -26,6 +26,7 @@ public class ShieldEnemy : EnemyAI
         //base.PauseController = temp;
         windUp = 0.8f;
         shieldChangeTimer = shieldChangeInterval;
+        hasShield = true;
     }
 
     // Update is called once per frame
@@ -86,15 +87,15 @@ public class ShieldEnemy : EnemyAI
                     }
                     break;
                 case Orientation.left:
-                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
-                    if (Player.ReturnOrientation != Orientation.right)
+                    //if the player is attacking from the left when the shield is to the left it is blocked by the sheild and take damage isn't called
+                    if (playerTransform.position.x >= Position.x)
                     {
                         base.TakeDamage(damage);
                     }
                     break;
                 case Orientation.right:
-                    //if the player is attacking from the opposite direction it is blocked by the sheild and take damage isn't called
-                    if (Player.ReturnOrientation != Orientation.left)
+                    //if the player is attacking from the right when the shield is to the right it is blocked by the sheild and take damage isn't called
+                    if (playerTransform.position.x < Position.x)
                     {
                         base.TakeDamage(damage);
                     }
