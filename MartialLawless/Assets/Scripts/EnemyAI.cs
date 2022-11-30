@@ -45,13 +45,7 @@ public class EnemyAI : MonoBehaviour
     //different sprites to show for each pose
     private SpriteRenderer spriteRenderer;
     [SerializeField]
-    private Sprite upSprite;
-    [SerializeField]
-    private Sprite downSprite;
-    [SerializeField]
-    private Sprite leftSprite;
-    [SerializeField]
-    private Sprite rightSprite;
+    private Animator animator;
 
     //variables for controlling combat
     [SerializeField]
@@ -132,6 +126,7 @@ public class EnemyAI : MonoBehaviour
         orientation = Orientation.up;
         state = State.isMoving;
         spriteRenderer = this.GetComponent<SpriteRenderer>();
+        animator = this.GetComponent<Animator>();
         attacks = new List<AttackCollision>();
 
 
@@ -225,26 +220,30 @@ public class EnemyAI : MonoBehaviour
                 if (moveVector.y > Mathf.Abs(moveVector.x) && moveVector.y >= 0)
                 {
                     orientation = Orientation.up;
+                    animator.SetInteger("orientation", 0);
                 }
                 // DOWN
                 else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
                 {
-
                     orientation = Orientation.down;
+                    animator.SetInteger("orientation", 1);
                 }
                 // RIGHT
                 else if (moveVector.x > 0)
                 {
-
                     orientation = Orientation.right;
+                    animator.SetInteger("orientation", 3);
                 }
                 // LEFT
                 else if (moveVector.x < 0)
                 {
                     orientation = Orientation.left;
+                    animator.SetInteger("orientation", 2);
                 }
                 //Debug.Log("Orientation: " + orientation);
             }
+
+            animator.SetBool("isMoving", state == State.isMoving);
 
             /*
             if (onCooldown)
@@ -278,6 +277,7 @@ public class EnemyAI : MonoBehaviour
                     if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUpTimer == 0)
                     {
                         state = State.isMoving;
+                        animator.SetBool("isMoving", true);
                     }
 
                     break;
@@ -288,6 +288,7 @@ public class EnemyAI : MonoBehaviour
                     {
                         // Don't move
                         state = State.isIdle;
+                        animator.SetBool("isMoving", false);
                     }
                     // If the new position would be inside the stopDistance radius
                     else if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude < Mathf.Pow(stopDistance, 2))
@@ -295,6 +296,7 @@ public class EnemyAI : MonoBehaviour
                         // Apply the movement but only to the edge of that circle
                         position += moveVector * ((playerPosition - position).magnitude - stopDistance);
                         state = State.isIdle;
+                        animator.SetBool("isMoving", false);
                     }
                     else
                     {
@@ -321,6 +323,7 @@ public class EnemyAI : MonoBehaviour
                         kick.gameObject.transform.position = position;
                         kick.IsActive = false;
                         state = State.isMoving;
+                        animator.SetBool("isMoving", true);
                     }
 
                     break;
@@ -336,6 +339,7 @@ public class EnemyAI : MonoBehaviour
                         punch.gameObject.transform.position = position;
                         punch.IsActive = false;
                         state = State.isMoving;
+                        animator.SetBool("isMoving", true);
                     }
 
                     break;
@@ -350,6 +354,7 @@ public class EnemyAI : MonoBehaviour
                         throwBox.gameObject.transform.position = position;
                         throwBox.IsActive = false;
                         state = State.isMoving;
+                        animator.SetBool("isMoving", true);
                     }
 
 
