@@ -11,7 +11,10 @@ public class PauseController : MonoBehaviour
     private Image greyFilter;
     [SerializeField]
     private GameObject pauseContent;
-
+    [SerializeField]
+    private AudioSource pauseMusic;
+    [SerializeField]
+    private Manager manager;
 
     public bool IsPaused
     {
@@ -34,6 +37,9 @@ public class PauseController : MonoBehaviour
         isPaused = true;
         greyFilter.color = new Color(190, 190, 190, 0.7f);
         pauseContent.SetActive(true);
+        //starts the pause music and pauses the game music
+        pauseMusic.Play();
+        manager.currentMusic.Pause();
     
     }
 
@@ -42,6 +48,9 @@ public class PauseController : MonoBehaviour
         isPaused = false;
         greyFilter.color = new Color(190, 190, 190, 0.0f);
         pauseContent.SetActive(false);
+        //ends the pause music and restarts the game music
+        pauseMusic.Stop();
+        manager.currentMusic.Play();
     }
 
     public void QuitGame()
