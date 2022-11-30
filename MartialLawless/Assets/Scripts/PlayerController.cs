@@ -262,21 +262,29 @@ public class PlayerController : MonoBehaviour
 
         }
 
-        //speed is adjusted based on player reamining stamina
-        if (stamina <= 10)
+        if(health > 0)
         {
-            moveSpeed = 3;
+            //speed is adjusted based on player reamining stamina
+            if (stamina <= 10)
+            {
+                moveSpeed = 3;
 
-        }
-        else if (stamina > 10 && stamina <= 30)
-        {
-            moveSpeed = 4;
+            }
+            else if (stamina > 10 && stamina <= 30)
+            {
+                moveSpeed = 4;
 
+            }
+            else if (moveSpeed != 5)
+            {
+                moveSpeed = 5;
+            }
         }
-        else if (moveSpeed != 5)
+        else
         {
-            moveSpeed = 5;
+            stamina = 0;
         }
+        
 
         //checks if the special is active
         if (special.IsActive)
