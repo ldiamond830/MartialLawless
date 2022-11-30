@@ -113,8 +113,8 @@ public class PlayerController : MonoBehaviour
     public AudioSource healthPickUpSound;
 
     private bool changedColor;
-    private float hitIndicatorInterval;
-    private float hitIndicatorTimer;
+    private float colorChangeInterval;
+    private float colorChangeTimer;
     
     public BoxCollider2D Collider
     {
@@ -169,8 +169,8 @@ public class PlayerController : MonoBehaviour
         health = maxHealth;
         maxStamina = stamina;
         changedColor = false;
-        hitIndicatorInterval = 0.4f;
-        hitIndicatorTimer = hitIndicatorInterval;
+        colorChangeInterval = 0.4f;
+        colorChangeTimer = colorChangeInterval;
 
         position = this.transform.position;
         state = State.isIdle;
@@ -229,31 +229,31 @@ public class PlayerController : MonoBehaviour
         if (changedColor)
         {
             
-            if(hitIndicatorTimer <= 0)
+            if(colorChangeTimer <= 0)
             {
                 if(special.IsActive)
                 {
                     spriteRenderer.color = Color.cyan;
                     changedColor = false;
-                    hitIndicatorTimer = hitIndicatorInterval;
+                    colorChangeTimer = colorChangeInterval;
                 }
                 else if(stamina <= 30)
                 {
                     spriteRenderer.color = Color.gray;
                     changedColor = false;
-                    hitIndicatorTimer = hitIndicatorInterval;
+                    colorChangeTimer = colorChangeInterval;
                 }
                 else
                 {
                     spriteRenderer.color = Color.white;
                     changedColor = false;
-                    hitIndicatorTimer = hitIndicatorInterval;
+                    colorChangeTimer = colorChangeInterval;
                 }
 
             }
             else
             {
-                hitIndicatorTimer -= Time.deltaTime;
+                colorChangeTimer -= Time.deltaTime;
             }
         }
 
