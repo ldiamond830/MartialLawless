@@ -73,6 +73,8 @@ public class Manager : MonoBehaviour
     public AudioSource beginningWavesSound;
     public AudioSource endingWavesSound;
     public AudioSource healthPickupSound;
+    //used by pause controller to hold which track needs to be paused/restarted
+    public AudioSource currentMusic;
 
     [SerializeField]
     private PauseController pauseController;
@@ -112,8 +114,9 @@ public class Manager : MonoBehaviour
         beginningWavesSound.enabled = true;
         if (beginningWavesSound != null)
         {
+            currentMusic = beginningWavesSound;
             beginningWavesSound.Play();
-            Debug.Log("beginningWavesSound Played");
+            //Debug.Log("beginningWavesSound Played");
         }
 
         healthSlider.GetComponent<Slider>();
@@ -263,7 +266,7 @@ public class Manager : MonoBehaviour
                             {
                                 //increases special bar for each enemy killed
                                 specialAmountFull++;
-                                Debug.Log("enemy killed");
+                                //Debug.Log("enemy killed");
                             }
 
 
@@ -272,7 +275,7 @@ public class Manager : MonoBehaviour
                                 HealthDrop drop;
                                 if (healthDropPool.Count > 0)
                                 {
-                                    Debug.Log("Drop pulled from pool");
+                                    //Debug.Log("Drop pulled from pool");
                                     drop = healthDropPool[0];
                                     activeHealthDrops.Add(drop);
                                     healthDropPool.RemoveAt(0);
@@ -327,6 +330,7 @@ public class Manager : MonoBehaviour
                             healthDropPool.Add(healthDrop);
                             activeHealthDrops.Remove(healthDrop);
                             healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+                            healthPickupSound.Play();
                         }
 
                         // If it's reached it's despawn time threshold
@@ -450,6 +454,7 @@ public class Manager : MonoBehaviour
                 {
                     beginningWavesSound.Stop();
                     endingWavesSound.enabled = true;
+                    currentMusic = endingWavesSound;
                     endingWavesSound.Play();
                 }
             }
