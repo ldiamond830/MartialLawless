@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 983121105671472435}
   - component: {fileID: 937172730764844036}
   - component: {fileID: 5246144304260475162}
+  - component: {fileID: 7204817504752550451}
   m_Layer: 0
   m_Name: ShieldEnemy
   m_TagString: Untagged
@@ -108,10 +109,7 @@ MonoBehaviour:
   punchDamage: 10
   kickDamage: 20
   throwDamage: 25
-  upSprite: {fileID: 0}
-  downSprite: {fileID: 0}
-  leftSprite: {fileID: 0}
-  rightSprite: {fileID: 0}
+  animator: {fileID: 0}
   punch: {fileID: 7115085338642159665}
   kick: {fileID: 4543843926524502359}
   throwBox: {fileID: 465063151301121342}
@@ -168,6 +166,26 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &7204817504752550451
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4242505963126533335}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: be9afca814b968947b15c1399af816da, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5482884427965492994
 GameObject:
   m_ObjectHideFlags: 0
