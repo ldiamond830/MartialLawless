@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
     public AudioSource specialSound;
     public AudioSource healthPickUpSound;
 
-    private bool isRed;
+    private bool changedColor;
     private float hitIndicatorInterval;
     private float hitIndicatorTimer;
     
@@ -168,7 +168,7 @@ public class PlayerController : MonoBehaviour
 
         health = maxHealth;
         maxStamina = stamina;
-        isRed = false;
+        changedColor = false;
         hitIndicatorInterval = 0.4f;
         hitIndicatorTimer = hitIndicatorInterval;
 
@@ -220,7 +220,13 @@ public class PlayerController : MonoBehaviour
         //prevents the player from moving out of bounds
         BoundsCheck();
 
-        if (isRed)
+       //if the player is low on stamina
+       if(stamina >= 30)
+       {
+            changedColor = true;
+       }
+
+        if (changedColor)
         {
             
             if(hitIndicatorTimer <= 0)
@@ -228,16 +234,22 @@ public class PlayerController : MonoBehaviour
                 if(special.IsActive)
                 {
                     spriteRenderer.color = Color.cyan;
-                    isRed = false;
+                    changedColor = false;
+                    hitIndicatorTimer = hitIndicatorInterval;
+                }
+                else if(stamina <= 30)
+                {
+                    spriteRenderer.color = Color.gray;
+                    changedColor = false;
                     hitIndicatorTimer = hitIndicatorInterval;
                 }
                 else
                 {
                     spriteRenderer.color = Color.white;
-                    isRed = false;
+                    changedColor = false;
                     hitIndicatorTimer = hitIndicatorInterval;
                 }
-                
+
             }
             else
             {
@@ -790,6 +802,8 @@ public class PlayerController : MonoBehaviour
 
     public void Heal(int amount)
     {
+        changedColor = true;
+        spriteRenderer.color = Color.green;
         health += amount;
         if (health > maxHealth)
         {
@@ -799,7 +813,7 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(int amount)
     {
-        isRed = true;
+        changedColor = true;
 
         spriteRenderer.color = Color.red;
         health -= amount;
