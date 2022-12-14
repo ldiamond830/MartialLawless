@@ -47,7 +47,6 @@ public class Manager : MonoBehaviour
     private const float healthDropDuration = 5.0f;
     private Vector2 healthPoolPosition = new Vector2(40.0f, 5.0f);
 
-    [SerializeField]
     private float healthDropRate = 20.0f; // percent
 
     //variable for special move
@@ -326,19 +325,13 @@ public class Manager : MonoBehaviour
                         if ((healthDrop.transform.position - player.Position).sqrMagnitude <= Mathf.Pow(healthDropPickupRadius, 2))
                         {
                             // If they are, heal the player and send them back to the pool
-                            player.Heal(20);
-                            healthDropPool.Add(healthDrop);
-                            activeHealthDrops.Remove(healthDrop);
-                            healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
-                            healthPickupSound.Play();
+                            CollectHealthDrop(healthDrop, true);
                         }
 
                         // If it's reached it's despawn time threshold
                         if (healthDrop.Timer >= healthDropDuration)
                         {
-                            healthDropPool.Add(healthDrop);
-                            activeHealthDrops.Remove(healthDrop);
-                            healthDrop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+                            CollectHealthDrop(healthDrop, false);
                         }
                     }
 
@@ -371,13 +364,17 @@ public class Manager : MonoBehaviour
         waveCountText.text = "Wave Count: " + waveCount;
     }
 
-    public void CollectHealthDrop(HealthDrop drop)
+    public void CollectHealthDrop(HealthDrop drop, bool pickedUp)
     {
-        //add pick up sound
+        if (pickedUp)
+        {
+            Player.Heal(20);
+            healthPickupSound.Play();
+        }
         activeHealthDrops.Remove(drop);
         healthDropPool.Add(drop);
         drop.transform.position = new Vector3(100.0f, 0.0f, 0.0f);
-        healthPickupSound.Play();
+        drop.ResetTimer();
     }
 
 

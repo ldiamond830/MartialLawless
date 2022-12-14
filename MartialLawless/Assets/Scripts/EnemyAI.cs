@@ -46,6 +46,8 @@ public class EnemyAI : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     [SerializeField]
     private Animator animator;
+    private float animatorTimer = 0.0f;
+    private bool animationAttacking = false;
 
     //variables for controlling combat
     [SerializeField]
@@ -220,30 +222,39 @@ public class EnemyAI : MonoBehaviour
                 if (moveVector.y > Mathf.Abs(moveVector.x) && moveVector.y >= 0)
                 {
                     orientation = Orientation.up;
-                    animator.SetInteger("orientation", 0);
                 }
                 // DOWN
                 else if (moveVector.y < 0 && Mathf.Abs(moveVector.y) > Mathf.Abs(moveVector.x))
                 {
                     orientation = Orientation.down;
-                    animator.SetInteger("orientation", 1);
                 }
                 // RIGHT
                 else if (moveVector.x > 0)
                 {
                     orientation = Orientation.right;
-                    animator.SetInteger("orientation", 3);
                 }
                 // LEFT
                 else if (moveVector.x < 0)
                 {
                     orientation = Orientation.left;
-                    animator.SetInteger("orientation", 2);
                 }
                 //Debug.Log("Orientation: " + orientation);
             }
 
-            animator.SetBool("isMoving", state == State.isMoving);
+            // Animation logic
+            if (animationAttacking && animatorTimer <= 0.7f)
+            {
+                animatorTimer += Time.deltaTime;
+            }
+            else
+            {
+                animationAttacking = false;
+                animatorTimer = 0.0f;
+                animator.SetBool("isPunching", false);
+                animator.SetBool("isKicking", false);
+                animator.SetBool("isMoving", state == State.isMoving);
+                animator.SetInteger("orientation", (int)orientation);
+            }
 
             /*
             if (onCooldown)
@@ -277,7 +288,6 @@ public class EnemyAI : MonoBehaviour
                     if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude > Mathf.Pow(stopDistance, 2) && windUpTimer == 0)
                     {
                         state = State.isMoving;
-                        animator.SetBool("isMoving", true);
                     }
 
                     break;
@@ -288,7 +298,6 @@ public class EnemyAI : MonoBehaviour
                     {
                         // Don't move
                         state = State.isIdle;
-                        animator.SetBool("isMoving", false);
                     }
                     // If the new position would be inside the stopDistance radius
                     else if ((playerPosition - (position + (moveVector * moveSpeed * Time.deltaTime))).sqrMagnitude < Mathf.Pow(stopDistance, 2))
@@ -296,7 +305,6 @@ public class EnemyAI : MonoBehaviour
                         // Apply the movement but only to the edge of that circle
                         position += moveVector * ((playerPosition - position).magnitude - stopDistance);
                         state = State.isIdle;
-                        animator.SetBool("isMoving", false);
                     }
                     else
                     {
@@ -323,7 +331,6 @@ public class EnemyAI : MonoBehaviour
                         kick.gameObject.transform.position = position;
                         kick.IsActive = false;
                         state = State.isMoving;
-                        animator.SetBool("isMoving", true);
                     }
 
                     break;
@@ -339,7 +346,6 @@ public class EnemyAI : MonoBehaviour
                         punch.gameObject.transform.position = position;
                         punch.IsActive = false;
                         state = State.isMoving;
-                        animator.SetBool("isMoving", true);
                     }
 
                     break;
@@ -354,7 +360,6 @@ public class EnemyAI : MonoBehaviour
                         throwBox.gameObject.transform.position = position;
                         throwBox.IsActive = false;
                         state = State.isMoving;
-                        animator.SetBool("isMoving", true);
                     }
 
 
@@ -417,6 +422,9 @@ public class EnemyAI : MonoBehaviour
         Debug.Log("Enemy punch");
         state = State.isPunching;
 
+        animationAttacking = true;
+        animator.SetBool("isPunching", true);
+
         //AttackCollision newPunch;
 
         //checks for orientation and spawns a hitbox in front of the player
@@ -457,6 +465,9 @@ public class EnemyAI : MonoBehaviour
         
         Debug.Log("Enemy kick");
         state = State.isKicking;
+
+        animationAttacking = true;
+        animator.SetBool("isKicking", true);
 
         //AttackCollision newKick = null;
 

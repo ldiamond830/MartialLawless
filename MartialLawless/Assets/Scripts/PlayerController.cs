@@ -48,8 +48,11 @@ public class PlayerController : MonoBehaviour
     public float maxStamina;
    
     public int punchDamage = 10;
+    public float punchStaminaCost = 5.0f;
     public int kickDamage = 20;
+    public float kickStaminaCost = 10.0f;
     public int throwDamage = 25;
+    public float throwStaminaCost = 15.0f;
     public int currentAttackDamage = 0;
 
     //different sprites to show for each pose
@@ -70,8 +73,10 @@ public class PlayerController : MonoBehaviour
     //needs to be changed to another script type when created
     public AttackCollision thrown;
 
-    public float wait = 0.0f;
-    public bool isAttacking = false;
+    private float wait = 0.0f;
+    private float animatorTimer = 0.0f;
+    private bool isAttacking = false;
+    private bool animationAttacking = false;
 
     private float staminaRechargeInterval = 0.75f;
     private float staminaRechargeTimer;
@@ -214,8 +219,19 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("stamina: " + stamina);
 
         // Animation logic
-        animator.SetBool("isMoving", state == State.isMoving);
-        animator.SetInteger("orientation", (int)orientation);
+        if (animationAttacking && animatorTimer <= 0.7f)
+        {
+            animatorTimer += Time.deltaTime;
+        }
+        else
+        {
+            animationAttacking = false;
+            animatorTimer = 0.0f;
+            animator.SetBool("isPunching", false);
+            animator.SetBool("isKicking", false);
+            animator.SetBool("isMoving", state == State.isMoving);
+            animator.SetInteger("orientation", (int)orientation);
+        }
 
         //prevents the player from moving out of bounds
         BoundsCheck();
@@ -498,9 +514,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnPunch(InputValue value)
     {
-        if(!isAttacking && stamina >= 5.0f)
+        if(!isAttacking && stamina >= punchStaminaCost)
         {
-            stamina -= 5.0f;
+            stamina -= punchStaminaCost;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -509,6 +525,9 @@ public class PlayerController : MonoBehaviour
 
             Debug.Log("Punch");
             state = State.isPunching;
+
+            animationAttacking = true;
+            animator.SetBool("isPunching", true);
 
             //empties the list to remove any previously killed enemies
             punch.EnemyList.Clear();
@@ -526,7 +545,6 @@ public class PlayerController : MonoBehaviour
 
                 case Orientation.down:
                     punch.gameObject.transform.position = new Vector2(position.x, position.y - 0.5f);
-
 
                     break;
 
@@ -556,7 +574,6 @@ public class PlayerController : MonoBehaviour
             {
                 punch.EnemyList.Add(gameManager.EnemyList[i].GetComponent<BoxCollider2D>());
             }
-
         }
         
         
@@ -564,9 +581,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
-        if(!isAttacking && stamina >= 10.0f)
+        if(!isAttacking && stamina >= kickStaminaCost)
         {
-            stamina -= 10.0f;
+            stamina -= kickStaminaCost;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
@@ -574,6 +591,9 @@ public class PlayerController : MonoBehaviour
 
             Debug.Log("Kick");
             state = State.isKicking;
+
+            animationAttacking = true;
+            animator.SetBool("isKicking", true);
 
             kick.EnemyList.Clear();
 
@@ -622,10 +642,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnThrow(InputValue value)
     {
-        if(!isAttacking && stamina >= 15.0f)
+        if(!isAttacking && stamina >= throwStaminaCost)
         {
             //sets stamina and slider values
-            stamina -= 15.0f;
+            stamina -= throwStaminaCost;
             staminFill = stamina / 100.0f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
