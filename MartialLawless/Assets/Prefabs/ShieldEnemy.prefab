@@ -325,6 +325,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: punchBox
       objectReference: {fileID: 0}
+    - target: {fileID: 3347138296084055735, guid: 22ef671b0c55df140b21a92646178716, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22ef671b0c55df140b21a92646178716, type: 3}
 --- !u!4 &4451609567606109479 stripped
@@ -398,6 +402,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: kickBox
       objectReference: {fileID: 0}
+    - target: {fileID: 3347138296084055735, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
 --- !u!114 &4543843926524502359 stripped
@@ -426,6 +434,10 @@ PrefabInstance:
     - target: {fileID: 1851825238077829326, guid: 35a1b1d14e126bc4f8aa3bfa78bb5a09, type: 3}
       propertyPath: m_Name
       value: EnemyThrowBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 2362441947471402510, guid: 35a1b1d14e126bc4f8aa3bfa78bb5a09, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3885464267066944871, guid: 35a1b1d14e126bc4f8aa3bfa78bb5a09, type: 3}
       propertyPath: m_RootOrder

@@ -4450,7 +4450,6 @@ MonoBehaviour:
   basicEnemySpawnPool: []
   shieldEnemySpawnPool: []
   healthDropPrefab: {fileID: 2626286806664553748, guid: 9c6635a9b6687224bab5e803b8656162, type: 3}
-  healthDropRate: 20
   special: {fileID: 689959282}
   cameraObject: {fileID: 519420031}
   beginningWavesSound: {fileID: 1886599797}
@@ -5064,7 +5063,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3459608560098143880, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: m_Color.a
-      value: 0.29803923
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3459608560098143880, guid: 6b98d7e1bf5531340bc810f738d2264f, type: 3}
       propertyPath: m_Color.b

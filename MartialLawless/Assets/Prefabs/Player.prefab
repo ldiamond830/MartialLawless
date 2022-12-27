@@ -181,30 +181,39 @@ MonoBehaviour:
       m_Action: Player Controls
       m_Flags: 8
     m_Flags: 0
+  pauseController: {fileID: 0}
   moveSpeed: 5
   maxHealth: 100
   maxStamina: 50
   punchDamage: 10
+  punchStaminaCost: 5
   kickDamage: 20
+  kickStaminaCost: 10
   throwDamage: 25
+  throwStaminaCost: 15
   currentAttackDamage: 0
   upSprite: {fileID: 0}
   downSprite: {fileID: 0}
   leftSprite: {fileID: 0}
   rightSprite: {fileID: 0}
+  animator: {fileID: 0}
   punch: {fileID: 8032284955464926081}
   kick: {fileID: 946078513800766168}
   thrown: {fileID: 7890867038767363635}
-  wait: 0
-  isAttacking: 0
   gameManager: {fileID: 0}
   leftBorder: {fileID: 0}
+  topBorder: {fileID: 0}
+  bottomBorder: {fileID: 0}
+  rightBorder: {fileID: 0}
   playerStaminaText: {fileID: 0}
   fillImageSta: {fileID: 0}
   staminaSlider: {fileID: 0}
   special: {fileID: 0}
   kickSound: {fileID: 0}
   punchSound: {fileID: 0}
+  throwSound: {fileID: 0}
+  specialSound: {fileID: 0}
+  healthPickUpSound: {fileID: 0}
 --- !u!114 &-8790715896473125795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +284,10 @@ PrefabInstance:
     - target: {fileID: 3347138296084055734, guid: 22ef671b0c55df140b21a92646178716, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3347138296084055735, guid: 22ef671b0c55df140b21a92646178716, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22ef671b0c55df140b21a92646178716, type: 3}
@@ -351,7 +364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3259170360367799787, guid: df60d551a030af24bbe355d2a5133007, type: 3}
       propertyPath: m_Color.a
-      value: 0.3254902
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7156174444212452661, guid: df60d551a030af24bbe355d2a5133007, type: 3}
       propertyPath: m_Name
@@ -429,6 +442,10 @@ PrefabInstance:
     - target: {fileID: 3347138296084055734, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
       propertyPath: m_Name
       value: kickBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 3347138296084055735, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8145318134535760830, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
       propertyPath: manager

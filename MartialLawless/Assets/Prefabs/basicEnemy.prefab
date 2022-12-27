@@ -108,10 +108,7 @@ MonoBehaviour:
   punchDamage: 10
   kickDamage: 20
   throwDamage: 25
-  upSprite: {fileID: 0}
-  downSprite: {fileID: 0}
-  leftSprite: {fileID: 0}
-  rightSprite: {fileID: 0}
+  animator: {fileID: 0}
   punch: {fileID: 2921513077133963349}
   kick: {fileID: 3445899745521500335}
   throwBox: {fileID: 5488640876663567666}
@@ -195,6 +192,10 @@ PrefabInstance:
     - target: {fileID: 1851825238077829326, guid: 35a1b1d14e126bc4f8aa3bfa78bb5a09, type: 3}
       propertyPath: m_Name
       value: EnemyThrowBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 2362441947471402510, guid: 35a1b1d14e126bc4f8aa3bfa78bb5a09, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3885464267066944871, guid: 35a1b1d14e126bc4f8aa3bfa78bb5a09, type: 3}
       propertyPath: m_RootOrder
@@ -313,6 +314,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: punchBox
       objectReference: {fileID: 0}
+    - target: {fileID: 3347138296084055735, guid: 22ef671b0c55df140b21a92646178716, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22ef671b0c55df140b21a92646178716, type: 3}
 --- !u!114 &2921513077133963349 stripped
@@ -385,6 +390,10 @@ PrefabInstance:
     - target: {fileID: 3347138296084055734, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
       propertyPath: m_Name
       value: kickBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 3347138296084055735, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8145318134535760830, guid: 0eca810fae8c3d5428126080d091d0c6, type: 3}
       propertyPath: manager
