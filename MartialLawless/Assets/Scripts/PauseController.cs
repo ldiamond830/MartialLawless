@@ -35,8 +35,13 @@ public class PauseController : MonoBehaviour
     public void ShowPauseScreen()
     {
         isPaused = true;
+
+        //greys out game content
         greyFilter.color = new Color(190, 190, 190, 0.7f);
+
+        //shows pause menu
         pauseContent.SetActive(true);
+
         //starts the pause music and pauses the game music
         pauseMusic.Play();
         manager.currentMusic.Pause();
@@ -46,8 +51,11 @@ public class PauseController : MonoBehaviour
     public void HidePauseScreen()
     {
         isPaused = false;
+        //makes the filter transparent
         greyFilter.color = new Color(190, 190, 190, 0.0f);
+        //hides pause menus
         pauseContent.SetActive(false);
+
         //ends the pause music and restarts the game music
         pauseMusic.Stop();
         manager.currentMusic.Play();

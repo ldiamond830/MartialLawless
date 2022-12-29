@@ -97,13 +97,14 @@ public class AttackCollision : MonoBehaviour
 
              
             
-                //checks collisions
+                //checks collisions on each enemy
                 for (int i = 0; i < enemyList.Count; i++)
                 {
                     if (enemyList[i] != null)
                     {
                         if (collider.IsTouching(enemyList[i]))
                         {
+                            //prevents player stun locking enemy
                             manager.EnemyList[i].WindUpTimer = 0;
 
                             if (isThrow)
@@ -114,7 +115,6 @@ public class AttackCollision : MonoBehaviour
                             else
                             {
                                 //deals damage
-
                                 manager.EnemyList[i].TakeDamage(damage);
                                 //manager.EnemyList[i].GetComponent<SpriteRenderer>().color = Color.red;
                                 isActive = false;
@@ -131,11 +131,13 @@ public class AttackCollision : MonoBehaviour
             else
             {
                 
-
+                //checks collision on player
                 if (collider.IsTouching(playerCollider) && manager.Player.DamageAble)
                 {
+                   
                     if (isThrow)
                     {
+                        //calls throw behavior to move player along arc and deal delayed damage
                         enemyThrowObject.ThrowPlayer(playerCollider, parentEnemyCollider, damage);
                         isActive = false;
                     }

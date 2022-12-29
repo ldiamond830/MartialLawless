@@ -352,6 +352,7 @@ public class PlayerController : MonoBehaviour
                     staminFill = stamina / 50.0f;
                     staminaSlider.value = staminFill;
 
+                    //caps stamina values
                     if (stamina > maxStamina)
                     {
                         stamina = maxStamina;
@@ -377,6 +378,7 @@ public class PlayerController : MonoBehaviour
                     state = State.isMoving;
                     //returns punch hitbox to intial position
                     thrown.gameObject.transform.position = position;
+                    //disables hitbox to prevent damage being done when not attacking
                     thrown.IsActive = false;
                     isAttacking = false;
                 }
@@ -395,7 +397,8 @@ public class PlayerController : MonoBehaviour
                     wait = 0;
                     state = State.isMoving;
                     //returns punch hitbox to intial position
-                    kick.gameObject.transform.position = position;
+                    kick.gameObject.transform.position = position
+                    //disables hitbox to prevent damage being done when not attacking
                     kick.IsActive = false;
                     isAttacking = false;
                 }
@@ -434,11 +437,16 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case State.isDodging:
+                //returns to normal morment after 0.2 seconds
                 if(wait >= 0.2f)
                 {
                     state = State.isMoving;
+
+                    //makes player able to be damaged again
                     damageAble = true;
+
                     wait = 0;
+                    //resets player z value so they don't appear above enemies, z is changed while player is dashing to prevent issues when player dodges through an enemy
                     position.z++;
 
                 }
@@ -446,15 +454,22 @@ public class PlayerController : MonoBehaviour
                 {
                     wait += Time.deltaTime;
 
+                    //gets player direction from control component
                     direction = playerControls.ReadValue<Vector2>();
                     velocity = new Vector3(direction.x * moveSpeed, direction.y * moveSpeed, 0);
+                    
+                    //accelerates player to create dashing effect
                     velocity *= 2.5f;
+
+
                     position += velocity * Time.deltaTime;
                     
                     transform.position = position;
                     collider.enabled = true;
                 }
                 break;
+
+
             case State.isPaused:
                 //does nothing while paused
                 break;

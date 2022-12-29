@@ -377,10 +377,11 @@ public class Manager : MonoBehaviour
         drop.ResetTimer();
     }
 
-
+    
     private void Spawning()
     {
         int rng = Random.Range(0, 6);
+        //random chance to spawn either a basic enemy or sheild enemy
         if(rng <= 4)
         {
             SpawnBasic();
@@ -396,19 +397,20 @@ public class Manager : MonoBehaviour
     {
         if (basicEnemySpawnPool.Count > 0)
         {
-            
+                // creates new enemy from the spawning pool
                 EnemyAI newEnemy = basicEnemySpawnPool[0];
 
-
+                //adds to the list of active enemies and removes from the spawning pool
                 enemyList.Add(newEnemy);
                 basicEnemySpawnPool.Remove(newEnemy);
 
                 //chooses a random spawn point for the new enemy
                 int doorSelect = Random.Range(0, 4);
 
+            //positions enemy at chosen spawnpoint
                 if (doorSelect == 0)
                 {
-                    //constant value makes it so enemy doesnt pop in on screen ll
+                    
                     newEnemy.Position = new Vector3(0, cameraHeight / 2 + 5, 0);
                 }
                 else if (doorSelect == 1)
@@ -424,7 +426,7 @@ public class Manager : MonoBehaviour
                     newEnemy.Position = new Vector3(cameraWidth / 2 + 5, 0, 0);
                 }
 
-
+                //makes the enemy visible
                 newEnemy.gameObject.SetActive(true);
 
         }
