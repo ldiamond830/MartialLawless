@@ -581,15 +581,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnKick(InputValue value)
     {
+        
         if(!isAttacking && stamina >= kickStaminaCost)
         {
+            //updates stamina value and UI
             stamina -= kickStaminaCost;
             staminFill = stamina / 100f;
             staminaSlider.value = staminFill;
             playerStaminaText.text = "Stamina: " + (int)stamina;
             staminaRechargeTimer = staminaRechargeInterval;
 
-            Debug.Log("Kick");
+            //sets state 
             state = State.isKicking;
 
             animationAttacking = true;
@@ -597,7 +599,7 @@ public class PlayerController : MonoBehaviour
 
             kick.EnemyList.Clear();
 
-            //checks for orientation and spawns a hitbox in front of the player
+            //checks for orientation and moves hitbox based on player direction
             switch (orientation)
             {
                 case Orientation.up:
@@ -617,7 +619,8 @@ public class PlayerController : MonoBehaviour
 
                     break;
             }
-            //sound effect here
+
+            //plays sound effect
             kickSound.enabled = true;
             if (kickSound != null)
             {
@@ -625,9 +628,10 @@ public class PlayerController : MonoBehaviour
                 kickSound.Play();
                 Debug.Log("Kick Sound Played");
             }
-
+            //prevents multiple attacks from being used simultaniously 
             isAttacking = true;
 
+            //sets the kick hitbox to be able to do damage
             kick.IsActive = true;
 
             //adds each enemy to list so that the attack collision can check for collisions
